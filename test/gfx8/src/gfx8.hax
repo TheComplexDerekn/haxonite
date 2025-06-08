@@ -1,0 +1,25 @@
+// Test writeJPEG().
+
+module gfx8 is
+
+  func main() is
+    var args = commandLineArgs();
+    if #args != 1 then
+      ewrite("Usage: gfx8 <output.jpeg>\n");
+      return;
+    end
+    var jpegFileName = args[0];
+
+    var img = makeImage(250, 250, rgb(0, 0, 255));
+    setColor(img, rgb(255, 0, 0));
+    fillRect(img, 25.0, 50.0, 150.0, 100.0);
+    setColor(img, rgb(0, 255, 0));
+    fillRect(img, 50.0, 100.0, 150.0, 100.0);
+    var res = writeJPEG(img, 75, jpegFileName);
+    if !ok(res) then
+      ewrite("writeJPEG failed\n");
+    end
+    close(img);
+  end
+
+end

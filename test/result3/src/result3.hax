@@ -1,0 +1,20 @@
+// Test the '!' construct - causing a fatal error.
+
+module result3 is
+
+  func f(x: Int) -> Result[Int] is
+    if x == 10 then
+      return error[Int];
+    else
+      return valid(x + 100);
+    end
+  end
+
+  func main() is
+    var s1 = f(12)!;
+    write($"{s1}\n");
+    var s2 = f(10)!;
+    write($"{s2}\n");
+  end
+
+end

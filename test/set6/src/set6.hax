@@ -1,0 +1,37 @@
+// Set literals.
+
+module set6 is
+
+  func main() is
+    var s1 = {1, 2, 3};
+    write("s1:");
+    var i = ifirst(s1);
+    while imore(s1, i) do
+      var elem = iget(s1, i);
+      write($" {elem}");
+      i = inext(s1, i);
+    end
+    write("\n");
+
+    var s2 = {"abc", "def", "ghi"};
+    write("s2:");
+    i = ifirst(s2);
+    while imore(s2, i) do
+      var elem = iget(s2, i);
+      write($" {elem}");
+      i = inext(s2, i);
+    end
+    write("\n");
+
+    var s3 = {999};
+    write("s3:");
+    i = ifirst(s3);
+    while imore(s3, i) do
+      var elem = iget(s3, i);
+      write($" {elem}");
+      i = inext(s3, i);
+    end
+    write("\n");
+  end
+
+end

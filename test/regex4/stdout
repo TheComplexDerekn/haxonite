@@ -1,0 +1,3 @@
+replace('\*', 'abc***def*ghi*', '.') -> 'abc...def.ghi.'
+replace('-+', 'abc--def----ghi-jkl', '*') -> 'abc*def*ghi*jkl'
+replace('*', 'abc***def*ghi*', '.') -> invalid regex

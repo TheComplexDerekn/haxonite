@@ -1,0 +1,113 @@
+// Test the find() and rfind() functions.
+
+module string5 is
+
+  func runFindStr(s: String, term: String) is
+    write($"find('{s}', '{term}')\n");
+    write("      ");
+    var i = 0;
+    while i < #s do
+      var j = find(s, term, i);
+      if j < 0 then
+        break;
+      end
+      while i < j do
+        write(" ");
+        i = i + 1;
+      end
+      write("^");
+      i = i + 1;
+    end
+    write("\n");
+  end
+
+  func runRfindStr(s: String, term: String) is
+    write($"rfind('{s}', '{term}')\n");
+    var v = new Vector[Int];
+    var i = #s - 1;
+    while i >= 0 do
+      var j = rfind(s, term, i);
+      if j < 0 then
+        break;
+      end
+      append(v, j);
+      i = j - 1;
+    end
+    write("       ");
+    i = 0;
+    for idxReverse : 0 .. #v - 1 do
+      var idx = #v - 1 - idxReverse;
+      while i < v[idx] do
+        write(" ");
+        i = i + 1;
+      end
+      write("^");
+      i = i + 1;
+    end
+    write("\n");
+  end
+
+  func runFindByte(s: String, c: Int) is
+    write($"find('{s}', {c:c})\n");
+    write("      ");
+    var i = 0;
+    while i < #s do
+      var j = find(s, c, i);
+      if j < 0 then
+        break;
+      end
+      while i < j do
+        write(" ");
+        i = i + 1;
+      end
+      write("^");
+      i = i + 1;
+    end
+    write("\n");
+  end
+
+  func runRfindByte(s: String, c: Int) is
+    write($"rfind('{s}', {c:c})\n");
+    var v = new Vector[Int];
+    var i = #s - 1;
+    while i >= 0 do
+      var j = rfind(s, c, i);
+      if j < 0 then
+        break;
+      end
+      append(v, j);
+      i = j - 1;
+    end
+    write("       ");
+    i = 0;
+    for idxReverse : 0 .. #v - 1 do
+      var idx = #v - 1 - idxReverse;
+      while i < v[idx] do
+        write(" ");
+        i = i + 1;
+      end
+      write("^");
+      i = i + 1;
+    end
+    write("\n");
+  end
+
+  func main() is
+    runFindStr("abcXYZdefXYZXYZghiXYZ", "XYZ");
+    runFindStr("abcXYZdefXYZXYZghiXYZ", "XXX");
+    runFindStr("0000", "0");
+
+    runRfindStr("abcXYZdefXYZXYZghiXYZ", "XYZ");
+    runRfindStr("abcXYZdefXYZXYZghiXYZ", "XXX");
+    runRfindStr("0000", "0");
+
+    runFindByte("*abc*def**ghi*", 42);
+    runFindByte("*abc*def**ghi*", 43);
+    runFindByte("****", 42);
+
+    runRfindByte("*abc*def**ghi*", 42);
+    runRfindByte("*abc*def**ghi*", 43);
+    runRfindByte("****", 42);
+  end
+
+end

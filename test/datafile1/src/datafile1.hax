@@ -1,0 +1,62 @@
+// Test the DataFile module.
+
+module datafile1 is
+
+  import DataFile;
+
+  func main() is
+    var args = commandLineArgs();
+    if #args != 1 then
+      ewrite("Usage: datafile1 <file.haxdata>\n");
+      exit(1);
+    end
+    var path = args[0];
+
+    var data = readFile(path, new StringBuf)!;
+
+    if ok(parseConfig(data)) then
+      write("ok\n");
+    else
+      write("failed\n");
+    end
+  end
+
+  func parseConfig(data: StringBuf) -> Result[] is
+    var err = &handleError(Int, String);
+
+    var dataFile = parseDataFile(data, err)?;
+    if dataFile.tag != "datafile1" ||
+       #dataFile.sections != 1 ||
+       dataFile.sections[0].tag != "data" then
+      handleError(0, "Invalid datafile1 syntax");
+      return error[];
+    end
+
+    for item : dataFile.sections[0].items do
+      if item.cmd == "foo" then
+        check(item, [DataArgType.int], err)?;
+        var i = toInt(item.args[0])!;
+        write($"> foo {i}\n");
+      elseif item.cmd == "bar" then
+        check(item, new Vector[DataArgType], err)?;
+        write("> bar\n");
+      elseif item.cmd == "baz" then
+        check(item, [DataArgType.string, DataArgType.float], err)?;
+        var s = item.args[0];
+        var f = toFloat(item.args[1])!;
+        write($"> baz '{s}' {f}\n");
+      else
+        var cmd = item.cmd;
+        handleError(item.lineNum, $"Unknown command '{cmd}'");
+        return error[];
+      end
+    end
+
+    return valid();
+  end
+
+  func handleError(lineNum: Int, msg: String) is
+    write($"Error [{lineNum}]: {msg}\n");
+  end
+
+end

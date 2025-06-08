@@ -1,0 +1,39 @@
+// Test drawlists.
+
+module gfx10 is
+
+  import DrawList;
+
+  func main() is
+    var args = commandLineArgs();
+    if #args != 1 then
+      ewrite("Usage: gfx10 <output.png>\n");
+      return;
+    end
+    var pngFileName = args[0];
+
+    var img = makeImage(500, 500, rgb(0, 0, 0));
+
+    var sb = new StringBuf;
+    append(sb, "@drawlist-1\n");
+    append(sb, "-ops\n");
+    append(sb, "rgb 255 0 0\n");
+    append(sb, "rect 50 100 300 200\n");
+    append(sb, "rgb 0 0 255\n");
+    append(sb, "rect 150 200 300 200\n");
+    var dl = deserDrawList(sb, &errorHandler(Int, String))!;
+
+    drawDrawList(img, dl)!;
+
+    var res = writePNG(img, false, pngFileName);
+    if !ok(res) then
+      ewrite("writePNG failed\n");
+    end
+    close(img);
+  end
+
+  func errorHandler(lineNum: Int, msg: String) is
+    write($"Error [{lineNum}]: {msg}\n");
+  end
+
+end

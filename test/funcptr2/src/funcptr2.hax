@@ -1,0 +1,29 @@
+// Test function pointers.
+
+module funcptr2 is
+
+  func main() is
+    var fp1 = &f1(Int, Int);
+    var fp2 = &f2(Int);
+    run1(fp1, 1, 2);
+    run2(fp2, 3);
+  end
+
+  func f1(x: Int, y: Int) is
+    write($"f1: {x} {y}\n");
+  end
+
+  func f2(x: Int) -> Int is
+    return 10 * x;
+  end
+
+  func run1(fp: Func[Int,Int], x: Int, y: Int) is
+    (fp)(x, y);
+  end
+
+  func run2(fp: Func[Int->Int], x: Int) is
+    var t = (fp)(x);
+    write($"{t}\n");
+  end
+
+end

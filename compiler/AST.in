@@ -1,0 +1,316 @@
+// Part of the Haxonite project, under the MIT License.
+// Copyright 2025 Derek Noonburg
+
+#define AST_h
+
+#include <memory>
+#include <string>
+#include <vector>
+
+class Module
+
+class Module
+  name: std::string
+  params: std::vector<std::string>
+  imports: std::vector<std::unique_ptr<Import>>
+  elems: std::vector<std::unique_ptr<ModuleElem>>
+end
+
+class Import
+  name: std::string
+end
+
+baseclass ModuleElem
+end
+
+class StructDefn: ModuleElem
+  name: std::string
+  fields: std::vector<std::unique_ptr<Field>>
+end
+
+class VarStructDefn: ModuleElem
+  name: std::string
+  fields: std::vector<std::unique_ptr<Field>>
+  subStructs: std::vector<std::unique_ptr<SubStructDefn>>
+end
+
+class SubStructDefn
+  name: std::string
+  fields: std::vector<std::unique_ptr<Field>>
+end
+
+class Field
+  name: std::string
+  type: std::unique_ptr<TypeRef>
+end
+
+class EnumDefn: ModuleElem
+  name: std::string
+  members: std::vector<std::string>
+end
+
+class NativeTypeDefn: ModuleElem
+  name: std::string
+  attrs: std::vector<std::string>
+end
+
+class ConstDefn: ModuleElem
+  name: std::string
+  val: std::unique_ptr<Expr>
+end
+
+class FuncDefn: ModuleElem
+  native: bool
+  name: std::string
+  args: std::vector<std::unique_ptr<Arg>>
+  returnType: std::unique_ptr<TypeRef>
+  block: std::unique_ptr<Block>
+end
+
+class Arg
+  name: std::string
+  type: std::unique_ptr<TypeRef>
+end
+
+baseclass TypeRef
+end
+
+class SimpleTypeRef: TypeRef
+  name: std::string
+end
+
+class ParamTypeRef: TypeRef
+  name: std::string
+  hasReturnType: bool
+  params: std::vector<std::unique_ptr<TypeRef>>
+end
+
+class TypeVarRef: TypeRef
+  name: std::string
+end
+
+class Block
+  stmts: std::vector<std::unique_ptr<Stmt>>
+end
+
+baseclass Stmt
+end
+
+class VarStmt: Stmt
+  name: std::string
+  expr: std::unique_ptr<Expr>
+end
+
+class IfStmt: Stmt
+  tests: std::vector<std::unique_ptr<Expr>>
+  blocks: std::vector<std::unique_ptr<Block>>
+  elseBlock: std::unique_ptr<Block>
+end
+
+class WhileStmt: Stmt
+  test: std::unique_ptr<Expr>
+  block: std::unique_ptr<Block>
+end
+
+class ForStmt: Stmt
+  var: std::string
+  expr1: std::unique_ptr<Expr>
+  expr2: std::unique_ptr<Expr>
+  block: std::unique_ptr<Block>
+end
+
+class BreakStmt: Stmt
+end
+
+class ContinueStmt: Stmt
+end
+
+class TypematchStmt: Stmt
+  expr: std::unique_ptr<Expr>
+  cases: std::vector<std::unique_ptr<TypematchCase>>
+end
+
+class TypematchCase
+  var: std::string
+  type: std::unique_ptr<TypeRef>
+  block: std::unique_ptr<Block>
+end
+
+class ReturnStmt: Stmt
+  expr: std::unique_ptr<Expr>
+end
+
+class AssignStmt: Stmt
+  lhs: std::unique_ptr<Expr>
+  rhs: std::unique_ptr<Expr>
+end
+
+class ExprStmt: Stmt
+  expr: std::unique_ptr<Expr>
+end
+
+baseclass Expr
+end
+
+enum BinaryOp
+  condOr
+  condAnd
+  orOp
+  xorOp
+  andOp
+  eq
+  ne
+  same
+  notSame
+  lt
+  gt
+  le
+  ge
+  shl
+  shr
+  add
+  sub
+  mul
+  div
+  mod
+end
+
+class BinaryOpExpr: Expr
+  op: BinaryOp
+  lhs: std::unique_ptr<Expr>
+  rhs: std::unique_ptr<Expr>
+end
+
+enum UnaryOp
+  neg
+  notOp
+  length
+  varstruct
+  substruct
+end
+
+class UnaryOpExpr: Expr
+  op: UnaryOp
+  expr: std::unique_ptr<Expr>
+end
+
+class PropagateExpr: Expr
+  expr: std::unique_ptr<Expr>
+end
+
+class CheckExpr: Expr
+  expr: std::unique_ptr<Expr>
+end
+
+class CallExpr: Expr
+  func: std::unique_ptr<Expr>
+  args: std::vector<std::unique_ptr<Expr>>
+end
+
+class MemberExpr: Expr
+  lhs: std::unique_ptr<Expr>
+  member: std::string
+end
+
+class IndexExpr: Expr
+  obj: std::unique_ptr<Expr>
+  idx: std::unique_ptr<Expr>
+end
+
+class ParenExpr: Expr
+  expr: std::unique_ptr<Expr>
+end
+
+class NewExpr: Expr
+  type: std::unique_ptr<TypeRef>
+end
+
+class MakeExpr: Expr
+  type: std::unique_ptr<TypeRef>
+  fieldInits: std::vector<std::unique_ptr<FieldInit>>
+end
+
+class FieldInit
+  name: std::string
+  val: std::unique_ptr<Expr>
+end
+
+class FuncPointerExpr: Expr
+  name: std::string
+  argTypes: std::vector<std::unique_ptr<TypeRef>>
+end
+
+class NilExpr: Expr
+  type: std::unique_ptr<TypeRef>
+end
+
+class NilTestExpr: Expr
+  expr: std::unique_ptr<Expr>
+end
+
+class ErrorExpr: Expr
+  type: std::unique_ptr<TypeRef>
+end
+
+class ValidExpr: Expr
+  expr: std::unique_ptr<Expr>
+end
+
+class OkExpr: Expr
+  expr: std::unique_ptr<Expr>
+end
+
+class IdentExpr: Expr
+  name: std::string
+end
+
+class LitVectorExpr: Expr
+  vals: std::vector<std::unique_ptr<Expr>>
+end
+
+class LitSetExpr: Expr
+  vals: std::vector<std::unique_ptr<Expr>>
+end
+
+class LitMapExpr: Expr
+  pairs: std::vector<std::pair<std::unique_ptr<Expr>, std::unique_ptr<Expr>>>
+end
+
+class LitIntExpr: Expr
+  val: std::string
+  radix: int
+end
+
+class LitFloatExpr: Expr
+  val: std::string
+end
+
+class LitBoolExpr: Expr
+  val: bool
+end
+
+class LitStringExpr: Expr
+  val: std::string
+end
+
+class LitCharExpr: Expr
+  val: std::string
+end
+
+class InterpStringExpr: Expr
+  parts: std::vector<std::unique_ptr<InterpStringPart>>
+end
+
+baseclass InterpStringPart
+end
+
+class InterpStringChars: InterpStringPart
+  chars: std::string
+end
+
+class InterpStringArg: InterpStringPart
+  expr: std::unique_ptr<Expr>
+  width: int
+  precision: int
+  format: char
+end

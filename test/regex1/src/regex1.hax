@@ -1,0 +1,23 @@
+// Test the regular expression test() function.
+
+module regex1 is
+
+  func main() is
+    doTest("a+b+", "xxaabyy");
+    doTest("a+b+", "xxxaaybbz");
+    doTest("(a+b+", "xxxaaybbz");
+    // invalid regex
+    doTest("*", "abc*def");
+  end
+
+  func doTest(re: String, s: String) is
+    var tRes = test(re, s);
+    if (ok(tRes)) then
+      var t = tRes!;
+      write($"test('{re}', '{s}') -> {t}\n");
+    else
+      write($"test('{re}', '{s}') -> invalid regex\n");
+    end
+  end
+
+end

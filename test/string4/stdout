@@ -1,0 +1,8 @@
+'*abc' '*' -> starts=true ends=false
+'abc*' '*' -> starts=false ends=true
+'*abc*' '*' -> starts=true ends=true
+'*' '*' -> starts=true ends=true
+'fooHello world' 'foo' -> starts=true ends=false
+'Hello worldfoo' 'foo' -> starts=false ends=true
+'' 'foo' -> starts=false ends=false
+'foo' '' -> starts=true ends=true

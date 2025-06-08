@@ -1,0 +1,3 @@
+Error [multimodule2/src/mod2.hax:5]: Function f1b() not found
+Error [multimodule2/src/mod1.hax:5]: Function f2b() not found
+ERROR: compilation failed

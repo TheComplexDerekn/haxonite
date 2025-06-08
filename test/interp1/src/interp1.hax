@@ -1,0 +1,13 @@
+module interp1 is
+
+  func main() is
+    var i = 42;
+    var b = true;
+    var s = "abc";
+    write($"i={i} b={b} s={s}\n");
+    write($"i=[{i:10}] b=[{b:10}] s=[{s:10}]\n");
+    write($"i=[{i:-10}] b=[{b:-10}] s=[{s:-10}]\n");
+    write($"i=[{i:1}] b=[{b:1}] s=[{s:1}]\n");
+  end
+
+end

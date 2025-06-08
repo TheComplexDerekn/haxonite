@@ -1,0 +1,41 @@
+// Test text drawing.
+
+module gfx4 is
+
+  func main() is
+    var args = commandLineArgs();
+    if #args != 1 then
+      ewrite("Usage: gfx4 <output.png>\n");
+      return;
+    end
+    var pngFileName = args[0];
+
+    var img = makeImage(500, 500, rgb(0, 0, 0));
+
+    setColor(img, rgb(0, 0, 255));
+    setFont(img, loadFont("Noto Serif Medium")!);
+    setFontSize(img, 40.0);
+    drawText(img, "Hello world", 200.0, 100.0);
+    var r = textBox(img, "Hello world");
+    setColor(img, rgb(0, 100, 0));
+    strokeRect(img, 200.0 + r.x, 100.0 + r.y, r.w, r.h);
+
+    pushState(img);
+    var cos = cos(pi / 2.0);
+    var sin = sin(pi / 2.0);
+    setMatrix(img, make Matrix(a:cos, b:sin, c:-sin, d:cos, tx:250.0, ty:100.0));
+    setColor(img, rgb(255, 255, 0));
+    drawText(img, "Vertical text g", 0.0, 0.0);
+    r = textBox(img, "Vertical text g");
+    setColor(img, rgb(0, 100, 0));
+    strokeRect(img, r.x, r.y, r.w, r.h);
+    popState(img);
+
+    var res = writePNG(img, false, pngFileName);
+    if !ok(res) then
+      ewrite("writePNG failed\n");
+    end
+    close(img);
+  end
+
+end

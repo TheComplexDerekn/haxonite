@@ -1,0 +1,44 @@
+// Simple graphics framework.
+
+// Part of the Haxonite project, under the MIT License.
+// Copyright 2025 Derek Noonburg
+
+module SimpleGfx is
+
+  struct SimpleGfx is
+    win: Window;
+    draw: Func[Image];
+  end
+
+  func runSimpleGfx(title: String, w: Int, h: Int, draw: Func[Image]) is
+    var win = openWindow(title, w, h)!;
+    var gfx = make SimpleGfx(win:win, draw:draw);
+    redraw(gfx);
+    eventLoop(gfx);
+  end
+
+  func eventLoop(gfx: SimpleGfx) is
+    var quit = false;
+    while !quit do
+      var ev = waitEvent();
+      var needRedraw = false;
+      typematch ev is
+        case resize: ResizeEvent:
+          needRedraw = true;
+        case close: CloseEvent:
+          quit = true;
+        default:
+      end
+      if needRedraw then
+        redraw(gfx);
+      end
+    end
+  end
+
+  func redraw(gfx: SimpleGfx) is
+    var img = backBuffer(gfx.win);
+    (gfx.draw)(img);
+    swapBuffers(gfx.win);
+  end
+
+end

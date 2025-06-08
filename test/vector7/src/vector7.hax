@@ -1,0 +1,25 @@
+// Test the Vector insert and clear functions.
+
+module vector7 is
+
+  func main() is
+    var v = [1, 2, 3];
+    print(v);
+    insert(v, 0, 101);
+    insert(v, 2, 102);
+    insert(v, 5, 103);
+    print(v);
+    clear(v);
+    print(v);
+    insert(v, 0, 99);
+    print(v);
+  end
+
+  func print(v: Vector[Int]) is
+    for x : v do
+      write($" {x}");
+    end
+    write("\n");
+  end
+
+end

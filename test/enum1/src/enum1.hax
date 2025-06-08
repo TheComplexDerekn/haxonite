@@ -1,0 +1,63 @@
+// Basic test of enum types.
+
+module enum1 is
+
+  enum Color is
+    red;
+    orange;
+    yellow;
+    green;
+    blue;
+    violet;
+  end
+
+  func main() is
+    run(Color.red, Color.green);
+    run(Color.blue, Color.blue);
+    run(Color.violet, Color.red);
+  end
+
+  func run(c1: Color, c2: Color) is
+    var s1 = toString(c1);
+    var s2 = toString(c2);
+    write($"{s1} - {s2}:");
+    if c1 == c2 then
+      write(" ==");
+    end
+    if c1 != c2 then
+      write(" !=");
+    end
+    if c1 < c2 then
+      write(" <");
+    end
+    if c1 > c2 then
+      write(" >");
+    end
+    if c1 <= c2 then
+      write(" <=");
+    end
+    if c1 >= c2 then
+      write(" >=");
+    end
+    write("\n");
+  end
+
+  func toString(c: Color) -> String is
+    if c == Color.red then
+      return "red";
+    elseif c == Color.orange then
+      return "orange";
+    elseif c == Color.yellow then
+      return "yellow";
+    elseif c == Color.green then
+      return "green";
+    elseif c == Color.blue then
+      return "blue";
+    elseif c == Color.violet then
+      return "violet";
+    else
+      return "unknown";
+    end
+  end
+
+end

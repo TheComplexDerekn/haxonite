@@ -1,0 +1,3 @@
+Error [varerror1/src/varerror1.hax:5]: Symbol 'i' is not writable
+Error [varerror1/src/varerror1.hax:11]: Symbol 'key' is not writable
+ERROR: compilation failed

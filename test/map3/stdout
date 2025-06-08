@@ -1,0 +1,4 @@
+length = 3
+m[def] = '20'
+length = 4
+m[def] = '90', m[xyz] = '100'

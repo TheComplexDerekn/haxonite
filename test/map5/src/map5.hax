@@ -1,0 +1,48 @@
+// Map iterator functions.
+
+module map5 is
+
+  func main() is
+    var m1 = new Map[String,Int];
+    m1["abc"] = 10;
+    m1["def"] = 20;
+    m1["ghi"] = 30;
+    m1["zzz"] = 999;
+    write("m1:");
+    var i1 = ifirst(m1);
+    while imore(m1, i1) do
+      var key = iget(m1, i1);
+      var val = m1[key];
+      write($" {key}:{val}");
+      i1 = inext(m1, i1);
+    end
+    write("\n");
+
+    var m2 = new Map[Int,String];
+    m2[10] = "abc";
+    m2[20] = "def";
+    m2[30] = "ghi";
+    m2[999] = "zzz";
+    write("m2:");
+    var i2 = ifirst(m2);
+    while imore(m2, i2) do
+      var key = iget(m2, i2);
+      var val = m2[key];
+      write($" {key}:{val}");
+      i2 = inext(m2, i2);
+    end
+    write("\n");
+
+    var m3 = new Map[Int,Int];
+    write("m3:");
+    var i3 = ifirst(m3);
+    while imore(m3, i3) do
+      var key = iget(m3, i3);
+      var val = m3[key];
+      write($" {key}:{val}");
+      i3 = inext(m3, i3);
+    end
+    write("\n");
+  end
+
+end

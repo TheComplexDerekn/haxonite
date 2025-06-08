@@ -1,0 +1,17 @@
+module random1 is
+
+  func main() is
+    seedrand(123456);
+    var f1 = rand();
+    var f2 = rand();
+    var f3 = rand();
+    var i1 = randi(0, 10);
+    var i2 = randi(0, 10);
+    var i3 = randi(0, 10);
+    var i4 = randi(1000, 1005);
+    var i5 = randi(1000, 1005);
+    var i6 = randi(1000, 1005);
+    write($"{f1} {f2} {f3} {i1} {i2} {i3} {i4} {i5} {i6}\n");
+  end
+
+end

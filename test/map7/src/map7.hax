@@ -1,0 +1,31 @@
+// For loops over Maps.
+
+module map7 is
+
+  func main() is
+    var m1 = {"abc":1, "def":2, "ghi":3};
+    write("m1:");
+    for key : m1 do
+      var val = m1[key];
+      write($" {key}:{val}");
+    end
+    write("\n");
+
+    var m2 = {1:"abc", 2:"def", 3:"ghi"};
+    write("m2:");
+    for key : m2 do
+      var val = m2[key];
+      write($" {key}:{val}");
+    end
+    write("\n");
+
+    var m3 = {"xyz":999};
+    write("m3:");
+    for key : m3 do
+      var val = m3[key];
+      write($" {key}:{val}");
+    end
+    write("\n");
+  end
+
+end

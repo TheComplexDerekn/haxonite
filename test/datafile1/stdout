@@ -1,0 +1,10 @@
+> bar
+> baz 'abc "def" ghi\jkl' 1.2345
+> foo 1
+ok
+-----
+> bar
+> foo 42
+Error [10]: Wrong number of arguments
+failed
+-----

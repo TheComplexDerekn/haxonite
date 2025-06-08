@@ -1,0 +1,45 @@
+// Test Set[Int].
+
+module set4 is
+
+  func main() is
+    var s = new Set[Int];
+    insert(s, 10);
+    insert(s, 20);
+    insert(s, 30);
+
+    var n = #s;
+    var t20 = contains(s, 20);
+    var t40 = contains(s, 40);
+    write($"length={n} 20->{t20} 40->{t40}\n");
+
+    delete(s, 20);
+
+    n = #s;
+    t20 = contains(s, 20);
+    t40 = contains(s, 40);
+    write($"length={n} 20->{t20} 40->{t40}\n");
+
+    insert(s, 40);
+
+    n = #s;
+    t20 = contains(s, 20);
+    t40 = contains(s, 40);
+    write($"length={n} 20->{t20} 40->{t40}\n");
+
+    clear(s);
+
+    n = #s;
+    t20 = contains(s, 20);
+    t40 = contains(s, 40);
+    write($"length={n} 20->{t20} 40->{t40}\n");
+
+    insert(s, 40);
+
+    n = #s;
+    t20 = contains(s, 20);
+    t40 = contains(s, 40);
+    write($"length={n} 20->{t20} 40->{t40}\n");
+  end
+
+end

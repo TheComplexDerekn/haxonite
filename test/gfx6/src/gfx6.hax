@@ -1,0 +1,46 @@
+// Test clipping.
+
+module gfx6 is
+
+  func main() is
+    var args = commandLineArgs();
+    if #args != 1 then
+      ewrite("Usage: gfx6 <output.png>\n");
+      return;
+    end
+    var pngFileName = args[0];
+
+    var img = makeImage(500, 500, rgb(0, 0, 0));
+
+    intersectClipRect(img, 90.0, 120.0, 120.0, 60.0);
+    setColor(img, rgb(0, 0, 255));
+    fillCircle(img, 150.0, 150.0, 50.0);
+
+    setClipRect(img, 0.0, 0.0, 350.0, 350.0);
+    setColor(img, argb(128, 255, 0, 0));
+    fillCircle(img, 250.0, 250.0, 150.0);
+
+    var w = width(img);
+    var h = height(img);
+    write($"Image size: {w} x {h}\n");
+
+    var res = writePNG(img, false, pngFileName);
+    if !ok(res) then
+      ewrite("writePNG failed\n");
+    end
+    close(img);
+  end
+
+  func fillCircle(dest: Image, cx: Float, cy: Float, r: Float) is
+    var k = r * 0.5523;
+    var path = makePath();
+    moveTo(path,  cx - r, cy);
+    curveTo(path, cx - r, cy - k, cx - k, cy - r, cx,     cy - r);
+    curveTo(path, cx + k, cy - r, cx + r, cy - k, cx + r, cy);
+    curveTo(path, cx + r, cy + k, cx + k, cy + r, cx,     cy + r);
+    curveTo(path, cx - k, cy + r, cx - r, cy + k, cx - r, cy);
+    closePath(path);
+    fill(dest, path);
+  end
+
+end

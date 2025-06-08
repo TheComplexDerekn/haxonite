@@ -1,0 +1,21 @@
+// Test of the rgb, argb, a, r, g, b functions.
+
+module gfx5 is
+
+  func main() is
+    var c1 = rgb(0x22, 0x33, 0x44);
+    var a1 = a(c1);
+    var r1 = r(c1);
+    var g1 = g(c1);
+    var b1 = b(c1);
+    write($"{a1:.2x} {r1:.2x} {g1:.2x} {b1:.2x}\n");
+
+    var c2 = argb(0x12, 0x34, 0x56, 0x78);
+    var a2 = a(c2);
+    var r2 = r(c2);
+    var g2 = g(c2);
+    var b2 = b(c2);
+    write($"{a2:.2x} {r2:.2x} {g2:.2x} {b2:.2x}\n");
+  end
+
+end

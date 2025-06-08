@@ -1,0 +1,573 @@
+// DrawList read/write/render.
+
+// Part of the Haxonite project, under the MIT License.
+// Copyright 2025 Derek Noonburg
+
+module DrawList is
+
+  import DataFile;
+
+  struct DrawList is
+    resources: Vector[DrawListResource];
+    ops: Vector[DrawListOp];
+  end
+
+  varstruct DrawListResource is
+
+    tag: String;
+
+    substruct DrawListLoadFont is
+      name: String;
+    end
+
+    substruct DrawListGenericFont is
+      family: GenericFontFamily;
+      bold: Bool;
+      italic: Bool;
+    end
+
+  end
+
+  varstruct DrawListOp is
+
+    substruct DrawListPush is
+    end
+
+    substruct DrawListPop is
+    end
+
+    substruct DrawListConcatMatrix is
+      m: Matrix;
+    end
+
+    substruct DrawListIntersectClipRect is
+      x: Float;
+      y: Float;
+      w: Float;
+      h: Float;
+    end
+
+    substruct DrawListRGB is
+      rgb: ARGB;
+    end
+
+    substruct DrawListARGB is
+      argb: ARGB;
+    end
+
+    substruct DrawListSetFillRule is
+      rule: FillRule;
+    end
+
+    substruct DrawListSetStrokeWidth is
+      width: Float;
+    end
+
+    substruct DrawListSetFont is
+      tag: String;
+    end
+
+    substruct DrawListSetFontSize is
+      fontSize: Float;
+    end
+
+    substruct DrawListStroke is
+      path: Path;
+    end
+
+    substruct DrawListFill is
+      path: Path;
+    end
+
+    substruct DrawListStrokeLine is
+      x0: Float;
+      y0: Float;
+      x1: Float;
+      y1: Float;
+    end
+
+    substruct DrawListStrokeRect is
+      x: Float;
+      y: Float;
+      w: Float;
+      h: Float;
+    end
+
+    substruct DrawListFillRect is
+      x: Float;
+      y: Float;
+      w: Float;
+      h: Float;
+    end
+
+    substruct DrawListDrawText is
+      s: String;
+      x: Float;
+      y: Float;
+    end
+
+  end
+
+  // Draw [list] to [dest]. Returns an error if the DrawList contains
+  // a syntax error.
+  func drawDrawList(dest: Image, list: DrawList) -> Result[] is
+    var fonts = new Map[String,Font];
+    for resource : list.resources do
+      typematch resource is
+        case font: DrawListLoadFont:
+          fonts[font.tag] = loadFont(font.name)?;
+        case font: DrawListGenericFont:
+          fonts[font.tag] = genericFont(font.family, font.bold, font.italic);
+      end
+    end
+
+    var stackDepth = 0;
+    for op : list.ops do
+      typematch op is
+        case push: DrawListPush:
+          pushState(dest);
+          stackDepth = stackDepth + 1;
+        case pop: DrawListPop:
+          if stackDepth == 0 then
+            return error[];
+          end
+          popState(dest);
+        case concat: DrawListConcatMatrix:
+          concatMatrix(dest, concat.m);
+        case clip: DrawListIntersectClipRect:
+          intersectClipRect(dest, clip.x, clip.y, clip.w, clip.h);
+        case rgb: DrawListRGB:
+          setColor(dest, rgb.rgb);
+        case argb: DrawListARGB:
+          setColor(dest, argb.argb);
+        case rule: DrawListSetFillRule:
+          setFillRule(dest, rule.rule);
+        case width: DrawListSetStrokeWidth:
+          setStrokeWidth(dest, width.width);
+        case font: DrawListSetFont:
+          if !contains(fonts, font.tag) then
+            return error[];
+          end
+          setFont(dest, fonts[font.tag]);
+        case fontSize: DrawListSetFontSize:
+          setFontSize(dest, fontSize.fontSize);
+        case stroke: DrawListStroke:
+          stroke(dest, stroke.path);
+        case fill: DrawListFill:
+          fill(dest, fill.path);
+        case line: DrawListStrokeLine:
+          strokeLine(dest, line.x0, line.y0, line.x1, line.y1);
+        case rect: DrawListStrokeRect:
+          strokeRect(dest, rect.x, rect.y, rect.w, rect.h);
+        case rect: DrawListFillRect:
+          fillRect(dest, rect.x, rect.y, rect.w, rect.h);
+        case text: DrawListDrawText:
+          drawText(dest, text.s, text.x, text.y);
+      end
+    end
+
+    for tag : fonts do
+      close(fonts[tag]);
+    end
+
+    return valid();
+  end
+
+  // Serialize [list] to [out].
+  func ser(list: DrawList, out: StringBuf) is
+    append(out, "@drawlist-1\n");
+    append(out, "-resources\n");
+    for resource : list.resources do
+      typematch resource is
+        case font: DrawListLoadFont:
+          var tag = font.tag;
+          var name = font.name;
+          append(out, $"lfont {tag} \"{name}\"\n");
+        case font: DrawListGenericFont:
+          var tag = font.tag;
+          append(out, $"gfont {tag} ");
+          if font.family == GenericFontFamily.serif then
+            append(out, "serif ");
+          elseif font.family == GenericFontFamily.sansSerif then
+            append(out, "sansSerif ");
+          elseif font.family == GenericFontFamily.mono then
+            append(out, "mono ");
+          end
+          if font.bold then
+            if font.italic then
+              append(out, "bi\n");
+            else
+              append(out, "b\n");
+            end
+          else
+            if font.italic then
+              append(out, "i\n");
+            else
+              append(out, "r\n");
+            end
+          end
+      end
+    end
+
+    append(out, "-ops\n");
+    for op : list.ops do
+      typematch op is
+        case push: DrawListPush:
+          append(out, "push\n");
+        case pop: DrawListPop:
+          append(out, "pop\n");
+        case concat: DrawListConcatMatrix:
+          var a = concat.m.a;
+          var b = concat.m.b;
+          var c = concat.m.c;
+          var d = concat.m.d;
+          var tx = concat.m.tx;
+          var ty = concat.m.ty;
+          append(out, $"mat {a} {b} {c} {d} {tx} {ty}\n");
+        case clip: DrawListIntersectClipRect:
+          var x = clip.x;
+          var y = clip.y;
+          var w = clip.w;
+          var h = clip.h;
+          append(out, $"mat {x} {y} {w} {h}\n");
+        case rgb: DrawListRGB:
+          var r = r(rgb.rgb);
+          var g = g(rgb.rgb);
+          var b = b(rgb.rgb);
+          append(out, $"rgb {r} {g} {b}\n");
+        case argb: DrawListARGB:
+          var a = a(argb.argb);
+          var r = r(argb.argb);
+          var g = g(argb.argb);
+          var b = b(argb.argb);
+          append(out, $"argb {a} {r} {g} {b}\n");
+        case rule: DrawListSetFillRule:
+          if rule.rule == FillRule.nzwn then
+            append(out, "frule nzwn\n");
+          else
+            append(out, "frule eo\n");
+          end
+        case width: DrawListSetStrokeWidth:
+          var w = width.width;
+          append(out, $"width {w}\n");
+        case font: DrawListSetFont:
+          var tag = font.tag;
+          append(out, $"font {tag}\n");
+        case XXXfontSize: DrawListSetFontSize:
+          var size = XXXfontSize.fontSize; 
+          append(out, $"fsize {size}\n");
+        case stroke: DrawListStroke:
+          append(out, "stroke\n");
+          serDrawListPath(stroke.path, out);
+        case fill: DrawListFill:
+          append(out, "fill\n");
+          serDrawListPath(fill.path, out);
+        case line: DrawListStrokeLine:
+          var x0 = line.x0;
+          var y0 = line.x1;
+          var x1 = line.y0;
+          var y1 = line.y1;
+          append(out, $"line {x0} {y0} {x1} {y1}\n");
+        case rect: DrawListStrokeRect:
+          var x = rect.x;
+          var y = rect.y;
+          var w = rect.w;
+          var h = rect.h;
+          append(out, $"srect {x} {y} {w} {h}\n");
+        case rect: DrawListFillRect:
+          var x = rect.x;
+          var y = rect.y;
+          var w = rect.w;
+          var h = rect.h;
+          append(out, $"rect {x} {y} {w} {h}\n");
+        case text: DrawListDrawText:
+          var s = text.s;
+          var x = text.x;
+          var y = text.y;
+          append(out, $"text \"{s}\" {x} {y}\n");
+      end
+    end
+  end
+
+  func serDrawListPath(path: Path, out: StringBuf) is
+    var i = ifirst(path);
+    while imore(path, i) do
+      var elem = iget(path, i);
+      if elem.kind == PathElemKind.move then
+        var x = elem.x;
+        var y = elem.y;
+        append(out, $"  m {x} {y}\n");
+      elseif elem.kind == PathElemKind.line then
+        var x = elem.x;
+        var y = elem.y;
+        append(out, $"  l {x} {y}\n");
+      elseif elem.kind == PathElemKind.curve then
+        var x = elem.x;
+        var y = elem.y;
+        var cx1 = elem.cx1;
+        var cy1 = elem.cy1;
+        var cx2 = elem.cx2;
+        var cy2 = elem.cy2;
+        append(out, $"  c {cx1} {cy1} {cx2} {cy2} {x} {y}\n");
+      end
+      if elem.closed then
+        append(out, "  z\n");
+      end
+      i = inext(path, i);
+    end
+    append(out, "  endp\n");
+  end
+
+  // Deserialize a DrawList from [in]. On syntax error: calls [err]
+  // and returns an error.
+  func deserDrawList(in: StringBuf, err: Func[Int,String]) -> Result[DrawList] is
+    var dataFile = parseDataFile(in, err)?;
+
+    if dataFile.tag != "drawlist-1" then
+      (err)(0, "Not a drawlist file");
+      return error[DrawList];
+    end
+
+    var resources = new Vector[DrawListResource];
+    var ops = new Vector[DrawListOp];
+
+    for section : dataFile.sections do
+      if section.tag == "resources" then
+        deserResources(section, resources, err)?;
+      elseif section.tag == "ops" then
+        deserOps(section, ops, err)?;
+      else
+        (err)(section.lineNum, "Invalid section");
+        return error[DrawList];
+      end
+    end
+
+    return valid(make DrawList(resources: resources, ops: ops));
+  end
+
+  func deserResources(section: DataSection, resources: Vector[DrawListResource],
+                      err: Func[Int,String]) -> Result[] is
+    for item : section.items do
+      if item.cmd == "lfont" then
+        check(item, [DataArgType.string, DataArgType.string], err)?;
+        var res = make DrawListLoadFont(tag: item.args[0], name: item.args[1]);
+        append(resources, varstruct res);
+      elseif item.cmd == "gfont" then
+        check(item, [DataArgType.string, DataArgType.string, DataArgType.string], err)?;
+        var family = GenericFontFamily.serif;
+        if item.args[1] == "serif" then
+          family = GenericFontFamily.serif;
+        elseif item.args[1] == "sansSerif" then
+          family = GenericFontFamily.sansSerif;
+        elseif item.args[1] == "mono" then
+          family = GenericFontFamily.mono;
+        else
+          (err)(item.lineNum, "Unknown gfont family");
+          return error[];
+        end
+        var bold = false;
+        var italic = false;
+        if item.args[2] == "r" then
+          bold = false;
+          italic = false;
+        elseif item.args[2] == "b" then
+          bold = true;
+          italic = false;
+        elseif item.args[2] == "i" then
+          bold = false;
+          italic = true;
+        elseif item.args[2] == "bi" then
+          bold = true;
+          italic = true;
+        else
+          (err)(item.lineNum, "Invalid gfont style");
+          return error[];
+        end
+        var res = make DrawListGenericFont(tag: item.args[0], family: family,
+                                           bold: bold, italic: italic);
+        append(resources, varstruct res);
+      else
+        (err)(item.lineNum, "Unknown resource command");
+        return error[];
+      end
+    end
+    return valid();
+  end
+
+  struct DrawListPathParser is
+    items: Vector[DataItem];
+    i: Int;
+    err: Func[Int,String];
+  end
+
+  func deserOps(section: DataSection, ops: Vector[DrawListOp],
+                err: Func[Int,String]) -> Result[] is
+    var i = 0;
+    while i < #section.items do
+      var item = section.items[i];
+      i = i + 1;
+      if item.cmd == "push" then
+        check(item, new Vector[DataArgType], err)?;
+        var op = make DrawListPush();
+        append(ops, varstruct op);
+      elseif item.cmd == "pop" then
+        check(item, new Vector[DataArgType], err)?;
+        var op = make DrawListPop();
+        append(ops, varstruct op);
+      elseif item.cmd == "mat" then
+        check(item, [DataArgType.float, DataArgType.float, DataArgType.float,
+                     DataArgType.float, DataArgType.float, DataArgType.float], err)?;
+        var a = toFloat(item.args[0])!;
+        var b = toFloat(item.args[1])!;
+        var c = toFloat(item.args[2])!;
+        var d = toFloat(item.args[3])!;
+        var tx = toFloat(item.args[4])!;
+        var ty = toFloat(item.args[5])!;
+        var op = make DrawListConcatMatrix(m: make Matrix(a:a, b:b, c:c, d:d, tx:tx, ty:ty));
+        append(ops, varstruct op);
+      elseif item.cmd == "clip" then
+        check(item, [DataArgType.float, DataArgType.float, DataArgType.float, DataArgType.float],
+              err)?;
+        var x = toFloat(item.args[0])!;
+        var y = toFloat(item.args[1])!;
+        var w = toFloat(item.args[2])!;
+        var h = toFloat(item.args[3])!;
+        var op = make DrawListIntersectClipRect(x: x, y: y, w: w, h: h);
+        append(ops, varstruct op);
+      elseif item.cmd == "rgb" then
+        check(item, [DataArgType.int, DataArgType.int, DataArgType.int], err)?;
+        var r = toInt(item.args[0])!;
+        var g = toInt(item.args[1])!;
+        var b = toInt(item.args[2])!;
+        var op = make DrawListRGB(rgb: rgb(r, g, b));
+        append(ops, varstruct op);
+      elseif item.cmd == "argb" then
+        check(item, [DataArgType.int, DataArgType.int, DataArgType.int, DataArgType.int], err)?;
+        var a = toInt(item.args[0])!;
+        var r = toInt(item.args[1])!;
+        var g = toInt(item.args[2])!;
+        var b = toInt(item.args[3])!;
+        var op = make DrawListARGB(argb: argb(a, r, g, b));
+        append(ops, varstruct op);
+      elseif item.cmd == "frule" then
+        check(item, [DataArgType.string], err)?;
+        var rule = FillRule.nzwn;
+        if item.args[0] == "nzwn" then
+          rule = FillRule.nzwn;
+        elseif item.args[0] == "eo" then
+          rule = FillRule.evenOdd;
+        else
+          (err)(item.lineNum, "Invalid fill rule");
+          return error[];
+        end
+        var op = make DrawListSetFillRule(rule: rule);
+        append(ops, varstruct op);
+      elseif item.cmd == "width" then
+        check(item, [DataArgType.float], err)?;
+        var width = toFloat(item.args[0])!;
+        var op = make DrawListSetStrokeWidth(width: width);
+        append(ops, varstruct op);
+      elseif item.cmd == "font" then
+        check(item, [DataArgType.string], err)?;
+        var op = make DrawListSetFont(tag: item.args[0]);
+        append(ops, varstruct op);
+      elseif item.cmd == "fsize" then
+        check(item, [DataArgType.float], err)?;
+        var fontSize = toFloat(item.args[0])!;
+        var op = make DrawListSetFontSize(fontSize: fontSize);
+        append(ops, varstruct op);
+      elseif item.cmd == "s" then
+        check(item, new Vector[DataArgType], err)?;
+        var parser = make DrawListPathParser(items: section.items, i: i, err: err);
+        var path = deserDrawListPath(parser)?;
+        i = parser.i;
+        var op = make DrawListStroke(path: path);
+        append(ops, varstruct op);
+      elseif item.cmd == "f" then
+        check(item, new Vector[DataArgType], err)?;
+        var parser = make DrawListPathParser(items: section.items, i: i, err: err);
+        var path = deserDrawListPath(parser)?;
+        i = parser.i;
+        var op = make DrawListFill(path: path);
+        append(ops, varstruct op);
+      elseif item.cmd == "line" then
+        check(item, [DataArgType.float, DataArgType.float, DataArgType.float, DataArgType.float],
+              err)?;
+        var x0 = toFloat(item.args[0])!;
+        var y0 = toFloat(item.args[1])!;
+        var x1 = toFloat(item.args[2])!;
+        var y1 = toFloat(item.args[3])!;
+        var op = make DrawListStrokeLine(x0: x0, y0: y0, x1: x1, y1: y1);
+        append(ops, varstruct op);
+      elseif item.cmd == "srect" then
+        check(item, [DataArgType.float, DataArgType.float, DataArgType.float, DataArgType.float],
+              err)?;
+        var x = toFloat(item.args[0])!;
+        var y = toFloat(item.args[1])!;
+        var w = toFloat(item.args[2])!;
+        var h = toFloat(item.args[3])!;
+        var op = make DrawListStrokeRect(x: x, y: y, w: w, h: h);
+        append(ops, varstruct op);
+      elseif item.cmd == "rect" then
+        check(item, [DataArgType.float, DataArgType.float, DataArgType.float, DataArgType.float],
+              err)?;
+        var x = toFloat(item.args[0])!;
+        var y = toFloat(item.args[1])!;
+        var w = toFloat(item.args[2])!;
+        var h = toFloat(item.args[3])!;
+        var op = make DrawListFillRect(x: x, y: y, w: w, h: h);
+        append(ops, varstruct op);
+      elseif item.cmd == "text" then
+        check(item, [DataArgType.string, DataArgType.float, DataArgType.float], err)?;
+        var x = toFloat(item.args[1])!;
+        var y = toFloat(item.args[2])!;
+        var op = make DrawListDrawText(s: item.args[0], x: x, y: y);
+        append(ops, varstruct op);
+      else
+        (err)(item.lineNum, "Unknown item command");
+        return error[];
+      end
+    end
+    return valid();
+  end
+
+  func deserDrawListPath(parser: DrawListPathParser) -> Result[Path] is
+    var path = makePath();
+    while parser.i < #parser.items do
+      var item = parser.items[parser.i];
+      parser.i = parser.i + 1;
+      if item.cmd == "m" then
+        check(item, [DataArgType.float, DataArgType.float], parser.err)?;
+        var x = toFloat(item.args[0])!;
+        var y = toFloat(item.args[1])!;
+        moveTo(path, x, y);
+      elseif item.cmd == "l" then
+        check(item, [DataArgType.float, DataArgType.float], parser.err)?;
+        var x = toFloat(item.args[0])!;
+        var y = toFloat(item.args[1])!;
+        lineTo(path, x, y);
+      elseif item.cmd == "c" then
+        check(item, [DataArgType.float, DataArgType.float,
+                     DataArgType.float, DataArgType.float,
+                     DataArgType.float, DataArgType.float], parser.err)?;
+        var cx1 = toFloat(item.args[0])!;
+        var cy1 = toFloat(item.args[1])!;
+        var cx2 = toFloat(item.args[2])!;
+        var cy2 = toFloat(item.args[3])!;
+        var x = toFloat(item.args[4])!;
+        var y = toFloat(item.args[5])!;
+        curveTo(path, cx1, cy1, cx2, cy2, x, y);
+      elseif item.cmd == "z" then
+        check(item, new Vector[DataArgType], parser.err)?;
+        closePath(path);
+      elseif item.cmd == "endp" then
+        return valid(path);
+      else
+        (parser.err)(item.lineNum, "Invalid command in path");
+      end
+    end
+    (parser.err)(0, "Unterminated path");
+    return error[Path];
+  end
+
+end

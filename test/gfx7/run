@@ -1,0 +1,6 @@
+#!/bin/sh
+
+png=`mktemp --tmpdir haxtestgfx.XXXXXXXX`
+hax gfx7 $HAXTESTDIR/foo1.png $png
+md5sum $png | cut -b-32
+rm -f $png

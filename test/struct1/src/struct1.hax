@@ -1,0 +1,22 @@
+module struct1 is
+  struct Foo is
+    x: Int;
+    y: Int;
+  end
+
+  func makeFoo(x: Int) -> Foo is
+    return make Foo(x: x, y: 10 * x);
+  end
+
+  func main() is
+    var obj = makeFoo(10);
+    var x = obj.x;
+    var y = obj.y;
+    write($"obj.x={x} obj.y={y}\n");
+
+    obj.y = 999;
+    x = obj.x;
+    y = obj.y;
+    write($"obj.x={x} obj.y={y}\n");
+  end
+end

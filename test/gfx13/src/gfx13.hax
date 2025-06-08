@@ -1,0 +1,57 @@
+// Test the state accessor functions.
+
+module gfx13 is
+
+  func main() is
+    var img = makeImage(20, 10, rgb(0, 0, 0));
+
+    var font = genericFont(GenericFontFamily.serif, true, false);
+    setFont(img, font);
+
+    setColor(img, argb(50, 100, 150, 200));
+
+    var mat = matrix(img);
+    var rect = clipRect(img);
+    var color = color(img);
+    var rule = fillRule(img);
+    var w = strokeWidth(img);
+    var font2 = font(img);
+    var fontSize = fontSize(img);
+
+    var matA = mat.a;
+    var matB = mat.b;
+    var matC = mat.c;
+    var matD = mat.d;
+    var matTX = mat.tx;
+    var matTY = mat.ty;
+    write($"matrix = {matA} {matB} {matC} {matD} {matTX} {matTY}\n");
+
+    var rectX = rect.x;
+    var rectY = rect.y;
+    var rectW = rect.w;
+    var rectH = rect.h;
+    write($"rect = {rectX} {rectY} {rectW} {rectH}\n");
+
+    var colorA = a(color);
+    var colorR = r(color);
+    var colorG = g(color);
+    var colorB = b(color);
+    write($"color = {colorA} {colorR} {colorG} {colorB}\n");
+
+    var ruleStr = "???";
+    if rule == FillRule.evenOdd then
+      ruleStr = "evenOdd";
+    elseif rule == FillRule.nzwn then
+      ruleStr = "nzwn";
+    end
+    write($"fill rule = {ruleStr}\n");
+
+    write($"stroke width = {w}\n");
+
+    var fontMatch = font2 === font;
+    write($"fonts match = {fontMatch}\n");
+
+    write($"font size = {fontSize}\n");
+  end
+
+end

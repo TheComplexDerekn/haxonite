@@ -1,0 +1,3 @@
+#!/bin/sh
+
+hax args1 abc def ghi

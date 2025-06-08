@@ -1,0 +1,12 @@
+// test command line args
+
+module args1 is
+
+  func main() is
+    var args = commandLineArgs();
+    for arg : args do
+      write($"'{arg}'\n");
+    end
+  end
+
+end

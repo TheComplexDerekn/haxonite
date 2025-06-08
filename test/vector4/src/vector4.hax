@@ -1,0 +1,38 @@
+// Vector literals.
+
+module vector4 is
+
+  func main() is
+    var v1 = [1, 2, 3];
+    write("v1:");
+    var i = ifirst(v1);
+    while imore(v1, i) do
+      var elem = iget(v1, i);
+      write($" {elem}");
+      i = inext(v1, i);
+    end
+    write("\n");
+
+    var v2 = ["abc", "def", "ghi"];
+    write("v2:");
+    i = ifirst(v2);
+    while imore(v2, i) do
+      var elem = iget(v2, i);
+      write($" {elem}");
+      i = inext(v2, i);
+    end
+    write("\n");
+
+    var v3 = [true];
+    write("v3:");
+    i = ifirst(v3);
+    while imore(v3, i) do
+      var elem = iget(v3, i);
+      write($" {elem}");
+      i = inext(v3, i);
+    end
+    write("\n");
+
+  end
+
+end

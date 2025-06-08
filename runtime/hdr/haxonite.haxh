@@ -1,0 +1,192 @@
+//========================================================================
+//
+// haxonite.haxh
+//
+// Part of the Haxonite project, under the MIT License.
+// Copyright 2025 Derek Noonburg
+//
+//========================================================================
+
+header haxonite is
+
+  //--- String
+  nativefunc length(s: String) -> Int;
+  nativefunc get(s: String, idx: Int) -> Int;
+  nativefunc next(s: String, idx: Int) -> Int;
+  nativefunc byte(s: String, idx: Int) -> Int;
+  nativefunc compare(s1: String, s2: String) -> Int;
+  nativefunc concat(s1: String, s2: String) -> String;
+  nativefunc startsWith(s: String, prefix: String) -> Bool;
+  nativefunc endsWith(s: String, suffix: String) -> Bool;
+  nativefunc find(s: String, term: String, start: Int) -> Int;
+  nativefunc find(s: String, c: Int, start: Int) -> Int;
+  nativefunc rfind(s: String, term: String, start: Int) -> Int;
+  nativefunc rfind(s: String, c: Int, start: Int) -> Int;
+  nativefunc substr(s: String, start: Int, n: Int) -> String;
+  nativefunc toInt(s: String) -> Result[Int];
+  nativefunc toInt(s: String, base: Int) -> Result[Int];
+  nativefunc toFloat(s: String) -> Result[Float];
+  nativefunc ifirst(s: String) -> Int;
+  nativefunc imore(s: String, iter: Int) -> Bool;
+  nativefunc inext(s: String, iter: Int) -> Int;
+  nativefunc iget(s: String, iter: Int) -> Int;
+
+  //--- regular expression
+  nativefunc test(re: String, s: String) -> Result[Bool];
+  nativefunc match(re: String, s: String) -> Result[Vector[String]];
+  nativefunc split(re: String, s: String) -> Result[Vector[String]];
+  nativefunc replace(re: String, s: String, sub: String) -> Result[String];
+
+  //--- StringBuf
+  nativefunc length(sb: StringBuf) -> Int;
+  nativefunc get(sb: StringBuf, idx: Int) -> Int;
+  nativefunc byte(sb: StringBuf, idx: Int) -> Int;
+  nativefunc next(sb: StringBuf, idx: Int) -> Int;
+  nativefunc append(sb: StringBuf, c: Int);
+  nativefunc append(sb: StringBuf, s: String);
+  nativefunc append(sb: StringBuf, other: StringBuf);
+  nativefunc clear(sb: StringBuf);
+  nativefunc toString(sb: StringBuf) -> String;
+  nativefunc ifirst(sb: StringBuf) -> Int;
+  nativefunc imore(sb: StringBuf, iter: Int) -> Bool;
+  nativefunc inext(sb: StringBuf, iter: Int) -> Int;
+  nativefunc iget(sb: StringBuf, iter: Int) -> Int;
+
+  //--- formatting
+  nativefunc format(x: Int, width: Int, precision: Int, format: Int) -> String;
+  nativefunc format(x: Float, width: Int, precision: Int, format: Int) -> String;
+  nativefunc format(x: Bool, width: Int, precision: Int, format: Int) -> String;
+  nativefunc format(x: String, width: Int, precision: Int, format: Int) -> String;
+
+  //--- math
+  const pi = 3.14159265358979323846;
+  const minInt = 0x80000000000000;
+  const maxInt = 0x7fffffffffffff;
+  nativefunc toFloat(x: Int) -> Float;
+  nativefunc ceil(x: Float) -> Float;
+  nativefunc floor(x: Float) -> Float;
+  nativefunc round(x: Float) -> Float;
+  nativefunc ceili(x: Float) -> Int;
+  nativefunc floori(x: Float) -> Int;
+  nativefunc roundi(x: Float) -> Int;
+  nativefunc min(x: Int, y: Int) -> Int;
+  nativefunc min(x: Float, y: Float) -> Float;
+  nativefunc max(x: Int, y: Int) -> Int;
+  nativefunc max(x: Float, y: Float) -> Float;
+  nativefunc abs(x: Int) -> Int;
+  nativefunc abs(x: Float) -> Float;
+  nativefunc sqrt(x: Float) -> Float;
+  nativefunc pow(x: Float, y: Float) -> Float;
+  nativefunc exp(x: Float) -> Float;
+  nativefunc log(x: Float) -> Float;
+  nativefunc log10(x: Float) -> Float;
+  nativefunc sin(x: Float) -> Float;
+  nativefunc cos(x: Float) -> Float;
+  nativefunc tan(x: Float) -> Float;
+  nativefunc asin(x: Float) -> Float;
+  nativefunc acos(x: Float) -> Float;
+  nativefunc atan2(y:Float, x: Float) -> Float;
+
+  //--- random numbers
+  nativefunc seedrand(seed: Int);
+  nativefunc rand() -> Float;
+  nativefunc randi(min: Int, max: Int) -> Int;
+
+  //--- system
+  nativefunc commandLineArgs() -> Vector[String];
+  nativefunc exit(exitCode: Int);
+  nativefunc pathExists(path: String) -> Bool;
+  nativefunc pathIsDir(path: String) -> Bool;
+  nativefunc pathIsFile(path: String) -> Bool;
+  nativefunc modTime(path: String) -> Result[Timestamp];
+  nativefunc createDir(path: String) -> Result[];
+  nativefunc delete(path: String) -> Result[];
+  nativefunc deleteDir(path: String) -> Result[];
+  nativefunc rename(oldPath: String, newPath: String) -> Result[];
+  nativefunc readFile(path: String) -> Result[String];
+  nativefunc readFile(path: String, sb: StringBuf) -> Result[StringBuf];
+  nativefunc writeFile(path: String, s: String) -> Result[];
+  nativefunc writeFile(path: String, sb: StringBuf) -> Result[];
+  nativefunc readDir(path: String) -> Result[Vector[String]];
+  nativefunc copyFile(src: String, dest: String) -> Result[];
+  nativefunc run(command: Vector[String]) -> Result[Int];
+  nativefunc sleep(useconds: Int);
+  nativefunc heapSize() -> Int;
+
+  //--- date/time
+  struct Date is
+    year: Int;
+    month: Int;         // 1 .. 12
+    day: Int;           // 1 .. 31
+  end
+  struct DateTime is
+    year: Int;
+    month: Int;         // 1 .. 12
+    day: Int;           // 1 .. 31
+    hour: Int;          // 0 .. 23
+    minute: Int;        // 0 .. 59
+    second: Int;        // 0 .. 60 (including leap second)
+    nanosecond: Int;    // 0 .. 999,999,999
+    tz: Int;            // minutes relative to UTC: -12*60 .. 12*60
+  end
+  struct Timestamp is
+    seconds: Int;       // seconds since Unix epoch (1970-01-01 00:00:00 +0000)
+    nanoseconds: Int;   // 0 .. 999,999,999
+  end
+  const tzUTC = 0;
+  const tzLocal = 2000;
+  nativefunc toDateTime(ts: Timestamp, tz: Int) -> DateTime;
+  nativefunc toTimestamp(dt: DateTime) -> Timestamp;
+  nativefunc now() -> Timestamp;
+  nativefunc dayOfWeek(d: Date) -> Int;
+  nativefunc dayOfWeek(dt: DateTime) -> Int;
+  nativefunc compare(d1: Date, d2: Date) -> Int;
+  nativefunc compare(dt1: DateTime, dt2: DateTime) -> Int;
+  nativefunc compare(ts1: Timestamp, ts2: Timestamp) -> Int;
+  nativefunc diff(d1: Date, d2: Date) -> Int;
+  nativefunc diff(ts1: Timestamp, ts2: Timestamp) -> Int;
+  nativefunc diffNS(ts1: Timestamp, ts2: Timestamp) -> Int;
+  nativefunc add(d: Date, days: Int) -> Date;
+  nativefunc add(ts: Timestamp, seconds: Int, nanoseconds: Int) -> Timestamp;
+
+  //--- File
+  nativetype "pointer" File;
+  enum FileMode is
+    read;
+    write;
+    append;
+  end
+  struct TempFile is
+    path: String;
+    file: File;
+  end
+  nativefunc openFile(path: String, mode: FileMode) -> Result[File];
+  nativefunc openTempFile(prefix: String) -> Result[TempFile];
+  nativefunc close(f: File);
+  nativefunc read(f: File, sb: StringBuf, n: Int) -> Result[Int];
+  nativefunc readLine(f: File) -> Result[String];
+  nativefunc write(f: File, s: String) -> Result[Int];
+  nativefunc write(f: File, sb: StringBuf) -> Result[Int];
+  nativefunc read(sb: StringBuf, n: Int) -> Result[Int];
+  nativefunc readLine() -> Result[String];
+  nativefunc write(s: String) -> Result[Int];
+  nativefunc ewrite(s: String) -> Result[Int];
+
+  //--- serialization / deserialization
+  struct DeserBuf is
+    data: StringBuf;
+    pos: Int;
+  end
+  nativefunc ser(val: Int, out: StringBuf);
+  nativefunc ser(val: Float, out: StringBuf);
+  nativefunc ser(val: Bool, out: StringBuf);
+  nativefunc ser(val: String, out: StringBuf);
+  nativefunc serHeader(hdr: String, out: StringBuf);
+  nativefunc deserInt(in: DeserBuf) -> Result[Int];
+  nativefunc deserFloat(in: DeserBuf) -> Result[Float];
+  nativefunc deserBool(in: DeserBuf) -> Result[Bool];
+  nativefunc deserString(in: DeserBuf) -> Result[String];
+  nativefunc deserHeader(hdr: String, in: DeserBuf) -> Result[];
+  nativefunc deserEnd(in: DeserBuf) -> Result[];
+
+end

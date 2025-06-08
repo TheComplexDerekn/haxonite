@@ -1,0 +1,9 @@
+// Error: Set[Bool] is not allowed.
+module set3 is
+
+  func main() is
+    var s = new Set[Bool];
+    insert(s, true);
+  end
+
+end

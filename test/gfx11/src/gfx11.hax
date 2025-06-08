@@ -1,0 +1,44 @@
+// Test drawlists - reading from a file.
+
+module gfx11 is
+
+  import DrawList;
+
+  func main() is
+    var args = commandLineArgs();
+    if #args != 4 then
+      ewrite("Usage: gfx11 <input.drawlist> <width> <height> <output.png>\n");
+      return;
+    end
+    var drawListFileName = args[0];
+    var width = toInt(args[1])!;
+    var height = toInt(args[2])!;
+    var pngFileName = args[3];
+
+    var buf = new StringBuf;
+    if !ok(readFile(drawListFileName, buf)) then
+      ewrite($"Couldn't read file '{drawListFileName}'\n");
+      return;
+    end
+    var drawListRes = deserDrawList(buf, &errorHandler(Int, String));
+    if !ok(drawListRes) then
+      ewrite($"Couldn't parse drawlist from '{drawListFileName}'\n");
+      return;
+    end
+    var drawList = drawListRes!;
+
+    var img = makeImage(width, height, rgb(0, 0, 0));
+    drawDrawList(img, drawList)!;
+
+    var res = writePNG(img, false, pngFileName);
+    if !ok(res) then
+      ewrite("writePNG failed\n");
+    end
+    close(img);
+  end
+
+  func errorHandler(lineNum: Int, msg: String) is
+    write($"Error [{lineNum}]: {msg}\n");
+  end
+
+end

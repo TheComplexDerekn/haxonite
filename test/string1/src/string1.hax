@@ -1,0 +1,25 @@
+module string1 is
+
+  func run(s1: String, s2: String) is
+    var n1 = length(s1);
+    var n2 = length(s2);
+    var cmp = "";
+    if s1 < s2 then
+      cmp = "lt";
+    elseif s1 > s2 then
+      cmp = "gt";
+    else
+      cmp = "eq";
+    end
+    var s3 = s1 + s2;
+    write($"'{s1}' [{n1}] {cmp} '{s2}' [{n2}] -> '{s3}'\n");
+  end
+
+  func main() is
+    run("abc", "abc");
+    run("abc", "def");
+    run("abc", "abcx");
+    run("abcx", "abc");
+  end
+
+end

@@ -1,0 +1,4 @@
+match('a+', 'xxaaayy') -> 'aaa'
+match('a(\d+)z', '**a1234z**') -> 'a1234z', '1234'
+match('(\[[a-z]+\])+', 'xxx[abc][def][helloworld]yyy') -> '[abc][def][helloworld]', '[helloworld]'
+match('*', 'abc*def') -> invalid regex

@@ -1,0 +1,19 @@
+Haxonite
+--------
+
+Haxonite is a programming language that features:
+* a small, easy-to-learn core language
+* a clean separation between language and libraries
+* strong, static typing
+* memory safety via bounds checking and garbage collection
+* builtin support for graphics
+
+Haxonite is released under the MIT License -- see LICENSE.txt.
+
+For documentation (and other information) see:
+https://www.haxonite.com/
+
+For build instructions see:
+https://www.haxonite.com/doc/guide/install.html
+
+Copyright 2025 Derek Noonburg

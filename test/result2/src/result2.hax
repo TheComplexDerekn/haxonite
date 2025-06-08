@@ -1,0 +1,36 @@
+// Test the '?' construct.
+
+module result2 is
+
+  func f(x: Int) -> Result[Int] is
+    if x == 10 then
+      return error[Int];
+    else
+      return valid(x + 100);
+    end
+  end
+
+  func g(x: Int) -> Result[String] is
+    var y = f(x)?;
+    return valid($"{y}");
+  end
+
+  func main() is
+    var r1 = g(12);
+    var r2 = g(10);
+    var s1 = "";
+    var s2 = "";
+    if ok(r1) then
+      s1 = r1!;
+    else
+      s1 = "error";
+    end
+    if ok(r2) then
+      s2 = r2!;
+    else
+      s2 = "error";
+    end
+    write($"{s1} {s2}\n");
+  end
+
+end

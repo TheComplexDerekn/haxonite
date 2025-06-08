@@ -1,0 +1,30 @@
+// Test the regular expression match() function.
+
+module regex2 is
+
+  func main() is
+    doMatch("a+", "xxaaayy");
+    doMatch("a(\\d+)z", "**a1234z**");
+    doMatch("(\\[[a-z]+\\])+", "xxx[abc][def][helloworld]yyy");
+    // invalid regex
+    doMatch("*", "abc*def");
+  end
+
+  func doMatch(re: String, s: String) is
+    var mRes = match(re, s);
+    if (ok(mRes)) then
+      var m = mRes!;
+      write($"match('{re}', '{s}') -> ");
+      for i : 0 .. #m - 1 do
+        if i > 0 then
+          write(", ");
+        end
+        write("'" + m[i] + "'");
+      end
+      write("\n");
+    else
+      write($"match('{re}', '{s}') -> invalid regex\n");
+    end
+  end
+
+end

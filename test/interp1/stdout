@@ -1,0 +1,4 @@
+i=42 b=true s=abc
+i=[        42] b=[      true] s=[       abc]
+i=[42        ] b=[true      ] s=[abc       ]
+i=[42] b=[true] s=[abc]

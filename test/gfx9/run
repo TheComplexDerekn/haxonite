@@ -1,0 +1,6 @@
+#!/bin/sh
+
+jpeg=`mktemp --tmpdir haxtestgfx.XXXXXXXX`
+hax gfx9 $HAXTESTDIR/foo1.jpeg $jpeg
+md5sum $jpeg | cut -b-32
+rm -f $jpeg

@@ -1,0 +1,92 @@
+// "bubble universe" demo
+
+// Part of the Haxonite project, under the MIT License.
+// Copyright 2025 Derek Noonburg
+
+// Based on:
+// https://qbjs.org/index.html?code=Q29uc3QgeG1heCA9IDUxMiwgeckMCl9UaXRsZSAiQnViYmxlIFVuaXZlcnNlIC0gRVNDIHRvIGV4aXQiICcgZnJvbSBqb2hubm8gYXQgUkNCYXNpYyBmb3J1bSAyMDIyLTExLTE0ClNjcmVlbiBfTmV3SW1hZ2UoxHnGcywgMzIpCicgLc4BCicgUGF1bCBEdW5uIHBvc3RlZCB0aGlzIGNvZGUgYnV0xGUgU3BlY0JBUyBpbiBhIGZhY2Vib29rIGdyb3VwLgonIEl0IGxvb2tlZCBzbyBjb29sIHRoYXQgSSBoYWTkAMcgcmV3cml0ZSBpdMRDTmFhbGFhIDcuIE1hcmN1cwonCicgYnBsdXMgUUI2NCBNb2Qgb2bkAOYg5AEQaW9uIGJ5IErlAP81NgpUQVUgPSA2LjI4MzE4NTMwNzE3OTU4NgpuID0gMjAwCnIgPSDEJC8gMjM1CuQBbDAKecUGdsUGdMUGaHcgPeYBmC8gMgpoaCA95gGaxA5EbwogICAgQ29sb3IgX1JHQjMyKDAsIMQDKcYabHPFCEZvciBpxE8gVG8gbsUTyBdq0hfEAXUgPSBTaW4oaSArIHYpICvFDXIgKiDEEXjGXsgB5ACvQ29zyizEDdcs5ADndSArIHTNFuoAwihpLCBqLCA5Oc43UFNldCAoaHcgKyB1ICogaHcgKiAwLjQsIGhoxHXEE2jGE8o4TmV4xmbJCeQBUnQgKyAwLjAwMSAnIHNsb3dlZCB3YXnFBGRvd27mAsMuMDI1xTJfRGlzcGxhecYNTGltaXQgMzAKTG9vcCBVbnRpbCBfS2V5RG93bigyNykK
+// https://retrocomputingforum.com/t/the-marvellous-bubble-universe-graphical-animation/3651/17
+// https://stardot.org.uk/forums/viewtopic.php?t=25833
+
+module bubble is
+
+  // k=1 for the original version; increasing k reduces the number
+  // of points drawn (n = 200 / k), which speeds things up
+  const speedup = 1;
+
+  // size of the rectangles to draw; dotSize=4.0 looks pretty good
+  // with a 1000x1000 window
+  const dotSize = 4.0;
+
+  // simulation time step
+  const timeStep = 0.002;
+
+  // minimum frame time, in microseconds
+  const minFrameTime = 20000;
+
+  func main() is
+
+    var w = 1000;
+    var h = 1000;
+    var win = openWindow("bubble", w, h)!;
+
+    var n = 200 / speedup;
+    var r = 2.0 * pi / 235.0;
+
+    var x = 0.0;
+    var u = 0.0;
+    var v = 0.0;
+    var t = 0.0;
+    var hw = toFloat(w) / 2.0;
+    var hh = toFloat(h) / 2.0;
+
+    var timer = monoclock();
+
+    var quit = false;
+    while !quit do
+      var clk = monoclock() + minFrameTime;
+
+      var img = backBuffer(win);
+      setColor(img, rgb(0, 0, 0));
+      clear(img);
+
+      for i : 0 .. n do
+        var ii = toFloat(speedup*i);
+        for j : 0 .. n do
+          var jj = toFloat(speedup*j);
+          u = sin(ii + v) + sin(r * ii + x);
+          v = cos(ii + v) + cos(r * ii + x);
+          x = u + t;
+          setColor(img, rgb(speedup*i, speedup*j, 99));
+          fillRect(img, hw + u * hw * 0.4, hh + v * hh * 0.4, dotSize, dotSize);
+        end
+      end
+      t = t + timeStep;
+
+      swapBuffers(win);
+
+      var timer2 = monoclock();
+      var frameRate = 1000000.0 / toFloat(timer2 - timer);
+      write($"frame rate: {frameRate} frames/s\n");
+      timer = timer2;
+
+      //--- handle events
+      var evRes = waitEvent(clk);
+      while ok(evRes) & !quit do
+        var ev = evRes!;
+        typematch ev is
+          case resizeEv: ResizeEvent:
+            w = resizeEv.w;
+            h = resizeEv.h;
+            hw = toFloat(w) / 2.0;
+            hh = toFloat(h) / 2.0;
+          case closeEv: CloseEvent:
+            quit = true;
+          default:
+        end
+        evRes = waitEvent(clk);
+      end
+    end
+  end
+
+end

@@ -1,0 +1,28 @@
+// Test garbage collection - this triggers the quickGC resize path.
+
+module gc2 is
+
+  func main() is
+    var v = new Vector[Vector[Int]];
+    for i : 0 .. 10000 do
+      run(v, 1000, 100);
+    end
+    var x1 = v[0][5];
+    var x2 = v[9999][999];
+    write($"{x1} {x2}\n");
+  end
+
+  func run(v: Vector[Vector[Int]], nAppend: Int, nTemp: Int) is
+    var w = new Vector[Int];
+    for i : 0 .. nTemp - 1 do
+      append(w, i);
+    end
+
+    var v2 = new Vector[Int];
+    for i : 0 .. nAppend - 1 do
+      append(v2, i);
+    end
+    append(v, v2);
+  end
+
+end

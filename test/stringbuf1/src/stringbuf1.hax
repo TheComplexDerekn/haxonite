@@ -1,0 +1,35 @@
+module stringbuf1 is
+
+  func main() is
+    var sb1 = new StringBuf;
+    append(sb1, "Hello");
+    append(sb1, ' ');
+    append(sb1, "world");
+
+    var sb2 = new StringBuf;
+    append(sb2, sb1);
+
+    append(sb1, '\n');
+    write(toString(sb1));
+
+    append(sb2, " - and more\n");
+    write(toString(sb2));
+
+    var n1 = length(sb1);
+    var n2 = length(sb2);
+    write($"lengths: {n1} {n2}\n");
+
+    var i = ifirst(sb1);
+    while imore(sb1, i) do
+      var c = iget(sb1, i);
+      write($" '{c:c}' ({c:02x})");
+      i = inext(sb1, i);
+    end    
+    write("\n");
+
+    clear(sb1);
+    append(sb1, "x\n");
+    write(toString(sb1));
+  end
+
+end

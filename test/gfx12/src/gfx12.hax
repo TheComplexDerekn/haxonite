@@ -1,0 +1,51 @@
+// Test the genericFont() function.
+
+module gfx12 is
+
+  func main() is
+    var args = commandLineArgs();
+    if #args != 1 then
+      ewrite("Usage: gfx1 <output.png>\n");
+      return;
+    end
+    var pngFileName = args[0];
+
+    var img = makeImage(500, 500, rgb(255, 255, 255));
+    setColor(img, rgb(0, 0, 0));
+    setFontSize(img, 36.0);
+
+    setFont(img, genericFont(GenericFontFamily.serif, false, false));
+    drawText(img, "serif", 20.0, 40.0);
+    setFont(img, genericFont(GenericFontFamily.serif, true, false));
+    drawText(img, "serif bold", 20.0, 80.0);
+    setFont(img, genericFont(GenericFontFamily.serif, false, true));
+    drawText(img, "serif italic", 20.0, 120.0);
+    setFont(img, genericFont(GenericFontFamily.serif, true, true));
+    drawText(img, "serif bold italic", 20.0, 160.0);
+
+    setFont(img, genericFont(GenericFontFamily.sansSerif, false, false));
+    drawText(img, "sans serif", 20.0, 200.0);
+    setFont(img, genericFont(GenericFontFamily.sansSerif, true, false));
+    drawText(img, "sans serif bold", 20.0, 240.0);
+    setFont(img, genericFont(GenericFontFamily.sansSerif, false, true));
+    drawText(img, "sans serif italic", 20.0, 280.0);
+    setFont(img, genericFont(GenericFontFamily.sansSerif, true, true));
+    drawText(img, "sans serif bold italic", 20.0, 320.0);
+
+    setFont(img, genericFont(GenericFontFamily.mono, false, false));
+    drawText(img, "mono", 20.0, 360.0);
+    setFont(img, genericFont(GenericFontFamily.mono, true, false));
+    drawText(img, "mono bold", 20.0, 400.0);
+    setFont(img, genericFont(GenericFontFamily.mono, false, true));
+    drawText(img, "mono italic", 20.0, 440.0);
+    setFont(img, genericFont(GenericFontFamily.mono, true, true));
+    drawText(img, "mono bold italic", 20.0, 480.0);
+
+    var res = writePNG(img, false, pngFileName);
+    if !ok(res) then
+      ewrite("writePNG failed\n");
+    end
+    close(img);
+  end
+
+end

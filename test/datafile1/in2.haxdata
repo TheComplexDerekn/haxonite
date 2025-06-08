@@ -1,0 +1,13 @@
+// this is a config file with an error
+
+@datafile1
+-data
+
+bar
+foo 42
+
+
+foo 1 2 3
+
+
+something

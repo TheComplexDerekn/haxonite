@@ -1,0 +1,4 @@
+test('a+b+', 'xxaabyy') -> true
+test('a+b+', 'xxxaaybbz') -> false
+test('(a+b+', 'xxxaaybbz') -> invalid regex
+test('*', 'abc*def') -> invalid regex

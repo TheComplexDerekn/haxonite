@@ -1,0 +1,100 @@
+// Test fill rule and compound paths.
+
+module gfx3 is
+
+  func main() is
+    var args = commandLineArgs();
+    if #args != 1 then
+      ewrite("Usage: gfx3 <output.png>\n");
+      return;
+    end
+    var pngFileName = args[0];
+
+    var img = makeImage(800, 800, rgb(0, 0, 0));
+
+    var xa0 =  50.0;
+    var xa1 = 150.0;
+    var xa2 = 250.0;
+    var xa3 = 350.0;
+    var xb0 = 450.0;
+    var xb1 = 550.0;
+    var xb2 = 650.0;
+    var xb3 = 750.0;
+
+    var ya0 =  50.0;
+    var ya1 = 150.0;
+    var ya2 = 250.0;
+    var ya3 = 350.0;
+    var yb0 = 450.0;
+    var yb1 = 550.0;
+    var yb2 = 650.0;
+    var yb3 = 750.0;
+
+    var path = makePath();
+    moveTo(path, xa0, ya0);
+    lineTo(path, xa2, ya0);
+    lineTo(path, xa2, ya2);
+    lineTo(path, xa0, ya2);
+    closePath(path);
+    moveTo(path, xa1, ya1);
+    lineTo(path, xa3, ya1);
+    lineTo(path, xa3, ya3);
+    lineTo(path, xa1, ya3);
+    closePath(path);
+    setColor(img, rgb(0, 0, 255));
+    setFillRule(img, FillRule.nzwn);
+    fill(img, path);
+
+    path = makePath();
+    moveTo(path, xb0, ya0);
+    lineTo(path, xb2, ya0);
+    lineTo(path, xb2, ya2);
+    lineTo(path, xb0, ya2);
+    closePath(path);
+    moveTo(path, xb1, ya1);
+    lineTo(path, xb3, ya1);
+    lineTo(path, xb3, ya3);
+    lineTo(path, xb1, ya3);
+    closePath(path);
+    setColor(img, rgb(0, 0, 255));
+    setFillRule(img, FillRule.evenOdd);
+    fill(img, path);
+
+    path = makePath();
+    moveTo(path, xa0, yb0);
+    lineTo(path, xa2, yb0);
+    lineTo(path, xa2, yb2);
+    lineTo(path, xa0, yb2);
+    closePath(path);
+    moveTo(path, xa3, yb1);
+    lineTo(path, xa1, yb1);
+    lineTo(path, xa1, yb3);
+    lineTo(path, xa3, yb3);
+    closePath(path);
+    setColor(img, rgb(0, 0, 255));
+    setFillRule(img, FillRule.nzwn);
+    fill(img, path);
+
+    path = makePath();
+    moveTo(path, xb0, yb0);
+    lineTo(path, xb2, yb0);
+    lineTo(path, xb2, yb2);
+    lineTo(path, xb0, yb2);
+    closePath(path);
+    moveTo(path, xb3, yb1);
+    lineTo(path, xb1, yb1);
+    lineTo(path, xb1, yb3);
+    lineTo(path, xb3, yb3);
+    closePath(path);
+    setColor(img, rgb(0, 0, 255));
+    setFillRule(img, FillRule.evenOdd);
+    fill(img, path);
+
+    var res = writePNG(img, false, pngFileName);
+    if !ok(res) then
+      ewrite("writePNG failed\n");
+    end
+    close(img);
+  end
+
+end

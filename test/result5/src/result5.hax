@@ -1,0 +1,49 @@
+// Test Result[], error[], and valid().
+
+module result5 is
+
+  func main() is
+    var res1 = f(1);
+    if ok(res1) then
+      write("f(1) -> ok\n");
+    else
+      write("f(1) -> error\n");
+    end
+
+    var res2 = f(13);
+    if ok(res2) then
+      write("f(13) -> ok\n");
+    else
+      write("f(13) -> error\n");
+    end
+
+    var res3 = g(1);
+    if ok(res3) then
+      var val = res3!;
+      write($"g(1) -> {val}\n");
+    else
+      write("g(1) -> error\n");
+    end
+
+    var res4 = g(13);
+    if ok(res4) then
+      var val = res4!;
+      write($"g(13) -> {val}\n");
+    else
+      write("g(13) -> error\n");
+    end
+  end
+
+  func f(x: Int) -> Result[] is
+    if x == 13 then
+      return error[];
+    end
+    return valid();
+  end
+
+  func g(x: Int) -> Result[Int] is
+    f(x)?;
+    return valid(x + 10);
+  end
+
+end

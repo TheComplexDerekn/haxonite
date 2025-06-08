@@ -1,0 +1,7 @@
+matrix = 1 0 0 1 0 0
+rect = 0 0 20 10
+color = 50 100 150 200
+fill rule = nzwn
+stroke width = 1
+fonts match = true
+font size = 10

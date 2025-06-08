@@ -1,0 +1,17 @@
+// For loop over StringBuf.
+
+module stringbuf2 is
+
+  func main() is
+    var sb = new StringBuf;
+    append(sb, "Hello");
+    append(sb, 0x20);
+    append(sb, "world");
+
+    for c : sb do
+      write($" '{c:c}' ({c:02x})");
+    end    
+    write("\n");
+  end
+
+end

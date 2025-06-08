@@ -1,0 +1,5 @@
+#!/bin/sh
+
+path=`mktemp --tmpdir haxtestgfx.XXXXXXXX`
+hax file2 $path
+rm -f $path

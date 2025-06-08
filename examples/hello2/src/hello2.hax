@@ -1,0 +1,45 @@
+/*
+ * The hello2 example program.
+ *
+ * Part of the Haxonite project, under the MIT License.
+ * Copyright 2025 Derek Noonburg
+ */
+module hello2 is
+
+  import SimpleGfx;
+
+  const initialWidth = 800;
+  const initialHeight = 500;
+
+  func main() is
+    runSimpleGfx("hello2", initialWidth, initialHeight, &draw(Image));
+  end
+
+  func draw(img: Image) is
+    var w = toFloat(width(img));
+    var h = toFloat(height(img));
+    var s = "Hello world!";
+
+    // clear the window
+    setColor(img, rgb(0, 0, 0));
+    clear(img);
+
+    // set the font
+    setFont(img, loadFont("Noto Sans Medium")!);
+    setFontSize(img, w * 0.1);
+
+    // compute the size of the text, and the text placement
+    var box = textBox(img, s);
+    var x = 0.5 * w - 0.5 * box.w;
+    var y = 0.5 * h - 0.5 * box.h;
+
+    // draw a colored rectangle behind the text
+    setColor(img, rgb(0xff, 0xff, 0));
+    fillRect(img, x - 10.0, y - 10.0, box.w + 20.0, box.h + 20.0);
+
+    // draw the text
+    setColor(img, rgb(0x00, 0x00, 0x80));
+    drawText(img, s, x - box.x, y - box.y);
+  end
+
+end

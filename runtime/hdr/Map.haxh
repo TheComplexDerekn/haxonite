@@ -1,0 +1,23 @@
+//========================================================================
+//
+// Map.haxh
+//
+// Part of the Haxonite project, under the MIT License.
+// Copyright 2025 Derek Noonburg
+//
+//========================================================================
+
+header Map[$K,$T] is
+
+  nativefunc length(m: Map[$K,$T]) -> Int;
+  nativefunc contains(m: Map[$K,$T], key: $K) -> Bool;
+  nativefunc get(m: Map[$K,$T], key: $K) -> $T;
+  nativefunc set(m: Map[$K,$T], key: $K, value: $T);
+  nativefunc delete(m: Map[$K,$T], key: $K);
+  nativefunc clear(m: Map[$K,$T]);
+  nativefunc ifirst(m: Map[$K,$T]) -> Int;
+  nativefunc imore(m: Map[$K,$T], iter: Int) -> Bool;
+  nativefunc inext(m: Map[$K,$T], iter: Int) -> Int;
+  nativefunc iget(m: Map[$K,$T], iter: Int) -> $K;
+
+end

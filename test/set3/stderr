@@ -1,0 +1,3 @@
+Error [set3/src/set3.hax:5]: Set element type must be String or Int
+Error [set3/src/set3.hax:6]: Undefined symbol 's'
+ERROR: compilation failed

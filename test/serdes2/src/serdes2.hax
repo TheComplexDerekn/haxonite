@@ -1,0 +1,79 @@
+// Test ser/deser of a user-defined struct.
+
+module serdes2 is
+
+  struct Foo is
+    x: Int;
+    y: Float;
+    b: Bool;
+    s: String;
+    v: Vector[Int];
+  end
+
+  func main() is
+    var obj1 = make Foo(x:10, y:7.89, b:false, s:"whatever", v:[10,20,30,40]);
+    write(obj1);
+
+    var sb = new StringBuf;
+    ser(obj1, sb);
+    dumpStringBuf(sb);
+
+    var db = make DeserBuf(data:sb, pos:0);
+    var obj2Res = deserFoo(db);
+    if ok(obj2Res) then
+      write(obj2Res!);
+    else
+      write("deser error\n");
+    end
+  end
+
+  func ser(val: Foo, out: StringBuf) is
+    serHeader("foo.0001", out);
+    ser(val.x, out);
+    ser(val.y, out);
+    ser(val.b, out);
+    ser(val.s, out);
+    ser(#val.v, out);
+    for elem : val.v do
+      ser(elem, out);
+    end
+  end
+
+  func deserFoo(in: DeserBuf) -> Result[Foo] is
+    deserHeader("foo.0001", in)?;
+    var x = deserInt(in)?;
+    var y = deserFloat(in)?;
+    var b = deserBool(in)?;
+    var s = deserString(in)?;
+    var vLen = deserInt(in)?;
+    var v = new Vector[Int];
+    for i : 0 .. vLen - 1 do
+      append(v, deserInt(in)?);
+    end
+    deserEnd(in)?;
+    return valid(make Foo(x:x, y:y, b:b, s:s, v:v));
+  end
+
+  func write(obj: Foo) is
+    var x = obj.x;
+    var y = obj.y;
+    var b = obj.b;
+    var s = obj.s;
+    write($"Foo: x={x} y={y} b={b} s='{s}' v=[");
+    for elem : obj.v do
+      write($"{elem} ");
+    end
+    write("]\n");
+  end
+
+  func dumpStringBuf(sb: StringBuf) is
+    var n = #sb;
+    write($"StringBuf [{n}]:");
+    for i : 0 .. n - 1 do
+      var byte = byte(sb, i);
+      write($" {byte:.2x}");
+    end
+    write("\n");
+  end
+
+end

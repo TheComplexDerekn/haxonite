@@ -1,0 +1,34 @@
+module varstruct1 is
+
+  varstruct Foo is
+    x: Int;
+    substruct Foo1 is
+      y: Int;
+    end
+    substruct Foo2 is
+      y: String;
+      z: Float;
+    end
+  end
+
+  func print(obj: Foo) is
+    var x = obj.x;
+    typematch obj is
+      case obj1: Foo1:
+        var y = obj1.y;
+        write($"Foo1({x}, {y})\n");
+      case obj2: Foo2:
+        var y = obj2.y;
+        var z = obj2.z;
+        write($"Foo2({x}, {y}, {z})\n");
+    end
+  end
+
+  func main() is
+    var obj1 = varstruct make Foo1(x:1, y:2);
+    print(obj1);
+    var obj2 = make Foo2(x:3, y:"hello", z:1.234);
+    print(varstruct obj2);
+  end
+
+end

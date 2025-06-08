@@ -1,0 +1,42 @@
+// Use lots of memory; trigger GC.
+
+module mem1 is
+
+  struct Node is
+    val: Int;
+    next: Node;
+  end
+
+  func main() is
+    var list = nil[Node];
+    for i : 0 .. 999 do
+      list = makeList(500, i*10);
+    end
+    printList(list);
+  end
+
+  // Make a list with [n] nodes, starting with [firstVal].
+  func makeList(n: Int, firstVal: Int) -> Node is
+    var list = nil[Node];
+    for i : 1 .. n do
+      list = make Node(val: firstVal + n - i, next: list);
+    end
+    return list;
+  end
+
+  func printList(list: Node) is
+    write("[");
+    printList2(list);
+    write("]\n");
+  end
+
+  func printList2(list: Node) is
+    if list === nil[Node] then
+      return;
+    end
+    var x = list.val;
+    write($"{x} ");
+    printList2(list.next);
+  end
+
+end

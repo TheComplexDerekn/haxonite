@@ -1,0 +1,15 @@
+// Test garbage collection.
+
+module gc1 is
+
+  func main() is
+    var v = new Vector[Int];
+    for i : 0 .. 10000000 do
+      append(v, i);
+    end
+    var x1 = v[5];
+    var x2 = v[9999999];
+    write($"{x1} {x2}\n");
+  end
+
+end

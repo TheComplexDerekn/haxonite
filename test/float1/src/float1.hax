@@ -1,0 +1,10 @@
+module float1 is
+
+  func main() is
+    var x = 1.234;
+    var y = 2.345;
+    var z = x + y;
+    write($"{x} + {y} = {z}\n");
+  end
+
+end

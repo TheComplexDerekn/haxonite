@@ -1,0 +1,5 @@
+xkbcommon: ERROR: /usr/share/X11/locale/en_US.UTF-8/Compose:1661:1: unrecognized keysym "dead_hamza" on left-hand side
+xkbcommon: ERROR: /usr/share/X11/locale/en_US.UTF-8/Compose:1662:1: unrecognized keysym "dead_hamza" on left-hand side
+xkbcommon: ERROR: /usr/share/X11/locale/en_US.UTF-8/Compose:1663:1: unrecognized keysym "dead_hamza" on left-hand side
+xkbcommon: ERROR: /usr/share/X11/locale/en_US.UTF-8/Compose:1664:1: unrecognized keysym "dead_hamza" on left-hand side
+xkbcommon: ERROR: /usr/share/X11/locale/en_US.UTF-8/Compose:1665:1: unrecognized keysym "dead_hamza" on left-hand side

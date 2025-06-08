@@ -1,0 +1,31 @@
+// Test the Result[T] type.
+
+module result1 is
+
+  func f(x: Int) -> Result[Int] is
+    if x == 10 then
+      return error[Int];
+    else
+      return valid(x + 100);
+    end
+  end
+
+  func main() is
+    var r1 = f(12);
+    if ok(r1) then
+      var y1 = r1!;
+      write($"12 -> ok: {y1}\n");
+    else
+      write("12 -> error\n");
+    end
+
+    var r2 = f(10);
+    if ok(r2) then
+      var y2 = r2!;
+      write($"10 -> ok: {y2}\n");
+    else
+      write("10 -> error\n");
+    end
+  end
+
+end

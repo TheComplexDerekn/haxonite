@@ -1,0 +1,38 @@
+// Test range-for loops where the begin and end values are function
+// calls that return results.
+
+module result4 is
+
+  func main() is
+    run(2, 10);
+    run(1, 10);
+    run(2, 9);
+    run(1, 9);
+  end
+
+  func run(a: Int, b: Int) is
+    write($"{a} .. {b}: ");
+    if !ok(loop(a, b)) then
+      write("error\n");
+    end
+  end
+
+  func loop(a: Int, b: Int) -> Result[Int] is
+    for i : f(a)? .. f(b)? do
+      write($"{i} ");
+    end
+    write("\n");
+    return valid(0);
+  end
+
+  // throw an error for odd args
+  func f(x: Int) -> Result[Int] is
+    write($"f({x}) ");
+    if x % 2 == 1 then
+      return error[Int];
+    else
+      return valid(x);
+    end
+  end
+
+end

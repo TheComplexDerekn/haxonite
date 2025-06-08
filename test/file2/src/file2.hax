@@ -1,0 +1,63 @@
+// Test the readFile and writeFile functions.
+
+module file2 is
+
+  const data = "Hello world\nAnother line\n";
+
+  func main() is
+    var args = commandLineArgs();
+    if #args != 1 then
+      ewrite("Usage: file1 <input-file>\n");
+      return;
+    end
+    var path = args[0];
+
+    var res1 = writeFile(path, data);
+    if !ok(res1) then
+      ewrite("writeFile(String) failed\n");
+      return;
+    end
+
+    var res2 = readFile(path);
+    if !ok(res2) then
+      ewrite("readFile->String #1 failed\n");
+      return;
+    end
+    if res2! != data then
+      ewrite("readFile->String #1 returned bad data\n");
+      return;
+    end
+
+    var sb = new StringBuf;
+    append(sb, data);
+    var res3 = writeFile(path, sb);
+    if !ok(res3) then
+      ewrite("writeFile(StringBuf) failed\n");
+      return;
+    end
+
+    var res4 = readFile(path);
+    if !ok(res4) then
+      ewrite("readFile->String #2 failed\n");
+      return;
+    end
+    if res4! != data then
+      ewrite("readFile->String #2 returned bad data\n");
+      return;
+    end
+
+    // NB: sb still contains the data string
+    var res5 = readFile(path, sb);
+    if !ok(res5) then
+      ewrite("readFile->StringBuf failed\n");
+      return;
+    end
+    if toString(sb) != data + data then
+      ewrite("readFile->StringBuf returned bad data\n");
+      return;
+    end
+
+    write("ok\n");
+  end
+
+end

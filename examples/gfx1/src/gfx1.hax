@@ -1,0 +1,24 @@
+// This example is the minimum amount of code needed to open a window
+// and draw two lines.
+
+// Part of the Haxonite project, under the MIT License.
+// Copyright 2025 Derek Noonburg
+
+module gfx1 is
+
+  import SimpleGfx;
+
+  func main() is
+    runSimpleGfx("gfx1", 800, 500, &draw(Image));
+  end
+
+  func draw(img: Image) is
+    var w = toFloat(width(img));
+    var h = toFloat(height(img));
+    setColor(img, rgb(255, 0, 0));
+    strokeLine(img, 0.0, 0.0, w, h);
+    setColor(img, rgb(0, 0, 255));
+    strokeLine(img, 0.0, h, w, 0.0);
+  end
+
+end

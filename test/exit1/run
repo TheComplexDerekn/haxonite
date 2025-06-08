@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# hax doesn't pass the exit code through, so we need to run haxc and
+# haxrun separately
+haxc exit1
+haxrun exit1
+echo $?

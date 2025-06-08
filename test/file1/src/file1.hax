@@ -1,0 +1,24 @@
+// Test reading from a file.
+
+module file1 is
+
+  func main() is
+    var args = commandLineArgs();
+    if #args != 1 then
+      ewrite("Usage: file1 <input-file>\n");
+      return;
+    end
+    var path = args[0];
+
+    var f = openFile(path, FileMode.read)!;
+    while true do
+      var line = readLine(f)!;
+      if #line == 0 then
+        break;
+      end
+      write($">> {line}");
+    end
+    close(f);
+  end
+
+end

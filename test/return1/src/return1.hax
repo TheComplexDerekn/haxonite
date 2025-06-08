@@ -1,0 +1,17 @@
+module return1 is
+
+  func f(x: Int, y: Int) -> Int is
+    if x > y then
+      return x * (1 + y);
+    else
+      return x * (2 + y);
+    end
+  end
+
+  func main() is
+    var a = f(11, 10);
+    var b = f(8, 9);
+    write($"{a} {b}\n");
+  end
+
+end

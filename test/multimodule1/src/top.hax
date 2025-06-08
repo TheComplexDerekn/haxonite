@@ -1,0 +1,9 @@
+module top is
+
+  import other;
+
+  func main() is
+    f();
+  end
+
+end

@@ -1,0 +1,99 @@
+// Test the date/time functions.
+
+module datetime1 is
+
+  func main() is
+    var dt1 = make DateTime(year:2025, month:4, day:25,
+                            hour:20, minute:33, second:44, nanosecond:9999, tz:tzUTC);
+    print(dt1);
+    var ts1 = toTimestamp(dt1);
+    print(ts1);
+    var dt2 = toDateTime(ts1, tzUTC);
+    print(dt2);
+    var ts2 = toTimestamp(dt2);
+    print(ts2);
+
+    var d1 = make Date(year:2025, month:4, day:25);
+    print(d1);
+    var d2 = add(d1, -100);
+    print(d2);
+    var cmp1 = compare(d1, d2);
+    var delta1 = diff(d1, d2);
+    write($"{cmp1} {delta1}\n");
+    var d3 = add(d2, 100);
+    print(d3);
+    var cmp2 = compare(d2, d3);
+    var delta2 = diff(d2, d3);
+    write($"{cmp2} {delta2}\n");
+    var cmp3 = compare(d3, d3);
+    var delta3 = diff(d3, d3);
+    write($"{cmp3} {delta3}\n");
+
+    var ts3 = add(ts1, 10 * 24 * 60 * 60, 100);
+    var dt3 = toDateTime(ts3, tzUTC);
+    print(dt3);
+    var cmp4a = compare(ts1, ts3);
+    var cmp4b = compare(dt1, dt3);
+    var delta4a = diff(ts1, ts3);
+    var delta4b = diffNS(ts1, ts3);
+    write($"{cmp4a} {cmp4b} {delta4a} {delta4b}\n");
+
+    var ts4 = add(ts1, -10 * 24 * 60 * 60, -100);
+    var dt4 = toDateTime(ts4, tzUTC);
+    print(dt4);
+    var cmp5a = compare(ts1, ts4);
+    var cmp5b = compare(dt1, dt4);
+    var delta5a = diff(ts1, ts4);
+    var delta5b = diffNS(ts1, ts4);
+    write($"{cmp5a} {cmp5b} {delta5a} {delta5b}\n");
+
+/*
+    // now() and tzLocal won't work in regression tests
+    var ts99 = now();
+    print(ts99);
+    var dt99 = toDateTime(ts99, tzLocal);
+    print(dt99);
+*/
+  end
+
+  func print(d: Date) is
+    var year = d.year;
+    var month = d.month;
+    var day = d.day;
+    var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    var dayOfWeek = daysOfWeek[dayOfWeek(d)];
+    write($"{year:.4}-{month:.2}-{day:.2} ({dayOfWeek})\n");
+  end
+
+  func print(dt: DateTime) is
+    var year = dt.year;
+    var month = dt.month;
+    var day = dt.day;
+    var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    var dayOfWeek = daysOfWeek[dayOfWeek(dt)];
+    var hour = dt.hour;
+    var minute = dt.minute;
+    var second = dt.second;
+    var nanosecond = dt.nanosecond;
+    var tzSign = ' ';
+    var tzHours = 0;
+    var tzMinutes = 0;
+    if dt.tz >= 0 then
+      tzSign = '+';
+      tzHours = dt.tz / 60;
+      tzMinutes = dt.tz % 60;
+    else
+      tzSign = '-';
+      tzHours = -dt.tz / 60;
+      tzMinutes = -dt.tz % 60;
+    end
+    write($"{year:.4}-{month:.2}-{day:.2} ({dayOfWeek}) {hour:.2}:{minute:.2}:{second:.2}.{nanosecond:.9} {tzSign:c}{tzHours:.2}{tzMinutes:.2}\n");
+  end
+
+  func print(ts: Timestamp) is
+    var s = ts.seconds;
+    var ns = ts.nanoseconds;
+    write($"{s}.{ns:.9}\n");
+  end
+
+end

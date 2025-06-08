@@ -1,0 +1,70 @@
+// Test the toInt() and toFloat() functions.
+
+module string7 is
+
+  func main() is
+    runToInt("123");
+    runToInt("-123");
+    runToInt(" 123");
+    runToInt("123 ");
+    runToInt("+123");
+    runToInt("123a ");
+    runToInt("a");
+
+    runToIntBase("1011", 2);
+    runToIntBase("-1011", 2);
+    runToIntBase("1012", 2);
+    runToIntBase("abc", 16);
+    runToIntBase("abcg", 16);
+    runToIntBase("-abc", 16);
+    runToIntBase("+abc", 16);
+    runToIntBase(" abc", 16);
+    runToIntBase("abc ", 16);
+
+    runToFloat("1");
+    runToFloat("-1");
+    runToFloat("1.23");
+    runToFloat("-1.23");
+    runToFloat(".5");
+    runToFloat("-.5");
+    runToFloat("+.5");
+    runToFloat("1e3");
+    runToFloat("1.2e34");
+    runToFloat("1.2e+34");
+    runToFloat("1.2e-34");
+    runToFloat("1.2e 34");
+    runToFloat(" 1e3");
+    runToFloat("1e3 ");
+  end
+
+  func runToInt(s: String) is
+    var res = toInt(s);
+    if ok(res) then
+      var x = res!;
+      write($"toInt({s}) = {x}\n");
+    else
+      write($"toInt({s}) = invalid\n");
+    end
+  end
+
+  func runToIntBase(s: String, base: Int) is
+    var res = toInt(s, base);
+    if ok(res) then
+      var x = res!;
+      write($"toInt({s}, {base}) = {x}\n");
+    else
+      write($"toInt({s}, {base}) = invalid\n");
+    end
+  end
+
+  func runToFloat(s: String) is
+    var res = toFloat(s);
+    if ok(res) then
+      var x = res!;
+      write($"toFloat({s}) = {x}\n");
+    else
+      write($"toFloat({s}) = invalid\n");
+    end
+  end
+
+end

@@ -1,0 +1,28 @@
+module vector2 is
+
+  func main() is
+    var v = new Vector[String];
+    append(v, "abc");
+    append(v, "def");
+    append(v, "ghi");
+    append(v, "Hello");
+    append(v, "world");
+    append(v, "some");
+    append(v, "more");
+    append(v, "words");
+
+    var n = #v;
+    write($"length = {n}\n");
+
+    var x3 = v[3];
+    write($"v[3] = '{x3}'\n");
+
+    v[3] = "xyz";
+
+    n = #v;
+    write($"length = {n}\n");
+    x3 = v[3];
+    write($"v[3] = '{x3}'\n");
+  end
+
+end

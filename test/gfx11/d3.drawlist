@@ -1,0 +1,10 @@
+@drawlist-1
+-resources
+lfont noto "Noto Serif Medium"
+-ops
+font noto
+fsize 32
+rgb 255 0 0
+text "Hello world" 50 200
+rgb 0 0 255
+text "This is a \"quoted\" word." 50 300

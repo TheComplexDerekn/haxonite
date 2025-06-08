@@ -1,0 +1,20 @@
+module unary1 is
+
+  func main() is
+    var x = 0x2a;
+    var notX = !x;
+    write($"!{x:.4x} = {notX:x}\n");
+    var b = true;
+    var notB = !b;
+    write($"!{b} = {notB}\n");
+
+    x = 999;
+    var negX = -x;
+    write($"-{x} = {negX}\n");
+
+    var s = "hello";
+    var len = #s;
+    write($"#'{s}' = {len}\n");
+  end
+
+end

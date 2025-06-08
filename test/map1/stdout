@@ -1,0 +1,3 @@
+length = 3
+abc:true def:true ghi:true xyz:false
+abc->10 def->20 ghi->30

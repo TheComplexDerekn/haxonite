@@ -1,0 +1,115 @@
+// Part of the Haxonite project, under the MIT License.
+// Copyright 2025 Derek Noonburg
+
+module animate1 is
+
+  func main() is
+    var w = 800;
+    var h = 600;
+    var win = openWindow("animate1", w, h)!;
+
+    var cx = 100.0;
+    var cy = 100.0;
+    var r = 40.0;
+    var vx = 2.0;
+    var vy = 4.0;
+    var angle = 0.0;
+    var dAngle = 0.02;
+    var color = 0.0;
+    var dColor = 0.005;
+
+    var quit = false;
+    while !quit do
+      var t = monoclock() + 10000;
+
+      //--- update position and angle
+      cx = cx + vx;
+      cy = cy + vy;
+
+      //--- check for a collision
+      if cx < r then
+        cx = r;
+        vx = -vx;
+      elseif cx > toFloat(w) - r then
+        cx = toFloat(w) - r;
+        vx = -vx;
+      end
+      if cy < r then
+        cy = r;
+        vy = -vy;
+      elseif cy > toFloat(h) - r then
+        cy = toFloat(h) - r;
+        vy = -vy;
+      end
+
+      //--- update angle
+      angle = angle + dAngle;
+      if angle > 2.0 * pi then
+        angle = angle - 2.0 * pi;
+      end
+
+      //--- update color
+      color = color + dColor;
+      if color < 0.0 then
+        color = 0.0;
+        dColor = -dColor;
+      elseif color > 1.0 then
+        color = 1.0;
+        dColor = -dColor;
+      end
+
+      //--- draw
+      draw(win, cx, cy, r, angle, color);
+
+      //--- handle events
+      var evRes = waitEvent(t);
+      while ok(evRes) & !quit do
+        var ev = evRes!;
+        typematch ev is
+          case resizeEv: ResizeEvent:
+            w = resizeEv.w;
+            h = resizeEv.h;
+          case closeEv: CloseEvent:
+            quit = true;
+          default:
+        end
+        evRes = waitEvent(t);
+      end
+    end
+  end
+
+  func draw(win: Window, cx: Float, cy: Float, r: Float, angle: Float, color: Float) is
+    var img = backBuffer(win);
+
+    setColor(img, rgb(0, 0, 0));
+    clear(img);
+
+    var colorR = max(0, min(255, floori(255.0 * color)));
+    var colorG = 0;
+    var colorB = 255 - colorR;
+    setColor(img, rgb(colorR, colorG, colorB));
+
+    fillCircle(img, cx, cy, r);
+
+    setColor(img, rgb(255, 255, 255));
+    setStrokeWidth(img, 6.0);
+    var cos = 0.9 * r * cos(angle);
+    var sin = 0.9 * r * sin(angle);
+    strokeLine(img, cx - cos, cy - sin, cx + cos, cy + sin);
+
+    swapBuffers(win);
+  end
+
+  func fillCircle(dest: Image, cx: Float, cy: Float, r: Float) is
+    var k = r * 0.5523;
+    var path = makePath();
+    moveTo(path,  cx - r, cy);
+    curveTo(path, cx - r, cy - k, cx - k, cy - r, cx,     cy - r);
+    curveTo(path, cx + k, cy - r, cx + r, cy - k, cx + r, cy);
+    curveTo(path, cx + r, cy + k, cx + k, cy + r, cx,     cy + r);
+    curveTo(path, cx - k, cy + r, cx - r, cy + k, cx - r, cy);
+    closePath(path);
+    fill(dest, path);
+  end
+
+end

@@ -1,0 +1,15 @@
+// List all available fonts.
+
+// Part of the Haxonite project, under the MIT License.
+// Copyright 2025 Derek Noonburg
+
+module fontlist is
+
+  func main() is
+    var fonts = fontList();
+    for font : fonts do
+      write(font + "\n");
+    end
+  end
+
+end

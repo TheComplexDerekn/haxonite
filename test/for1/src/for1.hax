@@ -1,0 +1,20 @@
+// Test break and continue in for-container loops.
+
+module for1 is
+
+  func main() is
+    var v = ["abc", "def", "ghi", "jkl", "mno", "pqr"];
+    for s : v do
+      write($"{s} ");
+      if s == "ghi" then
+        continue;
+      end
+      if s == "mno" then
+        break;
+      end
+      write(". ");
+    end
+    write("\n");
+  end
+
+end

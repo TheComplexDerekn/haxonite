@@ -1,0 +1,4 @@
+#!/bin/sh
+
+haxc gc2
+haxrun -heap 10000 gc2

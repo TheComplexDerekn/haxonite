@@ -1,0 +1,13 @@
+module const1 is
+
+  const k1 = 123;
+  const k2 = 123.45;
+  const k3 = true;
+  const k4 = "hello";
+  const k5 = k1 + 1;
+
+  func main() is
+    write($"{k1} {k2} {k3} {k4} {k5}\n");
+  end
+
+end

@@ -1,0 +1,28 @@
+// For loops over Sets.
+
+module set8 is
+
+  func main() is
+    var s1 = {1, 2, 3};
+    write("s1:");
+    for elem : s1 do
+      write($" {elem}");
+    end
+    write("\n");
+
+    var s2 = {"abc", "def", "ghi"};
+    write("s2:");
+    for elem : s2 do
+      write($" {elem}");
+    end
+    write("\n");
+
+    var s3 = {999};
+    write("s3:");
+    for elem : s3 do
+      write($" {elem}");
+    end
+    write("\n");
+  end
+
+end

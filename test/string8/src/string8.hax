@@ -1,0 +1,37 @@
+// Test the rfind(String) and rfind(Int) functions,
+// particularly the handling of the start arg.
+
+module string8 is
+
+  func main() is
+    var s1 = "abcXYZdefXYZXYZghiXYZ";
+    write($"   {s1}\n");
+    for i : 0 .. #s1 - 1 do
+      var j = rfind(s1, "XYZ", i);
+      write($"{i:2d} ");
+      if j >= 0 then
+        for k : 1 .. j do
+          write(" ");
+        end
+        write("^");
+      end
+      write("\n");
+    end
+    write("\n");
+
+    var s2 = "*abc*def**ghi*";
+    write($"   {s2}\n");
+    for i : 0 .. #s2 - 1 do
+      var j = rfind(s2, '*', i);
+      write($"{i:2d} ");
+      if j >= 0 then
+        for k : 1 .. j do
+          write(" ");
+        end
+        write("^");
+      end
+      write("\n");
+    end
+  end
+
+end

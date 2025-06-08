@@ -1,0 +1,45 @@
+// Set iterator functions.
+
+module set5 is
+
+  func main() is
+    var s1 = new Set[String];
+    insert(s1, "abc");
+    insert(s1, "def");
+    insert(s1, "ghi");
+    insert(s1, "zzz");
+    write("s1:");
+    var i1 = ifirst(s1);
+    while imore(s1, i1) do
+      var elem = iget(s1, i1);
+      write($" {elem}");
+      i1 = inext(s1, i1);
+    end
+    write("\n");
+
+    var s2 = new Set[Int];
+    insert(s2, 10);
+    insert(s2, 20);
+    insert(s2, 30);
+    insert(s2, 999);
+    write("s2:");
+    var i2 = ifirst(s2);
+    while imore(s2, i2) do
+      var elem = iget(s2, i2);
+      write($" {elem}");
+      i2 = inext(s2, i2);
+    end
+    write("\n");
+
+    var s3 = new Set[String];
+    write("s3:");
+    var i3 = ifirst(s3);
+    while imore(s3, i3) do
+      var elem = iget(s3, i3);
+      write($" {elem}");
+      i3 = inext(s3, i3);
+    end
+    write("\n");
+  end
+
+end

@@ -1,0 +1,170 @@
+// Test ser/deser of a varstruct and a vector.
+
+module serdes3 is
+
+  varstruct Shape is
+    id: Int;
+
+    substruct Circle is
+      cx: Float;
+      cy: Float;
+      r: Float;
+    end
+
+    substruct Triangle is
+      x0: Float;
+      y0: Float;
+      x1: Float;
+      y1: Float;
+      x2: Float;
+      y2: Float;
+    end
+
+    substruct Rectangle is
+      x: Float;
+      y: Float;
+      w: Float;
+      h: Float;
+    end
+  end
+
+  const shapeTagCircle = 1;
+  const shapeTagTriangle = 2;
+  const shapeTagRectangle = 3;
+
+  func main() is
+    var v1 = [varstruct make Circle(id:1, cx:10.0, cy:10.0, r:40.0),
+              varstruct make Triangle(id:2, x0:1.1, y0:2.2, x1:3.3, y1:4.4, x2:5.5, y2:5.5),
+              varstruct make Rectangle(id:3, x:100.0, y:200.0, w:500.0, h:15.0)];
+    write(v1);
+
+    var sb = new StringBuf;
+    ser(v1, sb);
+
+    var db = make DeserBuf(data:sb, pos:0);
+    var v2Res = deserShapeVector(db);
+    if ok(v2Res) then
+      write(v2Res!);
+    else
+      write("deser error\n");
+    end
+  end
+
+  func write(v: Vector[Shape]) is
+    write("Shape vector:\n");
+    for shape : v do
+      write(shape);
+    end
+  end
+
+  func write(shape: Shape) is
+    var id = shape.id;
+    typematch shape is
+      case circ: Circle:
+        var cx = circ.cx;
+        var cy = circ.cy;
+        var r = circ.r;
+        write($"  Circle: id={id} cx={cx} cy={cy} r={r}\n");
+      case tri: Triangle:
+        var x0 = tri.x0;
+        var y0 = tri.y0;
+        var x1 = tri.x1;
+        var y1 = tri.y1;
+        var x2 = tri.x2;
+        var y2 = tri.y2;
+        write($"  Triangle: id={id} x0={x0} y0={y0} x1={x1} y1={y1} x2={x2} y2={y2}\n");
+      case rect: Rectangle:
+        var x = rect.x;
+        var y = rect.y;
+        var w = rect.w;
+        var h = rect.h;
+        write($"  Rectangle: id={id} x={x} y={y} w={w} h={h}\n");
+    end
+  end
+
+  func ser(v: Vector[Shape], out: StringBuf) is
+    serHeader("shapevec0001", out);
+    ser(#v, out);
+    for shape : v do
+      ser(shape, out);
+    end
+  end
+
+  func ser(shape: Shape, out: StringBuf) is
+    typematch shape is
+      case circ: Circle:
+        ser(shapeTagCircle, out);
+        ser(circ.id, out);
+        ser(circ.cx, out);
+        ser(circ.cy, out);
+        ser(circ.r, out);
+      case tri: Triangle:
+        ser(shapeTagTriangle, out);
+        ser(tri.id, out);
+        ser(tri.x0, out);
+        ser(tri.y0, out);
+        ser(tri.x1, out);
+        ser(tri.y1, out);
+        ser(tri.x2, out);
+        ser(tri.y2, out);
+      case rect: Rectangle:
+        ser(shapeTagRectangle, out);
+        ser(rect.id, out);
+        ser(rect.x, out);
+        ser(rect.y, out);
+        ser(rect.w, out);
+        ser(rect.h, out);
+    end
+  end
+
+  func deserShapeVector(in: DeserBuf) -> Result[Vector[Shape]] is
+    deserHeader("shapevec0001", in)?;
+    var len = deserInt(in)?;
+    var v = new Vector[Shape];
+    for i : 0 .. len - 1 do
+      append(v, deserShape(in)?);
+    end
+    deserEnd(in)?;
+    return valid(v);
+  end
+
+  func deserShape(in: DeserBuf) -> Result[Shape] is
+    var tag = deserInt(in)?;
+    if tag == shapeTagCircle then
+      var id = deserInt(in)?;
+      var cx = deserFloat(in)?;
+      var cy = deserFloat(in)?;
+      var r = deserFloat(in)?;
+      return valid(varstruct make Circle(id:id, cx:cx, cy:cy, r:r));
+    elseif tag == shapeTagTriangle then
+      var id = deserInt(in)?;
+      var x0 = deserFloat(in)?;
+      var y0 = deserFloat(in)?;
+      var x1 = deserFloat(in)?;
+      var y1 = deserFloat(in)?;
+      var x2 = deserFloat(in)?;
+      var y2 = deserFloat(in)?;
+      return valid(varstruct make Triangle(id:id, x0:x0, y0:y0, x1:x1, y1:y1, x2:x2, y2:y2));
+    elseif tag == shapeTagRectangle then
+      var id = deserInt(in)?;
+      var x = deserFloat(in)?;
+      var y = deserFloat(in)?;
+      var w = deserFloat(in)?;
+      var h = deserFloat(in)?;
+      return valid(varstruct make Rectangle(id:id, x:x, y:y, w:w, h:h));
+    else
+      return error[Shape];
+    end
+  end
+
+  func dumpStringBuf(sb: StringBuf) is
+    var n = #sb;
+    write($"StringBuf [{n}]:");
+    for i : 0 .. n - 1 do
+      var byte = byte(sb, i);
+      write($" {byte:.2x}");
+    end
+    write("\n");
+  end
+
+end

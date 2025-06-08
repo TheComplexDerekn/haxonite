@@ -1,0 +1,73 @@
+// Test conditional and/or operators.
+
+module cond1 is
+
+  func main() is
+    write("-- false || false --\n");
+    if (left(false) || right(false)) then
+      write("true\n");
+    else
+      write("false\n");
+    end
+
+    write("-- false || true --\n");
+    if (left(false) || right(true)) then
+      write("true\n");
+    else
+      write("false\n");
+    end
+
+    write("-- true || false --\n");
+    if (left(true) || right(false)) then
+      write("true\n");
+    else
+      write("false\n");
+    end
+
+    write("-- true || true --\n");
+    if (left(true) || right(true)) then
+      write("true\n");
+    else
+      write("false\n");
+    end
+
+    write("-- false && false --\n");
+    if (left(false) && right(false)) then
+      write("true\n");
+    else
+      write("false\n");
+    end
+
+    write("-- false && true --\n");
+    if (left(false) && right(true)) then
+      write("true\n");
+    else
+      write("false\n");
+    end
+
+    write("-- true && false --\n");
+    if (left(true) && right(false)) then
+      write("true\n");
+    else
+      write("false\n");
+    end
+
+    write("-- true && true --\n");
+    if (left(true) && right(true)) then
+      write("true\n");
+    else
+      write("false\n");
+    end
+  end
+
+  func left(b: Bool) -> Bool is
+    write($"left = {b}\n");
+    return b;
+  end
+
+  func right(b: Bool) -> Bool is
+    write($"right = {b}\n");
+    return b;
+  end
+
+end

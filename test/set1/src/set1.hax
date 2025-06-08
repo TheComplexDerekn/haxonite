@@ -1,0 +1,17 @@
+module set1 is
+
+  func main() is
+    var s = new Set[String];
+    insert(s, "abc");
+    insert(s, "def");
+    insert(s, "ghi");
+    var t1 = contains(s, "abc");
+    var t2 = contains(s, "def");
+    var t3 = contains(s, "ghi");
+    var t4 = contains(s, "xyz");
+    write($"abc={t1} def={t2} ghi={t3} xyz={t4}\n");
+    var n = length(s);
+    write($"length = {n}\n");
+  end
+
+end

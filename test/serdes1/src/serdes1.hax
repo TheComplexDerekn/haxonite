@@ -1,0 +1,61 @@
+// Test the low-level ser/deser functions.
+
+module serdes1 is
+
+  func main() is
+    var sb = new StringBuf;
+    ser(123, sb);
+    ser(4.56, sb);
+    ser(true, sb);
+    ser("Hello world", sb);
+
+    dumpStringBuf(sb);
+
+    var db = make DeserBuf(data:sb, pos:0);
+    var iRes = deserInt(db);
+    if ok(iRes) then
+      var i = iRes!;
+      write($"i = {i}\n");
+    else
+      write("i -> error\n");
+    end
+    var fRes = deserFloat(db);
+    if ok(fRes) then
+      var f = fRes!;
+      write($"f = {f}\n");
+    else
+      write("f -> error\n");
+    end
+    var bRes = deserBool(db);
+    if ok(bRes) then
+      var b = bRes!;
+      write($"b = {b}\n");
+    else
+      write("b -> error\n");
+    end
+    var sRes = deserString(db);
+    if ok(sRes) then
+      var s = sRes!;
+      write($"s = {s}\n");
+    else
+      write("s -> error\n");
+    end
+    var endRes = deserEnd(db);
+    if ok(endRes) then
+      write("end ok\n");
+    else
+      write("end -> error\n");
+    end
+  end
+
+  func dumpStringBuf(sb: StringBuf) is
+    var n = #sb;
+    write($"StringBuf [{n}]:");
+    for i : 0 .. n - 1 do
+      var byte = byte(sb, i);
+      write($" {byte:.2x}");
+    end
+    write("\n");
+  end
+
+end

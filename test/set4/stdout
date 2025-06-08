@@ -1,0 +1,5 @@
+length=3 20->true 40->false
+length=2 20->false 40->false
+length=3 20->false 40->true
+length=0 20->false 40->false
+length=1 20->false 40->true

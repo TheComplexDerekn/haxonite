@@ -1,0 +1,22 @@
+//========================================================================
+//
+// Set.haxh
+//
+// Part of the Haxonite project, under the MIT License.
+// Copyright 2025 Derek Noonburg
+//
+//========================================================================
+
+header Set[$K] is
+
+  nativefunc length(s: Set[$K]) -> Int;
+  nativefunc contains(s: Set[$K], elem: $K) -> Bool;
+  nativefunc insert(s: Set[$K], elem: $K);
+  nativefunc delete(s: Set[$K], elem: $K);
+  nativefunc clear(s: Set[$K]);
+  nativefunc ifirst(s: Set[$K]) -> Int;
+  nativefunc imore(s: Set[$K], iter: Int) -> Bool;
+  nativefunc inext(s: Set[$K], iter: Int) -> Int;
+  nativefunc iget(s: Set[$K], iter: Int) -> $K;
+
+end

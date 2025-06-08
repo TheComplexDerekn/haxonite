@@ -1,0 +1,6 @@
+StringBuf [32]: 7b 00 00 00 00 00 00 00 85 eb 91 40 01 0b 00 00 00 00 00 00 00 48 65 6c 6c 6f 20 77 6f 72 6c 64
+i = 123
+f = 4.56
+b = true
+s = Hello world
+end ok

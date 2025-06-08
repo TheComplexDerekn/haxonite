@@ -1,0 +1,18 @@
+// Test character literals.
+
+module char1 is
+
+  func main() is
+    var s = "The quick brown fox_";
+    for c : s do
+      var cc = c;
+      if c == ' ' then
+        cc = '*';
+      elseif c == '_' then
+        cc = '\n';
+      end
+      write($"{cc:c}");
+    end
+  end
+
+end

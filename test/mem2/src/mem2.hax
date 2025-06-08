@@ -1,0 +1,49 @@
+// Use lots of memory; trigger GC.
+
+module mem2 is
+
+  struct Node is
+    val: Int;
+    next: Node;
+  end
+
+  func main() is
+    var v = new Vector[Node];
+    for i : 0 .. 99 do
+      append(v, makeList(27, i));
+    end
+    printList(v[50]);
+
+    for j : 0 .. 250 do
+      for i : 0 .. 99 do
+        v[i] = makeList(27, 100*j + i);
+      end
+    end
+    printList(v[50]);
+  end
+
+  // Make a list with [n] nodes, starting with [firstVal].
+  func makeList(n: Int, firstVal: Int) -> Node is
+    var list = nil[Node];
+    for i : 1 .. n do
+      list = make Node(val: firstVal + n - i, next: list);
+    end
+    return list;
+  end
+
+  func printList(list: Node) is
+    write("[");
+    printList2(list);
+    write("]\n");
+  end
+
+  func printList2(list: Node) is
+    if list === nil[Node] then
+      return;
+    end
+    var x = list.val;
+    write($"{x} ");
+    printList2(list.next);
+  end
+
+end

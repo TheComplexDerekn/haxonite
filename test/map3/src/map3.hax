@@ -1,0 +1,27 @@
+module map3 is
+
+  func main() is
+    var m = new Map[String,Int];
+    m["abc"] = 10;
+    m["def"] = 20;
+    m["ghi"] = 30;
+
+    var n = length(m);
+    write($"length = {n}\n");
+
+    var x1 = m["def"];
+    write($"m[def] = '{x1}'\n");
+
+    m["def"] = 90;
+    m["xyz"] = 100;
+
+    n = length(m);
+    write($"length = {n}\n");
+
+    x1 = m["def"];
+    var x2 = m["xyz"];
+    write($"m[def] = '{x1}', m[xyz] = '{x2}'\n");
+
+  end
+
+end

@@ -1,0 +1,4 @@
+'abc' [3] eq 'abc' [3] -> 'abcabc'
+'abc' [3] lt 'def' [3] -> 'abcdef'
+'abc' [3] lt 'abcx' [4] -> 'abcabcx'
+'abcx' [4] gt 'abc' [3] -> 'abcxabc'

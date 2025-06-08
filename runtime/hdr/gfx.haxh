@@ -1,0 +1,306 @@
+//========================================================================
+//
+// gfx.haxh
+//
+// Part of the Haxonite project, under the MIT License.
+// Copyright 2025 Derek Noonburg
+//
+//========================================================================
+
+header gfx is
+
+  // for the family arg to genericFont()
+  enum GenericFontFamily is
+    serif;
+    sansSerif;
+    mono;
+  end
+
+  // for setFillRule()
+  enum FillRule is
+    nzwn;
+    evenOdd;
+  end
+
+  // for ***Event.modifiers
+  const modShift = 0x01;
+  const modCtrl  = 0x02;
+  const modAlt   = 0x04;
+  const modSuper = 0x08;
+
+  // for KeyPress/ReleaseEvent.key
+  const keyNone               = 0x0000;
+  const keyRegularMin         = 0x0020;
+  const keyRegularMax         = 0x00ff;
+  const keyReturn             = 0x8001;
+  const keyLeft               = 0x8002;
+  const keyUp                 = 0x8003;
+  const keyRight              = 0x8004;
+  const keyDown               = 0x8005;
+  const keyPgUp               = 0x8006;
+  const keyPgDn               = 0x8007;
+  const keyHome               = 0x8008;
+  const keyEnd                = 0x8009;
+  const keyInsert             = 0x800a;
+  const keyDelete             = 0x800b;
+  const keyBackspace          = 0x800c;
+  const keyTab                = 0x800d;
+  const keyEsc                = 0x800e;
+  const keyF1                 = 0x800f;
+  const keyF2                 = 0x8010;
+  const keyF3                 = 0x8011;
+  const keyF4                 = 0x8012;
+  const keyF5                 = 0x8013;
+  const keyF6                 = 0x8014;
+  const keyF7                 = 0x8015;
+  const keyF8                 = 0x8016;
+  const keyF9                 = 0x8017;
+  const keyF10                = 0x8018;
+  const keyF11                = 0x8019;
+  const keyF12                = 0x801a;
+  const keyF13                = 0x801b;
+  const keyF14                = 0x801c;
+  const keyF15                = 0x801d;
+  const keyF16                = 0x801e;
+  const keyF17                = 0x801f;
+  const keyF18                = 0x8020;
+  const keyF19                = 0x8021;
+  const keyF20                = 0x8022;
+  const keyF21                = 0x8023;
+  const keyF22                = 0x8024;
+  const keyF23                = 0x8025;
+  const keyF24                = 0x8026;
+  const keyF25                = 0x8027;
+  const keyF26                = 0x8028;
+  const keyF27                = 0x8029;
+  const keyF28                = 0x802a;
+  const keyF29                = 0x802b;
+  const keyF30                = 0x802c;
+  const keyF31                = 0x802d;
+  const keyF32                = 0x802e;
+  const keyF33                = 0x802f;
+  const keyF34                = 0x8030;
+  const keyF35                = 0x8031;
+  const keyShift              = 0x8032;
+  const keyControl            = 0x8033;
+  const keyAlt                = 0x8034;
+  const keySuper              = 0x8035;
+  const keyCapsLock           = 0x8036;
+
+  nativetype "atomic" ARGB;
+
+  struct Point is
+    x: Float;
+    y: Float;
+  end
+
+  struct Rect is
+    x: Float;
+    y: Float;
+    w: Float;
+    h: Float;
+  end
+
+  struct Matrix is
+    a: Float;
+    b: Float;
+    c: Float;
+    d: Float;
+    tx: Float;
+    ty: Float;
+  end
+
+  nativetype "pointer" Path;
+
+  enum PathElemKind is
+    move;
+    line;
+    curve;
+  end
+
+  struct PathElem is
+    kind: PathElemKind;
+    closed: Bool;
+    x: Float;
+    y: Float;
+    cx1: Float;
+    cy1: Float;
+    cx2: Float;
+    cy2: Float;
+  end
+
+  nativetype "pointer" Font;
+
+  struct FontMetrics is
+    ascent: Float;
+    descent: Float;
+    lineSpacing: Float;
+  end
+
+  nativetype "pointer" Image;
+
+  nativetype "pointer" Window;
+
+  varstruct Event is
+    win: Window;
+
+    substruct ResizeEvent is
+      w: Int;
+      h: Int;
+    end
+
+    substruct CloseEvent is
+    end
+
+    substruct MouseButtonPressEvent is
+      x: Int;
+      y: Int;
+      button: Int;
+      count: Int;
+      modifiers: Int;
+    end
+
+    substruct MouseButtonReleaseEvent is
+      x: Int;
+      y: Int;
+      button: Int;
+      modifiers: Int;
+    end
+
+    substruct MouseScrollWheelEvent is
+      x: Int;
+      y: Int;
+      scroll: Int;
+      modifiers: Int;
+    end
+
+    substruct MouseMoveEvent is
+      x: Int;
+      y: Int;
+      button: Int;
+      modifiers: Int;
+    end
+
+    substruct KeyPressEvent is
+      key: Int;
+      unicode: Int;
+      modifiers: Int;
+    end
+
+    substruct KeyReleaseEvent is
+      key: Int;
+      unicode: Int;
+      modifiers: Int;
+    end
+  end
+
+  //--- color
+  nativefunc argb(a: Int, r: Int, g: Int, b: Int) -> ARGB;
+  nativefunc rgb(r: Int, g: Int, b: Int) -> ARGB;
+  nativefunc a(argb: ARGB) -> Int;
+  nativefunc r(argb: ARGB) -> Int;
+  nativefunc g(argb: ARGB) -> Int;
+  nativefunc b(argb: ARGB) -> Int;
+
+  //--- matrix / point
+  nativefunc multiply(mat1: Matrix, mat2: Matrix) -> Matrix;
+  nativefunc transform(pt: Point, mat: Matrix) -> Point;
+  nativefunc invert(mat: Matrix) -> Matrix;
+
+  //--- state save/restore
+  nativefunc pushState(dest: Image);
+  nativefunc popState(dest: Image);
+
+  //--- state modification
+  nativefunc setMatrix(dest: Image, matrix: Matrix);
+  nativefunc concatMatrix(dest: Image, matrix: Matrix);
+  nativefunc setClipRect(dest: Image, x: Float, y: Float, w: Float, h: Float);
+  nativefunc intersectClipRect(dest: Image, x: Float, y: Float, w: Float, h: Float);
+  nativefunc setColor(dest: Image, color: ARGB);
+  nativefunc setFillRule(dest: Image, rule: FillRule);
+  nativefunc setStrokeWidth(dest: Image, width: Float);
+  nativefunc setFont(dest: Image, font: Font);
+  nativefunc setFontSize(dest: Image, fontSize: Float);
+
+  //--- state accesors
+  nativefunc matrix(dest: Image) -> Matrix;
+  nativefunc clipRect(dest: Image) -> Rect;
+  nativefunc color(dest: Image) -> ARGB;
+  nativefunc fillRule(dest: Image) -> FillRule;
+  nativefunc strokeWidth(dest: Image) -> Float;
+  nativefunc font(dest: Image) -> Font;
+  nativefunc fontSize(dest: Image) -> Float;
+
+  //--- path
+  nativefunc makePath() -> Path;
+  nativefunc moveTo(path: Path, x: Float, y: Float);
+  nativefunc lineTo(path: Path, x: Float, y: Float);
+  nativefunc curveTo(path: Path, cx1: Float, cy1: Float,
+                     cx2: Float, cy2: Float, x: Float, y: Float);
+  nativefunc closePath(path: Path);
+
+  //--- path accessors
+  nativefunc ifirst(path: Path) -> Int;
+  nativefunc imore(path: Path, iter: Int) -> Bool;
+  nativefunc inext(path: Path, iter: Int) -> Int;
+  nativefunc iget(path: Path, iter: Int) -> PathElem;
+
+  //--- path drawing
+  nativefunc stroke(dest: Image, path: Path);
+  nativefunc fill(dest: Image, path: Path);
+  nativefunc strokeLine(dest: Image, x0: Float, y0: Float, x1: Float, y1: Float);
+  nativefunc strokeRect(dest: Image, x: Float, y: Float, w: Float, h: Float);
+  nativefunc fillRect(dest: Image, x: Float, y: Float, w: Float, h: Float);
+
+  //--- misc drawing
+  nativefunc clear(dest: Image);
+
+  //--- fonts
+  nativefunc fontList() -> Vector[String];
+  nativefunc loadFont(name: String) -> Result[Font];
+  nativefunc genericFont(family: GenericFontFamily, bold: Bool, italic: Bool) -> Font;
+  nativefunc close(font: Font);
+
+  //--- text drawing
+  nativefunc drawText(dest: Image, s: String, x: Float, y: Float);
+
+  //--- font/text information
+  nativefunc fontMetrics(dest: Image) -> FontMetrics;
+  nativefunc textBox(dest: Image, s: String) -> Rect;
+
+  //--- images
+  nativefunc makeImage(w: Int, h: Int, color: ARGB) -> Image;
+  nativefunc close(img: Image);
+  nativefunc width(img: Image) -> Int;
+  nativefunc height(img: Image) -> Int;
+  nativefunc readImage(fileName: String) -> Result[Image];
+  nativefunc writePNG(img: Image, withAlpha: Bool, fileName: String) -> Result[];
+  nativefunc writeJPEG(img: Image, quality: Int, fileName: String) -> Result[];
+
+  //--- image drawing
+  nativefunc drawImage(dest: Image, src: Image);
+  nativefunc blitImage(dest: Image, xDest: Int, yDest: Int,
+                       src: Image, xSrc: Int, ySrc: Int, w: Int, h: Int);
+
+  //--- windows
+  nativefunc openWindow(title: String, w: Int, h: Int) -> Result[Window];
+  nativefunc setBackgroundColor(win: Window, color: ARGB);
+  nativefunc backBuffer(win: Window) -> Image;
+  nativefunc swapBuffers(win: Window);
+  nativefunc close(win: Window);
+
+  //--- events
+  nativefunc monoclock() -> Int;
+  nativefunc waitEvent() -> Event;
+  nativefunc waitEvent(timeLimit: Int) -> Result[Event];
+  nativefunc pollEvent() -> Result[Event];
+
+  //--- clipboard
+  nativefunc copyToClipboard(win: Window, s: String);
+  nativefunc pasteFromClipboard(win: Window) -> Result[String];
+
+  //--- screen info
+  nativefunc screenDPI() -> Int;
+  nativefunc defaultFontSize() -> Float;
+
+end

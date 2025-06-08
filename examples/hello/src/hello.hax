@@ -1,0 +1,8 @@
+// Part of the Haxonite project, under the MIT License.
+// Copyright 2025 Derek Noonburg
+
+module hello is
+  func main() is
+    write("Hello world!\n");
+  end
+end

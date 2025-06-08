@@ -1,0 +1,17 @@
+// Duplicate function defn - should trigger an error.
+
+module funcerror1 is
+
+  func main() is
+    f(1, 2);
+  end
+
+  func f(x: Int, y: Int) is
+    write($"f1: {x} {y}\n");
+  end
+
+  func f(a: Int, b: Int) is
+    write($"f2: {x} {y}\n");
+  end
+
+end

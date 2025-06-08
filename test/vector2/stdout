@@ -1,0 +1,4 @@
+length = 8
+v[3] = 'Hello'
+length = 8
+v[3] = 'xyz'

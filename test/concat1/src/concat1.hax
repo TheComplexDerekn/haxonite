@@ -1,0 +1,13 @@
+module concat1 is
+
+  func main() is
+    var s1 = "Hello";
+    var s2 = " ";
+    var s3 = "world";
+    var s4 = "\n";
+    var s = concat(concat(concat(s1, s2), s3), s4);
+    write(s);
+    write(s1 + s2 + s3 + s4);
+  end
+
+end

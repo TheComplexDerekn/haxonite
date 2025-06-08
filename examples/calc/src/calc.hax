@@ -1,0 +1,500 @@
+// Simple push-button GUI calculator.
+
+// Part of the Haxonite project, under the MIT License.
+// Copyright 2025 Derek Noonburg
+
+module calc is
+
+  struct Button is
+    row: Int;
+    col: Int;
+    nCols: Int;
+    label: String;
+    function: Func[State];
+  end
+
+  struct State is
+    win: Window;
+    buttons: Vector[Button];
+    nRows: Int;
+    nCols: Int;
+    fontSize: Float;
+    displayH: Int;
+    cellW: Float;
+    cellH: Float;
+    x: Float;
+    y: Float;
+    z: Float;
+    t: Float;
+    xEdit: String;
+    mem: Vector[Float];
+    pressedBtn: Button;
+    pendingStore: Bool;
+    pendingRecall: Bool;
+  end
+
+  const widthMul = 20.0;
+  const heightMul = 25.0;
+
+  func main() is
+    var initialWidth = ceili(widthMul * 1.2 * defaultFontSize());
+    var initialHeight = ceili(heightMul * 1.2 * defaultFontSize());
+    var state = makeState(initialWidth, initialHeight);
+    layout(state, initialWidth, initialHeight);
+    redraw(state);
+    eventLoop(state);
+  end
+
+  func eventLoop(state: State) is
+    var quit = false;
+    while !quit do
+      var ev = waitEvent();
+      var needRedraw = false;
+      typematch ev is
+        case resize: ResizeEvent:
+          layout(state, resize.w, resize.h);
+          needRedraw = true;
+        case close: CloseEvent:
+          quit = true;
+        case btn: MouseButtonPressEvent:
+          if btn.button == 1 then
+            handleMouseButtonPress(state, btn.x, btn.y);
+            needRedraw = true;
+          end
+        case btn: MouseButtonReleaseEvent:
+          if btn.button == 1 then
+            handleMouseButtonRelease(state, btn.x, btn.y);
+            needRedraw = true;
+          end
+        case key: KeyPressEvent:
+          handleKeyEvent(state, key.key, key.unicode);
+          needRedraw = true;
+        default:
+      end
+      if needRedraw then
+        redraw(state);
+      end
+    end
+  end
+
+  func handleMouseButtonPress(state: State, x: Int, y: Int) is
+    var btn = findButton(state, x, y);
+    if nil(btn) then
+      return;
+    end
+    state.pressedBtn = btn;
+    (btn.function)(state);
+    if btn.label != "STO" && btn.label != "RCL" then
+      state.pendingStore = false;
+      state.pendingRecall = false;
+    end
+  end
+
+  func handleMouseButtonRelease(state: State, x: Int, y: Int) is
+    state.pressedBtn = nil[Button];
+  end
+
+  func findButton(state: State, x: Int, y: Int) -> Button is
+    var row = floori(toFloat(y - state.displayH) / state.cellH);
+    var col = floori(toFloat(x) / state.cellW);
+    for btn : state.buttons do
+      if row == btn.row && col >= btn.col && col < btn.col + btn.nCols then
+        return btn;
+      end
+    end
+    return nil[Button];
+  end
+
+  func handleKeyEvent(state: State, key: Int, unicode: Int) is
+    if unicode >= '0' && unicode <= '9' then
+      cmdDigit($"{unicode:c}", state);
+    elseif unicode == '.' then
+      cmdDecPt(state);
+    elseif unicode == 'e' then
+      cmdEex(state);
+    elseif unicode == '+' then
+      cmdAdd(state);
+    elseif unicode == '-' then
+      cmdSub(state);
+    elseif unicode == '*' then
+      cmdMul(state);
+    elseif unicode == '/' then
+      cmdDiv(state);
+    elseif key == keyReturn then
+      cmdEnter(state);
+    end
+  end
+
+  func layout(state: State, w: Int, h: Int) is
+    state.fontSize = min(toFloat(w) / widthMul, toFloat(h) / heightMul);
+    state.displayH = ceili(6.0 * state.fontSize);
+    state.cellW = toFloat(w) / toFloat(state.nCols);
+    state.cellH = (toFloat(h - state.displayH)) / toFloat(state.nRows);
+  end
+
+  func redraw(state: State) is
+    var img = backBuffer(state.win);
+
+    setColor(img, rgb(0, 0, 0));
+    clear(img);
+
+    setFont(img, loadFont("Noto Sans Mono Medium")!);
+    setFontSize(img, state.fontSize);
+    var ascent = fontMetrics(img).ascent;
+    setColor(img, rgb(0, 200, 0));
+    drawText(img, $"t= {state.t}", 0.0, 0.0 * state.fontSize - ascent);
+    drawText(img, $"z= {state.z}", 0.0, 1.5 * state.fontSize - ascent);
+    drawText(img, $"y= {state.y}", 0.0, 3.0 * state.fontSize - ascent);
+    if nil(state.xEdit) then
+      drawText(img, $"x= {state.x}", 0.0, 4.5 * state.fontSize - ascent);
+    else
+      drawText(img, "x= " + state.xEdit, 0.0, 4.5 * state.fontSize - ascent);
+    end
+
+    setFont(img, loadFont("Noto Sans Medium")!);
+    setFontSize(img, state.fontSize);
+    var metrics = fontMetrics(img);
+    ascent = metrics.ascent;
+    var textH = -metrics.ascent + metrics.descent;
+    setStrokeWidth(img, 1.0);
+    for btn : state.buttons do
+      var x = toFloat(btn.col) * state.cellW;
+      var y = toFloat(state.displayH) + toFloat(btn.row) * state.cellH;
+      var w = toFloat(btn.nCols) * state.cellW;
+      var h = state.cellH;
+      if btn === state.pressedBtn ||
+         (state.pendingStore && btn.label == "STO") ||
+         (state.pendingRecall && btn.label == "RCL") then
+        setColor(img, rgb(0, 0, 128));
+        fillRect(img, x, y, w, h);
+      end
+      setColor(img, rgb(128, 128, 128));
+      strokeRect(img, x, y, w, h);
+      setColor(img, rgb(255, 255, 255));
+      var box = textBox(img, btn.label);
+      drawText(img, btn.label, x + 0.5 * (w - box.w) + box.x, y + 0.5 * (h - textH) - ascent);
+    end
+
+    swapBuffers(state.win);
+  end
+
+  func makeState(initialWidth: Int, initialHeight: Int) -> State is
+    var win = openWindow("calc", initialWidth, initialHeight)!;
+
+    var buttons = [
+      make Button(row:0, col:0, nCols:1, label:"x^2",   function:&cmdSquare(State)),
+      make Button(row:0, col:1, nCols:1, label:"LN",    function:&cmdLn(State)),
+      make Button(row:0, col:2, nCols:1, label:"LOG",   function:&cmdLog(State)),
+      make Button(row:0, col:3, nCols:1, label:"ASIN",  function:&cmdAsin(State)),
+      make Button(row:0, col:4, nCols:1, label:"ACOS",  function:&cmdAcos(State)),
+      make Button(row:0, col:5, nCols:1, label:"ATAN",  function:&cmdAtan(State)),
+      make Button(row:1, col:0, nCols:1, label:"SQRT",  function:&cmdSqrt(State)),
+      make Button(row:1, col:1, nCols:1, label:"e^x",   function:&cmdExp(State)),
+      make Button(row:1, col:2, nCols:1, label:"10^x",  function:&cmdExp10(State)),
+      make Button(row:1, col:3, nCols:1, label:"SIN",   function:&cmdSin(State)),
+      make Button(row:1, col:4, nCols:1, label:"COS",   function:&cmdCos(State)),
+      make Button(row:1, col:5, nCols:1, label:"TAN",   function:&cmdTan(State)),
+      make Button(row:2, col:0, nCols:4, label:"ENTER", function:&cmdEnter(State)),
+      make Button(row:2, col:4, nCols:1, label:"CHS",   function:&cmdChs(State)),
+      make Button(row:2, col:5, nCols:1, label:"<=",    function:&cmdBack(State)),
+      make Button(row:3, col:0, nCols:1, label:"Rv",    function:&cmdRollDown(State)),
+      make Button(row:3, col:1, nCols:1, label:"x<>y",  function:&cmdSwap(State)),
+      make Button(row:3, col:2, nCols:1, label:"7",     function:&cmdDigit(String,State) * "7"),
+      make Button(row:3, col:3, nCols:1, label:"8",     function:&cmdDigit(String,State) * "8"),
+      make Button(row:3, col:4, nCols:1, label:"9",     function:&cmdDigit(String,State) * "9"),
+      make Button(row:3, col:5, nCols:1, label:"÷",    function:&cmdDiv(State)),
+      make Button(row:4, col:0, nCols:1, label:"STO",    function:&cmdStore(State)),
+      make Button(row:4, col:1, nCols:1, label:"π",    function:&cmdPi(State)),
+      make Button(row:4, col:2, nCols:1, label:"4",      function:&cmdDigit(String,State) * "4"),
+      make Button(row:4, col:3, nCols:1, label:"5",      function:&cmdDigit(String,State) * "5"),
+      make Button(row:4, col:4, nCols:1, label:"6",      function:&cmdDigit(String,State) * "6"),
+      make Button(row:4, col:5, nCols:1, label:"×",    function:&cmdMul(State)),
+      make Button(row:5, col:0, nCols:1, label:"RCL",    function:&cmdRecall(State)),
+      make Button(row:5, col:1, nCols:1, label:"1/x",    function:&cmdInvert(State)),
+      make Button(row:5, col:2, nCols:1, label:"1",      function:&cmdDigit(String,State) * "1"),
+      make Button(row:5, col:3, nCols:1, label:"2",      function:&cmdDigit(String,State) * "2"),
+      make Button(row:5, col:4, nCols:1, label:"3",      function:&cmdDigit(String,State) * "3"),
+      make Button(row:5, col:5, nCols:1, label:"-",      function:&cmdSub(State)),
+      make Button(row:6, col:0, nCols:1, label:"CLR",    function:&cmdClear(State)),
+      make Button(row:6, col:1, nCols:1, label:"y^x",    function:&cmdPow(State)),
+      make Button(row:6, col:2, nCols:1, label:"0",      function:&cmdDigit(String,State) * "0"),
+      make Button(row:6, col:3, nCols:1, label:".",      function:&cmdDecPt(State)),
+      make Button(row:6, col:4, nCols:1, label:"E",      function:&cmdEex(State)),
+      make Button(row:6, col:5, nCols:1, label:"+",      function:&cmdAdd(State))
+    ];
+
+    return make State(win:win, buttons:buttons, nRows:7, nCols:6,
+                      fontSize:0.0, displayH:0, cellW:0.0, cellH:0.0,
+                      x:0.0, y:0.0, z:0.0, t:0.0, xEdit:nil[String],
+                      mem:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                      pressedBtn:nil[Button], pendingStore:false, pendingRecall:false);
+  end
+
+  func beginEdit(state: State) is
+    if nil(state.xEdit) then
+      state.t = state.z;
+      state.z = state.y;
+      state.y = state.x;
+      state.xEdit = "";
+    end
+  end
+
+  func commitEdit(state: State) is
+    if !nil(state.xEdit) then
+      var res = toFloat(stripEdit(state.xEdit));
+      if ok(res) then
+        state.x = res!;
+      else
+        state.x = 0.0;
+      end
+      state.xEdit = nil[String];
+    end
+  end
+
+  // Strip invalid trailing characters off an edit string:
+  //   "-" --> ""
+  //   "1.23E" --> "1.23"
+  //   "1.23E-" --> "1.23"
+  func stripEdit(s: String) -> String is
+    if s == "-" then
+      return "0";
+    end
+    if endsWith(s, "E") then
+      return substr(s, 0, #s - 1);
+    end
+    if endsWith(s, "E-") then
+      return substr(s, 0, #s - 2);
+    end
+    return s;
+  end
+
+  func cmdDigit(digit: String, state: State) is
+    if state.pendingStore then
+      commitEdit(state);
+      state.mem[toInt(digit)!] = state.x;
+    elseif state.pendingRecall then
+      commitEdit(state);
+      state.t = state.z;
+      state.z = state.y;
+      state.y = state.x;
+      state.x = state.mem[toInt(digit)!];
+    else
+      beginEdit(state);
+      state.xEdit = state.xEdit + digit;
+    end
+  end
+
+  func cmdDecPt(state: State) is
+    beginEdit(state);
+    var s = state.xEdit + ".";
+    if checkEdit(s) then
+      state.xEdit = s;
+    end
+  end
+
+  func cmdEex(state: State) is
+    beginEdit(state);
+    var s = "";
+    if #state.xEdit == 0 then
+      s = "1E";
+    else
+      s = state.xEdit + "E";
+    end
+    if checkEdit(s) then
+      state.xEdit = s;
+    end
+  end
+
+  func cmdBack(state: State) is
+    if nil(state.xEdit) then
+      state.xEdit = "";
+    else
+      if #state.xEdit > 0 then
+        state.xEdit = substr(state.xEdit, 0, #state.xEdit - 1);
+      end
+    end
+  end
+
+  // Returns true if [s] is a valid edit string.
+  func checkEdit(s: String) -> Bool is
+    return ok(toFloat(stripEdit(s)));
+  end
+
+  func cmdChs(state: State) is
+    if nil(state.xEdit) then
+      state.x = -state.x;
+    else
+      var n = #state.xEdit;
+      var eIdx = find(state.xEdit, "E", 0);
+      if eIdx >= 0 then
+        if eIdx+1 < n && state.xEdit[eIdx+1] == '-' then
+          state.xEdit = substr(state.xEdit, 0, eIdx+1) +
+                        substr(state.xEdit, eIdx+2, n-eIdx-2);
+        else
+          state.xEdit = substr(state.xEdit, 0, eIdx+1) + "-" +
+                        substr(state.xEdit, eIdx+1, n-eIdx-1);
+        end
+      else
+        if n > 0 && state.xEdit[0] == '-' then
+          state.xEdit = substr(state.xEdit, 1, n-1);
+        else
+          state.xEdit = "-" + state.xEdit;
+        end
+      end
+    end
+  end
+
+  func cmdEnter(state: State) is
+    commitEdit(state);
+    state.t = state.z;
+    state.z = state.y;
+    state.y = state.x;
+    state.xEdit = "";
+  end
+
+  func cmdAdd(state: State) is
+    commitEdit(state);
+    state.x = state.y + state.x;
+    state.y = state.z;
+    state.z = state.t;
+  end
+
+  func cmdSub(state: State) is
+    commitEdit(state);
+    state.x = state.y - state.x;
+    state.y = state.z;
+    state.z = state.t;
+  end
+
+  func cmdMul(state: State) is
+    commitEdit(state);
+    state.x = state.y * state.x;
+    state.y = state.z;
+    state.z = state.t;
+  end
+
+  func cmdDiv(state: State) is
+    commitEdit(state);
+    state.x = state.y / state.x;
+    state.y = state.z;
+    state.z = state.t;
+  end
+
+  func cmdSquare(state: State) is
+    commitEdit(state);
+    state.x = state.x * state.x;
+  end
+
+  func cmdSqrt(state: State) is
+    commitEdit(state);
+    state.x = sqrt(state.x);
+  end
+
+  func cmdExp(state: State) is
+    commitEdit(state);
+    state.x = exp(state.x);
+  end
+
+  func cmdLn(state: State) is
+    commitEdit(state);
+    state.x = log(state.x);
+  end
+
+  func cmdExp10(state: State) is
+    commitEdit(state);
+    state.x = pow(10.0, state.x);
+  end
+
+  func cmdLog(state: State) is
+    commitEdit(state);
+    state.x = log10(state.x);
+  end
+
+  func cmdInvert(state: State) is
+    commitEdit(state);
+    state.x = 1.0 / state.x;
+  end
+
+  func cmdPow(state: State) is
+    commitEdit(state);
+    state.x = pow(state.y, state.x);
+    state.y = state.z;
+    state.z = state.t;
+  end
+
+  func cmdSin(state: State) is
+    commitEdit(state);
+    state.x = sin(state.x);
+  end
+
+  func cmdAsin(state: State) is
+    commitEdit(state);
+    state.x = asin(state.x);
+  end
+
+  func cmdCos(state: State) is
+    commitEdit(state);
+    state.x = cos(state.x);
+  end
+
+  func cmdAcos(state: State) is
+    commitEdit(state);
+    state.x = acos(state.x);
+  end
+
+  func cmdTan(state: State) is
+    commitEdit(state);
+    state.x = tan(state.x);
+  end
+
+  func cmdAtan(state: State) is
+    commitEdit(state);
+    state.x = atan2(state.y, state.x);
+    state.y = state.z;
+    state.z = state.t;
+  end
+
+  func cmdRollDown(state: State) is
+    commitEdit(state);
+    var tmp = state.x;
+    state.x = state.y;
+    state.y = state.z;
+    state.z = state.t;
+    state.t = tmp;
+  end
+
+  func cmdSwap(state: State) is
+    commitEdit(state);
+    var tmp = state.x;
+    state.x = state.y;
+    state.y = tmp;
+  end
+
+  func cmdPi(state: State) is
+    if nil(state.xEdit) then
+      state.t = state.z;
+      state.z = state.y;
+      state.y = state.x;
+    else
+      state.xEdit = nil[String];
+    end
+    state.x = pi;
+  end
+
+  func cmdStore(state: State) is
+    state.pendingStore = true;
+  end
+
+  func cmdRecall(state: State) is
+    state.pendingRecall = true;
+  end
+
+  func cmdClear(state: State) is
+    state.x = 0.0;
+    state.y = 0.0;
+    state.z = 0.0;
+    state.t = 0.0;
+    state.xEdit = nil[String];
+  end
+
+end

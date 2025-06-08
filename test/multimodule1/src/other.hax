@@ -1,0 +1,7 @@
+module other is
+
+  func f() is
+    write("Hello world\n");
+  end
+
+end

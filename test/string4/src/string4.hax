@@ -1,0 +1,22 @@
+// Test the startsWith() and endsWith() functions.
+
+module string4 is
+
+  func run(s: String, prefixSuffix: String) is
+    var starts = startsWith(s, prefixSuffix);
+    var ends = endsWith(s, prefixSuffix);
+    write($"'{s}' '{prefixSuffix}' -> starts={starts} ends={ends}\n");
+  end
+
+  func main() is
+    run("*abc", "*");
+    run("abc*", "*");
+    run("*abc*", "*");
+    run("*", "*");
+    run("fooHello world", "foo");
+    run("Hello worldfoo", "foo");
+    run("", "foo");
+    run("foo", "");
+  end
+
+end

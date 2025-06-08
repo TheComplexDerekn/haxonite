@@ -1,0 +1,53 @@
+module int1 is
+
+  func main() is
+    var x = 0;
+    write($"{x} = 0b{x:b} = 0o{x:o} = 0x{x:x}\n");
+
+    x = 123;
+    write($"{x} = 0b{x:b} = 0o{x:o} = 0x{x:x}\n");
+
+    x = -123;
+    write($"{x} = 0b{x:b} = 0o{x:o} = 0x{x:x}\n");
+
+    x = 0x123;
+    write($"{x} = 0b{x:b} = 0o{x:o} = 0x{x:x}\n");
+
+    x = -0x123;
+    write($"{x} = 0b{x:b} = 0o{x:o} = 0x{x:x}\n");
+
+    x = 0b10100101;
+    write($"{x} = 0b{x:b} = 0o{x:o} = 0x{x:x}\n");
+
+    x = -0b10100101;
+    write($"{x} = 0b{x:b} = 0o{x:o} = 0x{x:x}\n");
+
+    x = 0o123;
+    write($"{x} = 0b{x:b} = 0o{x:o} = 0x{x:x}\n");
+
+    x = -0o123;
+    write($"{x} = 0b{x:b} = 0o{x:o} = 0x{x:x}\n");
+
+    x = 0x80000000;
+    write($"{x} = 0b{x:b} = 0o{x:o} = 0x{x:x}\n");
+
+    x = 0x100000000;
+    write($"{x} = 0b{x:b} = 0o{x:o} = 0x{x:x}\n");
+
+    x = 0x7fffffffffffff;
+    write($"{x} = 0b{x:b} = 0o{x:o} = 0x{x:x}\n");
+
+    x = 0x80000000000000;
+    write($"{x} = 0b{x:b} = 0o{x:o} = 0x{x:x}\n");
+
+    x = 0xffffffffffffff;
+    write($"{x} = 0b{x:b} = 0o{x:o} = 0x{x:x}\n");
+
+    x = 36028797018963967;
+    write($"{x} = 0b{x:b} = 0o{x:o} = 0x{x:x}\n");
+
+    x = -36028797018963968;
+    write($"{x} = 0b{x:b} = 0o{x:o} = 0x{x:x}\n");
+  end
+
+end

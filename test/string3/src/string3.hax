@@ -1,0 +1,19 @@
+// For loops over Strings.
+
+module string3 is
+
+  func main() is
+    run("Hello world");
+    run("");
+    run("Àñé");
+  end
+
+  func run(s: String) is
+    write($"'{s}':");
+    for c : s do
+      write($" '{c:c}' ({c:02x})");
+    end    
+    write("\n");
+  end
+
+end

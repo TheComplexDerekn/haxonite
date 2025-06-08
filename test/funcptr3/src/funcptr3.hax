@@ -1,0 +1,26 @@
+// Test the function pointer 'apply' operator.
+
+module funcptr3 is
+
+  func main() is
+    var fp1 = &f(Int, Int, Int);
+    (fp1)(1, 2, 3);
+
+    var fp2 = fp1 * 10;
+    (fp2)(2, 3);
+
+    var fp3 = fp2 * 20;
+    (fp3)(3);
+
+    var fp4 = fp3 * 30;
+    (fp4)();
+
+    var fp5 = &f(Int, Int, Int) * 100 * 200;
+    (fp5)(3);
+  end
+
+  func f(x: Int, y: Int, z: Int) is
+    write($"f({x}, {y}, {z})\n");
+  end
+
+end

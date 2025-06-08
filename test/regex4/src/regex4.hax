@@ -1,0 +1,22 @@
+// Test the regular expression replace() function.
+
+module regex4 is
+
+  func main() is
+    doReplace("\\*", "abc***def*ghi*", ".");
+    doReplace("-+", "abc--def----ghi-jkl", "*");
+    // invalid regex
+    doReplace("*", "abc***def*ghi*", ".");
+  end
+
+  func doReplace(re: String, s: String, sub: String) is
+    var outRes = replace(re, s, sub);
+    if (ok(outRes)) then
+      var out = outRes!;
+      write($"replace('{re}', '{s}', '{sub}') -> '{out}'\n");
+    else
+      write($"replace('{re}', '{s}', '{sub}') -> invalid regex\n");
+    end
+  end
+
+end

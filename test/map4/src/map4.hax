@@ -1,0 +1,59 @@
+// Test Map[Int,$T].
+
+module map4 is
+
+  func main() is
+    var m = new Map[Int,String];
+    m[10] = "abc";
+    m[20] = "def";
+    m[30] = "ghi";
+
+    var n = #m;
+    var t10 = m[10];
+    var t20 = m[20];
+    var t30 = m[30];
+    write($"length={n} 10->{t10} 20->{t20} 30->{t30}\n");
+
+    delete(m, 20);
+
+    n = #m;
+    t10 = m[10];
+    var b20 = contains(m, 20);
+    t30 = m[30];
+    write($"length={n} 10->{t10} 20->{b20} 30->{t30}\n");
+
+    m[20] = "xyz";
+
+    n = #m;
+    t10 = m[10];
+    t20 = m[20];
+    t30 = m[30];
+    write($"length={n} 10->{t10} 20->{t20} 30->{t30}\n");
+
+    m[40] = "jkl";
+
+    n = #m;
+    t10 = m[10];
+    t20 = m[20];
+    t30 = m[30];
+    var t40 = m[40];
+    write($"length={n} 10->{t10} 20->{t20} 30->{t30} 40->{t40}\n");
+
+    clear(m);
+
+    n = #m;
+    var b10 = contains(m, 10);
+    b20 = contains(m, 20);
+    var b30 = contains(m, 30);
+    write($"length={n} 10->{b10} 20->{b20} 30->{b30}\n");
+
+    m[30] = "mno";
+
+    n = #m;
+    b10 = contains(m, 10);
+    b20 = contains(m, 20);
+    t30 = m[30];
+    write($"length={n} 10->{b10} 20->{b20} 30->{t30}\n");
+  end
+
+end

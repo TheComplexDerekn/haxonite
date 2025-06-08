@@ -1,0 +1,17 @@
+// Set literal with invalid element type.
+
+module set7 is
+
+  func main() is
+    var s1 = {1.23, 4.56, 7.89};
+    write("s1:");
+    var i = ifirst(s1);
+    while imore(s1, i) do
+      var elem = iget(s1, i);
+      write($" {elem}");
+      i = inext(s1, i);
+    end
+    write("\n");
+  end
+
+end

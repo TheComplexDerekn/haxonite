@@ -1,0 +1,32 @@
+// String iterator functions.
+
+module string2 is
+
+  func main() is
+    run("Hello world");
+    run("");
+    run("Àñé");
+    run2("Àñé");
+  end
+
+  func run(s: String) is
+    write($"'{s}':");
+    var i = ifirst(s);
+    while imore(s, i) do
+      var c = iget(s, i);
+      write($" '{c:c}' ({c:02x})");
+      i = inext(s, i);
+    end    
+    write("\n");
+  end
+
+  func run2(s: String) is
+    write($"'{s}':");
+    for i : 0 .. #s - 1 do
+      var b = byte(s, i);
+      write($" {b:02x}");
+    end    
+    write("\n");
+  end
+
+end

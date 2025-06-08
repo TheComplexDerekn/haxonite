@@ -1,0 +1,36 @@
+module struct2 is
+
+  struct Node is
+    value: Int;
+    next: Node;
+  end
+
+  func empty() -> Node is
+    return nil[Node];
+  end
+
+  func cons(head: Int, tail: Node) -> Node is
+    return make Node(value: head, next: tail);
+  end
+
+  func print(list: Node) is
+    if nil(list) then
+      write("\n");
+      return;
+    end
+    var value = list.value;
+    write($"{value} ");
+    print(list.next);
+  end
+
+  func main() is
+    var list = empty();
+    list = cons(5, list);
+    list = cons(4, list);
+    list = cons(3, list);
+    list = cons(2, list);
+    list = cons(1, list);
+    print(list);
+  end
+
+end

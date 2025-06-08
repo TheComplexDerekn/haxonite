@@ -1,0 +1,12 @@
+module mod2 is
+
+  func f2a() is
+    write("f2a\n");
+    f1b();
+  end
+
+  func f2b() is
+    write("f2b\n");
+  end
+
+end

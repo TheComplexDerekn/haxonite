@@ -1,0 +1,20 @@
+// Test interpolated strings with expressions (rather than simple
+// names).
+
+module interp2 is
+
+  struct Foo is
+    x: Int;
+    y: Float;
+    s: String;
+  end
+
+  func main() is
+    var obj = make Foo(x: 123, y: 3.456, s: "hello");
+    var v = [0, 1, 2, 3, 4];
+    var i = 2;
+    write($"A: {obj.x} {obj.y} {obj.s} {v[3]} {v[i]}\n");
+    write($"B: [{obj.x:10}] [{obj.y:-10.2}] [{obj.s:10}] [{v[3]:10.5}] [{v[i]:-10.5}]\n");
+  end
+
+end

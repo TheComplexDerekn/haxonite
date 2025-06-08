@@ -1,0 +1,39 @@
+// Test the Vector sort function.
+
+module vector8 is
+
+  func main() is
+    var v1 = [ 3, 4, 8, 1, 2, 7, 6, 5 ];
+    print(v1);
+    sort(v1, &lt(Int, Int));
+    print(v1);
+
+    var v2 = [ "hello world", "abc", "def", "xyz", "123", "aaaaaaa" ];
+    print(v2);
+    sort(v2, &lt(String, String));
+    print(v2);
+  end
+
+  func lt(x: Int, y: Int) -> Bool is
+    return x < y;
+  end
+
+  func lt(x: String, y: String) -> Bool is
+    return x < y;
+  end
+
+  func print(v: Vector[Int]) is
+    for x : v do
+      write($" {x}");
+    end
+    write("\n");
+  end
+
+  func print(v: Vector[String]) is
+    for s : v do
+      write($" '{s}'");
+    end
+    write("\n");
+  end
+
+end

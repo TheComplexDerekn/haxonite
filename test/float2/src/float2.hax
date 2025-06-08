@@ -1,0 +1,37 @@
+module float2 is
+
+  func main() is
+    var x = 1.23e10;
+    write($"{x} -> f: {x:f} | .4f: {x:.4f}\n");
+    write($"{x} -> F: {x:F} | .4F: {x:.4F}\n");
+
+    x = 1.23e-8;
+    write($"{x} -> f: {x:f} | .7f: {x:.7f} | .8f: {x:.8f} | .10f: {x:.10f} | .12f: {x:.12f}\n");
+    write($"{x} -> F: {x:F} | .7F: {x:.7F} | .8F: {x:.8F} | .10F: {x:.10F} | .12F: {x:.12F}\n");
+
+    x = 1.23e10;
+    write($"{x} -> e: {x:e} | .1e: {x:.1e} | .2e: {x:.2e} | .4e: {x:.4e}\n");
+    write($"{x} -> E: {x:E} | .1E: {x:.1E} | .2E: {x:.2E} | .4E: {x:.4E}\n");
+
+    x = 1.23e-10;
+    write($"{x} -> e: {x:e} | .1e: {x:.1e} | .2e: {x:.2e} | .4e: {x:.4e}\n");
+    write($"{x} -> E: {x:E} | .1E: {x:.1E} | .2E: {x:.2E} | .4E: {x:.4E}\n");
+
+    x = 1.23e4;
+    write($"{x} -> g: {x:g} | .2g: {x:.2g} | .3g: {x:.3g} | .5g: {x:.5g}\n");
+    write($"{x} -> G: {x:G} | .2G: {x:.2G} | .3G: {x:.3G} | .gG: {x:.5G}\n");
+
+    x = 1.23e8;
+    write($"{x} -> g: {x:g} | .2g: {x:.2g} | .3g: {x:.3g} | .5g: {x:.5g}\n");
+    write($"{x} -> G: {x:G} | .2G: {x:.2G} | .3G: {x:.3G} | .gG: {x:.5G}\n");
+
+    x = 1.23e-4;
+    write($"{x} -> g: {x:g} | .2g: {x:.2g} | .3g: {x:.3g} | .5g: {x:.5g}\n");
+    write($"{x} -> G: {x:G} | .2G: {x:.2G} | .3G: {x:.3G} | .5G: {x:.5G}\n");
+
+    x = 1.23e-8;
+    write($"{x} -> g: {x:g} | .2g: {x:.2g} | .3g: {x:.3g} | .5g: {x:.5g}\n");
+    write($"{x} -> G: {x:G} | .2G: {x:.2G} | .3G: {x:.3G} | .gG: {x:.5G}\n");
+  end
+
+end

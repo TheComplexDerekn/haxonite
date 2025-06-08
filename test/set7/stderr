@@ -1,0 +1,4 @@
+Error [set7/src/set7.hax:6]: Set element type must be String or Int
+Error [set7/src/set7.hax:8]: Undefined symbol 's1'
+Error [set7/src/set7.hax:9]: Undefined symbol 's1'
+ERROR: compilation failed

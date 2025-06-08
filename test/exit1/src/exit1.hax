@@ -1,0 +1,9 @@
+// Test the exit() function.
+
+module exit1 is
+
+  func main() is
+    exit(123);
+  end
+
+end

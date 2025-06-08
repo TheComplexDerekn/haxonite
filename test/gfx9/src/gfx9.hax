@@ -1,0 +1,40 @@
+// Test readImage() and drawImage() with a JPEG image.
+
+module gfx9 is
+
+  func main() is
+    var args = commandLineArgs();
+    if #args != 2 then
+      ewrite("Usage: gfx9 <input.jpeg> <output.jpeg>\n");
+      return;
+    end
+    var inputJPEG = args[0];
+    var outputJPEG = args[1];
+
+    var imgOut = makeImage(500, 500, rgb(0, 0, 0));
+
+    var imgIn = readImage(inputJPEG)!;
+
+    pushState(imgOut);
+    concatMatrix(imgOut, make Matrix(a:200.0, b:0.0, c:0.0, d:300.0, tx:200.0, ty:100.0));
+    drawImage(imgOut, imgIn);
+    popState(imgOut);
+
+    pushState(imgOut);
+    var cos = cos(pi / 6.0);
+    var sin = sin(pi / 6.0);
+    concatMatrix(imgOut, make Matrix(a:200.0*cos, b:200.0*sin, c:-300.0*sin, d:300.0*cos,
+                 tx:100.0, ty:50.0));
+    drawImage(imgOut, imgIn);
+    popState(imgOut);
+
+    close(imgIn);
+
+    var res = writeJPEG(imgOut, 75, outputJPEG);
+    if !ok(res) then
+      ewrite("writeJPEG failed\n");
+    end
+    close(imgOut);
+  end
+
+end

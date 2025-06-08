@@ -1,0 +1,28 @@
+// For loops over Vectors.
+
+module vector5 is
+
+  func main() is
+    var v1 = [1, 2, 3];
+    write("v1:");
+    for elem : v1 do
+      write($" {elem}");
+    end
+    write("\n");
+
+    var v2 = ["abc", "def", "ghi"];
+    write("v2:");
+    for elem : v2 do
+      write($" {elem}");
+    end
+    write("\n");
+
+    var v3 = [true];
+    write("v3:");
+    for elem : v3 do
+      write($" {elem}");
+    end
+    write("\n");
+  end
+
+end

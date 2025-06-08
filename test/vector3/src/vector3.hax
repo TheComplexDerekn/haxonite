@@ -1,0 +1,21 @@
+// Vector iterator functions.
+
+module vector3 is
+
+  func main() is
+    var v = new Vector[String];
+    append(v, "abc");
+    append(v, "def");
+    append(v, "ghi");
+    append(v, "zzz");
+
+    var i = ifirst(v);
+    while imore(v, i) do
+      var s = iget(v, i);
+      write($"{i}:{s} ");
+      i = inext(v, i);
+    end
+    write("\n");
+  end
+
+end

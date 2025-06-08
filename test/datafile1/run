@@ -1,0 +1,7 @@
+#!/bin/sh
+
+hax datafile1 "$HAXTESTDIR/in1.haxdata"
+echo "-----"
+
+hax datafile1 "$HAXTESTDIR/in2.haxdata"
+echo "-----"

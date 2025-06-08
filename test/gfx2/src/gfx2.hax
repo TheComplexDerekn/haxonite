@@ -1,0 +1,49 @@
+// Test of path drawing.
+
+module gfx2 is
+
+  func main() is
+    var args = commandLineArgs();
+    if #args != 1 then
+      ewrite("Usage: gfx2 <output.png>\n");
+      return;
+    end
+    var pngFileName = args[0];
+
+    var img = makeImage(500, 500, rgb(0, 0, 0));
+
+    setColor(img, rgb(0, 0, 255));
+    var path = makePath();
+    moveTo(path, 250.0, 30.0);
+    lineTo(path, 450.0, 470.0);
+    lineTo(path, 50.0, 470.0);
+    fill(img, path);
+
+    setColor(img, rgb(255, 255, 0));
+    path = makePath();
+    moveTo(path, 25.0, 300.0);
+    lineTo(path, 475.0, 200.0);
+    stroke(img, path);
+
+    setColor(img, rgb(255, 0, 0));
+    path = makePath();
+    moveTo(path, 200.0, 350.0);
+    lineTo(path, 300.0, 350.0);
+    lineTo(path, 300.0, 450.0);
+    lineTo(path, 200.0, 450.0);
+    closePath(path);
+    moveTo(path, 280.0, 370.0);
+    lineTo(path, 220.0, 370.0);
+    lineTo(path, 220.0, 430.0);
+    lineTo(path, 280.0, 430.0);
+    closePath(path);
+    fill(img, path);
+
+    var res = writePNG(img, false, pngFileName);
+    if !ok(res) then
+      ewrite("writePNG failed\n");
+    end
+    close(img);
+  end
+
+end

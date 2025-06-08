@@ -1,0 +1,153 @@
+// From: Algorithmic Beauty of Plants, pp.18-23
+
+// Part of the Haxonite project, under the MIT License.
+// Copyright 2025 Derek Noonburg
+
+module koch1 is
+
+  import TurtleGfx;
+
+  func main() is
+    var args = commandLineArgs();
+    if #args != 1 then
+      ewrite("Usage: kock1 <png-file>\n");
+      return;
+    end
+    var pngFileName = args[0];
+
+    var w = 1000;
+    var h = 1000;
+    var angle0 = 0;
+    var angleDivs = 4;
+
+/*
+    var axiom = "F-F-F-F";
+    var rules = { 'F': "F-F+F+FF-F-F+F" };
+    var n = 4;
+    var x0 = 250.0;
+    var y0 = 250.0;
+    var step = 500.0 / pow(4.0, toFloat(n));
+*/
+/*
+    var axiom = "F-F-F-F";
+    var rules = { 'F': "F+FF-FF-F-F+F+FF-F-F+F+FF+FF-F" };
+    var n = 2;
+    var x0 = 250.0;
+    var y0 = 250.0;
+    var step = 500.0 / pow(6.0, toFloat(n));
+*/
+/*
+    var axiom = "F";
+    var rules = { 'F': "F+F-F-F+F" };
+    var n = 4;
+    var x0 = 100.0;
+    var y0 = 500.0;
+    var step = 800.0 / pow(3.0, toFloat(n));
+*/
+/*
+    var axiom = "F+F+F+F";
+    var rules = { 'F': "F+f-FF+F+FF+Ff+FF-f+FF-F-FF-Ff-FFF",
+                  'f': "ffffff" };
+    var n = 3;
+    var x0 = 250.0;
+    var y0 = 750.0;
+    var step = 500.0 / pow(6.0, toFloat(n));
+*/
+/*
+    var axiom = "F-F-F-F";
+    var rules = { 'F': "FF-F-F-F-F-F+F" };
+    var n = 4;
+    var x0 = 700.0;
+    var y0 = 150.0;
+    var step = 450.0 / pow(3.0, toFloat(n));
+*/
+/*
+    var axiom = "F-F-F-F";
+    var rules = { 'F': "FF-F-F-F-FF" };
+    var n = 5;
+    var x0 = 100.0;
+    var y0 = 100.0;
+    var step = 800.0 / pow(3.0, toFloat(n));
+*/
+/*
+    var axiom = "F-F-F-F";
+    var rules = { 'F': "FF-F+F-F-FF" };
+    var n = 3;
+    var x0 = 800.0;
+    var y0 = 600.0;
+    var step = 600.0 / pow(2.5, toFloat(n));
+*/
+/*
+    var axiom = "F-F-F-F";
+    var rules = { 'F': "FF-F--F-F" };
+    var n = 5;
+    var x0 = 100.0;
+    var y0 = 100.0;
+    var step = 800.0 / pow(3.0, toFloat(n));
+*/
+/*
+    var axiom = "F-F-F-F";
+    var rules = { 'F': "F-FF--F-F" };
+    var n = 5;
+    var x0 = 800.0;
+    var y0 = 500.0;
+    var step = 600.0 / pow(2.33, toFloat(n));
+*/
+/**/
+    var axiom = "F-F-F-F";
+    var rules = { 'F': "F-F+F-F-F" };
+    var n = 5;
+    var x0 = 200.0;
+    var y0 = 400.0;
+    var step = 600.0 / pow(2.33, toFloat(n));
+/**/
+
+    var sequence = generate(axiom, rules, n);
+    var length = #sequence;
+    write($"sequence has {length} steps\n");
+    draw(sequence, x0, y0, angle0, step, angleDivs, pngFileName, w, h);
+  end
+
+  // Starting with [axiom], run [n] derivations of [rules].
+  func generate(axiom: String, rules: Map[Int,String], n: Int) -> String is
+    var s = axiom;
+    for i : 0 .. n-1 do
+      var ss = new StringBuf;
+      for c : s do
+        if contains(rules, c) then
+          append(ss, rules[c]);
+        else
+          append(ss, c);
+        end
+      end
+      s = toString(ss);
+    end
+    return s;
+  end
+
+  func draw(sequence: String,
+            x0: Float, y0: Float, angle0: Int, step: Float, angleDivs: Int,
+            pngFileName: String, w: Int, h: Int) is
+    var gfx = openTurtleGfx(pngFileName, w, h, angleDivs);
+    moveTo(gfx, x0, y0);
+    turnTo(gfx, angle0);
+    setColor(gfx, rgb(0, 0, 255));
+    for c : sequence do
+      if c == 'F' then
+        penDown(gfx);
+        forward(gfx, step);
+      elseif c == 'f' then
+        penUp(gfx);
+        forward(gfx, step);
+      elseif c == '+' then
+        turn(gfx, 1);
+      elseif c == '-' then
+        turn(gfx, -1);
+      else
+        ewrite($"Invalid character '{c:c}' in sequence");
+      end
+    end
+    close(gfx);
+  end
+
+end

@@ -1,0 +1,10 @@
+// this is a data file
+
+@datafile1
+-data
+bar
+baz "abc \"def\" ghi\\jkl" 1.2345
+// another comment
+foo 1
+
+

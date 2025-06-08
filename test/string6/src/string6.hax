@@ -1,0 +1,17 @@
+// Test the substr() function.
+
+module string6 is
+
+  func main() is
+    run("hello world", 0, 5);
+    run("hello world", 6, 5);
+    run("hello world", 5, 1);
+    run("hello world", 5, 0);
+  end
+
+  func run(s: String, start: Int, n: Int) is
+    var sub = substr(s, start, n);
+    write($"substr('{s}', {start}, {n}) = '{sub}'\n");
+  end
+
+end

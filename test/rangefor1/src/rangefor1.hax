@@ -1,0 +1,11 @@
+// For loop with range.
+
+module rangefor1 is
+
+  func main() is
+    for i : 1 .. 10 do
+      write($"{i}\n");
+    end
+  end
+
+end

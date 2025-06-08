@@ -1,0 +1,78 @@
+// From: Algorithmic Beauty of Plants, pp.23-24
+
+// Part of the Haxonite project, under the MIT License.
+// Copyright 2025 Derek Noonburg
+
+module edge1 is
+
+  import TurtleGfx;
+
+  func main() is
+    var args = commandLineArgs();
+    if #args != 1 then
+      ewrite("Usage: kock1 <png-file>\n");
+      return;
+    end
+    var pngFileName = args[0];
+
+    var w = 1000;
+    var h = 1000;
+    var angle0 = 0;
+    var angleDivs = 4;   // = 360 / angleDelta
+
+    var axiom = "L";
+    var rules = { 'L': "L+R+",
+                  'R': "-L-R" };
+    var n = 10;
+    var x0 = 550.0;
+    var y0 = 700.0;
+    var step = 500.0 / pow(1.42, toFloat(n));
+
+    var sequence = generate(axiom, rules, n);
+    var length = #sequence;
+    write($"sequence has {length} steps\n");
+    // write($"sequence = '{sequence}'\n");
+    draw(sequence, x0, y0, angle0, step, angleDivs, pngFileName, w, h);
+  end
+
+  // Starting with [axiom], run [n] derivations of [rules].
+  func generate(axiom: String, rules: Map[Int,String], n: Int) -> String is
+    var s = axiom;
+    for i : 0 .. n-1 do
+      var ss = new StringBuf;
+      for c : s do
+        if contains(rules, c) then
+          append(ss, rules[c]);
+        else
+          append(ss, c);
+        end
+      end
+      s = toString(ss);
+    end
+    return s;
+  end
+
+  func draw(sequence: String,
+            x0: Float, y0: Float, angle0: Int, step: Float, angleDivs: Int,
+            pngFileName: String, w: Int, h: Int) is
+    var gfx = openTurtleGfx(pngFileName, w, h, angleDivs);
+    moveTo(gfx, x0, y0);
+    turnTo(gfx, angle0);
+    setColor(gfx, rgb(0, 0, 255));
+    for c : sequence do
+      if c == 'L' | c == 'R' then
+        penDown(gfx);
+        forward(gfx, step);
+      elseif c == '+' then
+        turn(gfx, 1);
+      elseif c == '-' then
+        turn(gfx, -1);
+      else
+        ewrite($"Invalid character '{c:c}' in sequence");
+      end
+    end
+    close(gfx);
+  end
+
+end
+

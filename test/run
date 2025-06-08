@@ -1,0 +1,153 @@
+#!/usr/bin/perl
+#========================================================================
+#
+# run
+#
+# Run regression tests.
+#
+# Usage: run -init {test} -- initialize a test
+#        run {test}       -- run one tests
+#        run              -- run all tests
+#
+# Part of the Haxonite project, under the MIT License.
+# Copyright 2025 Derek Noonburg
+#
+#========================================================================
+
+use strict;
+use warnings;
+use File::Basename;
+
+my $testDir = dirname($0);
+my $origHaxonitePath = $ENV{"HAXONITEPATH"};
+
+my $tmpDir = "/tmp/haxonite-test-$$";
+if (!mkdir($tmpDir)) {
+    die("Failed to create temp dir '$tmpDir'\n");
+}
+
+my $nPass = 0;
+my $nFail = 0;
+
+if (scalar(@ARGV) == 0) {
+    runAllTests();
+    printResults();
+} elsif (scalar(@ARGV) == 1) {
+    runTest($ARGV[0]);
+    printResults();
+} elsif (scalar(@ARGV) == 2 && $ARGV[0] eq "-init") {
+    initTest($ARGV[1]);
+} else {
+    print STDERR ("Usage: run -init {test} -- initialize a test\n");
+    print STDERR ("       run {test}       -- run one tests\n");
+    print STDERR ("       run              -- run all tests\n");
+    exit(1);
+}
+
+# if there were any failed tests, $tmpDir will not be empty,
+# and this rmdir will intentionally fail
+rmdir($tmpDir);
+
+sub initTest {
+    my ($test) = @_;
+
+    doRunTest($test, "$testDir/$test");
+    cleanObjAndBin($test);
+}
+
+sub runAllTests {
+    my $DIR;
+    opendir($DIR, "$testDir");
+    for my $child (readdir($DIR)) {
+	if ($child ne "." && $child ne ".." && -d "$testDir/$child") {
+	    runTest($child);
+	}
+    }
+}
+
+sub runTest {
+    my ($test) = @_;
+
+    if (!-e "$testDir/$test/stderr" || !-e "$testDir/$test/stdout") {
+	die("Expected output files for test '$test' are missing\n");
+    }
+
+    if (!mkdir("$tmpDir/$test")) {
+	die("Couldn't create test output dir '$tmpDir/$test'\n");
+    }
+    doRunTest($test, "$tmpDir/$test");
+
+    my $pass = compareFiles("$testDir/$test/stderr", "$tmpDir/$test/stderr") &&
+	       compareFiles("$testDir/$test/stdout", "$tmpDir/$test/stdout");
+
+    if ($pass) {
+	print("  $test\n");
+	++$nPass;
+	cleanObjAndBin($test);
+	unlink("$tmpDir/$test/stderr");
+	unlink("$tmpDir/$test/stdout");
+	rmdir("$tmpDir/$test");
+    } else {
+	print("X $test\n");
+	++$nFail;
+    }
+}
+
+sub doRunTest {
+    my ($test, $outputDir) = @_;
+
+    if (!-d "$testDir/$test/src") {
+	die("Missing test source dir '$testDir/$test/src'\n");
+    }
+
+    cleanObjAndBin($test);
+
+    $ENV{"HAXONITEPATH"} = "$testDir/$test:$origHaxonitePath";
+    $ENV{"HAXTESTDIR"} = "$testDir/$test";
+
+    my @sourceFiles = glob("$testDir/$test/src/*.hax");
+    if (-e "$testDir/$test/run") {
+	if (!-x "$testDir/$test/run") {
+	    die("Test run script '$testDir/$test/run' is not executable\n");
+	}
+	system("$testDir/$test/run >$outputDir/stdout 2>$outputDir/stderr");
+    } elsif (scalar(@sourceFiles) == 1) {
+	if ($sourceFiles[0] !~ m@/([^/]+)\.hax$@) {
+	    die("Weird source file name: '$sourceFiles[0]'\n");
+	}
+	my $moduleName = $1;
+	system("hax $moduleName >$outputDir/stdout 2>$outputDir/stderr");
+    } else {
+	die("Test run script '$testDir/$test/run' is missing\n");
+    }
+}
+
+sub cleanObjAndBin {
+    my ($test) = @_;
+
+    unlink(glob("$testDir/$test/obj/*.haxo"));
+    rmdir("$testDir/$test/obj");
+    unlink(glob("$testDir/$test/bin/*.haxe"));
+    rmdir("$testDir/$test/bin");
+    if (-e "$testDir/$test/obj" || -e "$testDir/$test/bin") {
+	die("Couldn't remove obj/bin dirs in '$testDir/$test'\n");
+    }
+}
+
+sub compareFiles {
+    my ($file1, $file2) = @_;
+
+    my $out = `diff '$file1' '$file2'`;
+    return $out eq "";
+}
+
+sub printResults {
+    if ($nFail == 0) {
+	print("$nPass/$nPass passed\n");
+    } else {
+	my $nTotal = $nPass + $nFail;
+	print("$nFail/$nTotal failed\n");
+	print("output dir: $tmpDir\n");
+	print("*** FAIL ***\n");
+    }
+}

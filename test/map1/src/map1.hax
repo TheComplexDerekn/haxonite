@@ -1,0 +1,21 @@
+module map1 is
+
+  func main() is
+    var m = new Map[String,Int];
+    set(m, "abc", 10);
+    set(m, "def", 20);
+    set(m, "ghi", 30);
+    var n = length(m);
+    write($"length = {n}\n");
+    var t1 = contains(m, "abc");
+    var t2 = contains(m, "def");
+    var t3 = contains(m, "ghi");
+    var t4 = contains(m, "xyz");
+    write($"abc:{t1} def:{t2} ghi:{t3} xyz:{t4}\n");
+    var x1 = get(m, "abc");
+    var x2 = get(m, "def");
+    var x3 = get(m, "ghi");
+    write($"abc->{x1} def->{x2} ghi->{x3}\n");
+  end
+
+end

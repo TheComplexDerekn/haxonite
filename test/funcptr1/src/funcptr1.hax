@@ -1,0 +1,14 @@
+// Test function pointers.
+
+module funcptr1 is
+
+  func main() is
+    var f = &hello();
+    (f)();
+  end
+
+  func hello() is
+    write("Hello\n");
+  end
+
+end

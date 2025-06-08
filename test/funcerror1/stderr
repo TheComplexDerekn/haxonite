@@ -1,0 +1,2 @@
+Error [funcerror1/src/funcerror1.hax:13]: Duplicate defintion of function 'f'
+ERROR: compilation failed

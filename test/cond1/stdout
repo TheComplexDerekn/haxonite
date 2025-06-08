@@ -1,0 +1,28 @@
+-- false || false --
+left = false
+right = false
+false
+-- false || true --
+left = false
+right = true
+true
+-- true || false --
+left = true
+true
+-- true || true --
+left = true
+true
+-- false && false --
+left = false
+false
+-- false && true --
+left = false
+false
+-- true && false --
+left = true
+right = false
+false
+-- true && true --
+left = true
+right = true
+true
