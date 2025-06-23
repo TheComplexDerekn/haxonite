@@ -27,7 +27,6 @@
 #define explicit xexplicit
 #include <xcb/xkb.h>
 #undef explicit
-#include <xcb/xcb_errors.h>
 #include <xcb/xcb_icccm.h>
 #include <xcb/shm.h>
 #include <xkbcommon/xkbcommon.h>
