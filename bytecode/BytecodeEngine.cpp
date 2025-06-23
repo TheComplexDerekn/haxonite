@@ -906,8 +906,8 @@ uint64_t BytecodeEngine::readBytecodeUint64() {
                  ((uint64_t)bytecode[pc + 3] << 24) |
                  ((uint64_t)bytecode[pc + 4] << 32) |
                  ((uint64_t)bytecode[pc + 5] << 40) |
-                 ((uint64_t)bytecode[pc + 5] << 48) |
-                 ((uint64_t)bytecode[pc + 6] << 56);
+                 ((uint64_t)bytecode[pc + 6] << 48) |
+                 ((uint64_t)bytecode[pc + 7] << 56);
   pc += 8;
   return val;
 }
