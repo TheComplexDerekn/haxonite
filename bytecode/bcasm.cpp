@@ -226,7 +226,7 @@ static void bcError(const std::string &msg) {
 
 static void error(int lineNum, const char *fmt, ...) {
   va_list args;
-  fprintf(stderr, "ERROR [%d]: ");
+  fprintf(stderr, "ERROR [%d]: ", lineNum);
   va_start(args, fmt);
   vfprintf(stderr, fmt, args);
   va_end(args);
