@@ -12,6 +12,7 @@
 #ifndef NumConversion_h
 #define NumConversion_h
 
+#include <stdint.h>
 #include <string>
 
 //------------------------------------------------------------------------

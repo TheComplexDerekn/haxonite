@@ -12,6 +12,7 @@
 #ifndef BytecodeDefs_h
 #define BytecodeDefs_h
 
+#include <stdint.h>
 #include <string>
 #include <unordered_map>
 
