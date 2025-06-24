@@ -138,7 +138,7 @@ module calc is
     setColor(img, rgb(0, 0, 0));
     clear(img);
 
-    setFont(img, loadFont("Noto Sans Mono Medium")!);
+    setFont(img, genericFont(GenericFontFamily.mono, false, false));
     setFontSize(img, state.fontSize);
     var ascent = fontMetrics(img).ascent;
     setColor(img, rgb(0, 200, 0));
@@ -151,7 +151,7 @@ module calc is
       drawText(img, "x= " + state.xEdit, 0.0, 4.5 * state.fontSize - ascent);
     end
 
-    setFont(img, loadFont("Noto Sans Medium")!);
+    setFont(img, genericFont(GenericFontFamily.sansSerif, false, false));
     setFontSize(img, state.fontSize);
     var metrics = fontMetrics(img);
     ascent = metrics.ascent;

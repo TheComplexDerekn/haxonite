@@ -84,9 +84,18 @@ union xkb_generic_event {
 
 //------------------------------------------------------------------------
 
-#define fallbackSerifFont     "Noto Serif"
-#define fallbackSansSerifFont "Noto Sans"
-#define fallbackMonoFont      "Source Code Pro"
+#define fallbackSerifFont           "DejaVu Serif"
+#define fallbackSerifBoldFont       "DejaVu Serif Bold"
+#define fallbackSerifItalicFont     "DejaVu Serif Italic"
+#define fallbackSerifBoldItalicFont "DejaVu Serif Bold Italic"
+#define fallbackSansFont            "DejaVu Sans"
+#define fallbackSansBoldFont        "DejaVu Sans Bold"
+#define fallbackSansItalicFont      "DejaVu Sans Oblique"
+#define fallbackSansBoldItalicFont  "DejaVu Sans Bold Oblique"
+#define fallbackMonoFont            "DejaVu Sans Mono"
+#define fallbackMonoBoldFont        "DejaVu Sans Mono Bold"
+#define fallbackMonoItalicFont      "DejaVu Sans Mono Oblique"
+#define fallbackMonoBoldItalicFont  "DejaVu Sans Mono Bold Oblique"
 
 //------------------------------------------------------------------------
 
@@ -178,8 +187,17 @@ struct GfxApplication {
 
   //--- config
   std::string genericSerifFont;
-  std::string genericSansSerifFont;
+  std::string genericSerifBoldFont;
+  std::string genericSerifItalicFont;
+  std::string genericSerifBoldItalicFont;
+  std::string genericSansFont;
+  std::string genericSansBoldFont;
+  std::string genericSansItalicFont;
+  std::string genericSansBoldItalicFont;
   std::string genericMonoFont;
+  std::string genericMonoBoldFont;
+  std::string genericMonoItalicFont;
+  std::string genericMonoBoldItalicFont;
   float defaultFontSize;
 
   //--- xcb connection
@@ -813,23 +831,56 @@ Cell gfxGenericFont(int64_t family, bool bold, bool italic, BytecodeEngine &engi
   GfxApplication *gfxApp = (GfxApplication *)cellResourcePtr(app->gfxApp);
 
   std::string name;
+#if 1 //~foo
+  printf("generic font: family=%d bold=%d italic=%d\n", (int)family, bold, italic);
+#endif
   if (family == genericFontSerif) {
-    name = gfxApp->genericSerifFont;
-  } else if (family == genericFontSansSerif) {
-    name = gfxApp->genericSansSerifFont;
-  } else { // family == genericFontMono
-    name = gfxApp->genericMonoFont;
-  }
-  if (!bold && !italic) {
-    name += " Medium";
-  } else {
     if (bold) {
-      name += " Bold";
+      if (italic) {
+	name = gfxApp->genericSerifBoldItalicFont;
+      } else {
+	name = gfxApp->genericSerifBoldFont;
+      }
+    } else {
+      if (italic) {
+	name = gfxApp->genericSerifItalicFont;
+      } else {
+	name = gfxApp->genericSerifFont;
+      }
     }
-    if (italic) {
-      name += " Italic";
+  } else if (family == genericFontSansSerif) {
+    if (bold) {
+      if (italic) {
+	name = gfxApp->genericSansBoldItalicFont;
+      } else {
+	name = gfxApp->genericSansBoldFont;
+      }
+    } else {
+      if (italic) {
+	name = gfxApp->genericSansItalicFont;
+      } else {
+	name = gfxApp->genericSansFont;
+      }
+    }
+  } else { // family == genericFontMono
+    if (bold) {
+      if (italic) {
+	name = gfxApp->genericMonoBoldItalicFont;
+      } else {
+	name = gfxApp->genericMonoBoldFont;
+      }
+    } else {
+      if (italic) {
+	name = gfxApp->genericMonoItalicFont;
+      } else {
+	name = gfxApp->genericMonoFont;
+      }
     }
   }
+#if 1 //~foo
+  printf("generic font -> '%s'\n", name.c_str());
+  printf("genericSansFont = '%s'\n", gfxApp->genericSansFont.c_str());
+#endif
   Cell fontRes = gfxLoadFont(name, engine);
   if (cellIsError(fontRes)) {
     BytecodeEngine::fatalError("Couldn't open generic font");
@@ -1796,8 +1847,17 @@ static void initApp(BytecodeEngine &engine) {
   }
   gfxApp->resObj.finalizer = &finalizeApp;
   gfxApp->genericSerifFont = fallbackSerifFont;
-  gfxApp->genericSansSerifFont = fallbackSansSerifFont;
+  gfxApp->genericSerifBoldFont = fallbackSerifBoldFont;
+  gfxApp->genericSerifItalicFont = fallbackSerifItalicFont;
+  gfxApp->genericSerifBoldItalicFont = fallbackSerifBoldItalicFont;
+  gfxApp->genericSansFont = fallbackSansFont;
+  gfxApp->genericSansBoldFont = fallbackSansBoldFont;
+  gfxApp->genericSansItalicFont = fallbackSansItalicFont;
+  gfxApp->genericSansBoldItalicFont = fallbackSansBoldItalicFont;
   gfxApp->genericMonoFont = fallbackMonoFont;
+  gfxApp->genericMonoBoldFont = fallbackMonoBoldFont;
+  gfxApp->genericMonoItalicFont = fallbackMonoItalicFont;
+  gfxApp->genericMonoBoldItalicFont = fallbackMonoBoldItalicFont;
   gfxApp->defaultFontSize = 0;
   gfxApp->connection = nullptr;
   gfxApp->screenNum = 0;
@@ -1840,13 +1900,49 @@ static void initApp(BytecodeEngine &engine) {
       cfgItem->args.size() == 1) {
     gfxApp->genericSerifFont = cfgItem->args[0];
   }
-  if ((cfgItem = engine.configItem("gfx", "genericSansSerifFont")) &&
+  if ((cfgItem = engine.configItem("gfx", "genericSerifBoldFont")) &&
       cfgItem->args.size() == 1) {
-    gfxApp->genericSansSerifFont = cfgItem->args[0];
+    gfxApp->genericSerifBoldFont = cfgItem->args[0];
+  }
+  if ((cfgItem = engine.configItem("gfx", "genericSerifItalicFont")) &&
+      cfgItem->args.size() == 1) {
+    gfxApp->genericSerifItalicFont = cfgItem->args[0];
+  }
+  if ((cfgItem = engine.configItem("gfx", "genericSerifBoldItalicFont")) &&
+      cfgItem->args.size() == 1) {
+    gfxApp->genericSerifBoldItalicFont = cfgItem->args[0];
+  }
+  if ((cfgItem = engine.configItem("gfx", "genericSansFont")) &&
+      cfgItem->args.size() == 1) {
+    gfxApp->genericSansFont = cfgItem->args[0];
+  }
+  if ((cfgItem = engine.configItem("gfx", "genericSansBoldFont")) &&
+      cfgItem->args.size() == 1) {
+    gfxApp->genericSansBoldFont = cfgItem->args[0];
+  }
+  if ((cfgItem = engine.configItem("gfx", "genericSansItalicFont")) &&
+      cfgItem->args.size() == 1) {
+    gfxApp->genericSansItalicFont = cfgItem->args[0];
+  }
+  if ((cfgItem = engine.configItem("gfx", "genericSansBoldItalicFont")) &&
+      cfgItem->args.size() == 1) {
+    gfxApp->genericSansBoldItalicFont = cfgItem->args[0];
   }
   if ((cfgItem = engine.configItem("gfx", "genericMonoFont")) &&
       cfgItem->args.size() == 1) {
     gfxApp->genericMonoFont = cfgItem->args[0];
+  }
+  if ((cfgItem = engine.configItem("gfx", "genericMonoBoldFont")) &&
+      cfgItem->args.size() == 1) {
+    gfxApp->genericMonoBoldFont = cfgItem->args[0];
+  }
+  if ((cfgItem = engine.configItem("gfx", "genericMonoItalicFont")) &&
+      cfgItem->args.size() == 1) {
+    gfxApp->genericMonoItalicFont = cfgItem->args[0];
+  }
+  if ((cfgItem = engine.configItem("gfx", "genericMonoBoldItalicFont")) &&
+      cfgItem->args.size() == 1) {
+    gfxApp->genericMonoBoldItalicFont = cfgItem->args[0];
   }
   gfxApp->defaultFontSize = std::max(10.0, gfxApp->screenDPI * 0.125);
   if ((cfgItem = engine.configItem("gfx", "defaultFontSize")) &&
