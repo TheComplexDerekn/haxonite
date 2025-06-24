@@ -831,9 +831,6 @@ Cell gfxGenericFont(int64_t family, bool bold, bool italic, BytecodeEngine &engi
   GfxApplication *gfxApp = (GfxApplication *)cellResourcePtr(app->gfxApp);
 
   std::string name;
-#if 1 //~foo
-  printf("generic font: family=%d bold=%d italic=%d\n", (int)family, bold, italic);
-#endif
   if (family == genericFontSerif) {
     if (bold) {
       if (italic) {
@@ -877,10 +874,6 @@ Cell gfxGenericFont(int64_t family, bool bold, bool italic, BytecodeEngine &engi
       }
     }
   }
-#if 1 //~foo
-  printf("generic font -> '%s'\n", name.c_str());
-  printf("genericSansFont = '%s'\n", gfxApp->genericSansFont.c_str());
-#endif
   Cell fontRes = gfxLoadFont(name, engine);
   if (cellIsError(fontRes)) {
     BytecodeEngine::fatalError("Couldn't open generic font");
