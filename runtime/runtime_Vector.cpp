@@ -72,17 +72,17 @@ public:
     idx = other.idx;
     return *this;
   }
-  Cell &operator*() {
+  Cell &operator*() const {
     VectorHandle *v = (VectorHandle *)cellPtr(vCell);
     VectorData *data = (VectorData *)cellPtr(v->dataPtr);
     return data->elems[idx];
   }
-  Cell *operator->() {
+  Cell *operator->() const {
     VectorHandle *v = (VectorHandle *)cellPtr(vCell);
     VectorData *data = (VectorData *)cellPtr(v->dataPtr);
     return &data->elems[idx];
   }
-  Cell &operator[](int64_t x) {
+  Cell &operator[](int64_t x) const {
     VectorHandle *v = (VectorHandle *)cellPtr(vCell);
     VectorData *data = (VectorData *)cellPtr(v->dataPtr);
     return data->elems[idx + x];
@@ -111,34 +111,34 @@ public:
     idx -= x;
     return *this;
   }
-  friend VectorIter operator+(VectorIter &iter, int64_t x) {
+  friend VectorIter operator+(const VectorIter &iter, int64_t x) {
     return VectorIter(iter.vCell, iter.idx + x);
   }
-  friend VectorIter operator+(int64_t x, VectorIter &iter) {
+  friend VectorIter operator+(int64_t x, const VectorIter &iter) {
     return VectorIter(iter.vCell, iter.idx + x);
   }
-  friend VectorIter operator-(VectorIter &iter, int64_t x) {
+  friend VectorIter operator-(const VectorIter &iter, int64_t x) {
     return VectorIter(iter.vCell, iter.idx - x);
   }
   friend int64_t operator-(VectorIter &iter1, VectorIter &iter2) {
     return (int64_t)(iter1.idx - iter2.idx);
   }
-  friend bool operator==(VectorIter &iter1, VectorIter &iter2) {
+  friend bool operator==(const VectorIter &iter1, const VectorIter &iter2) {
     return iter1.idx == iter2.idx;
   }
-  friend bool operator!=(VectorIter &iter1, VectorIter &iter2) {
+  friend bool operator!=(const VectorIter &iter1, const VectorIter &iter2) {
     return iter1.idx != iter2.idx;
   }
-  friend bool operator<(VectorIter &iter1, VectorIter &iter2) {
+  friend bool operator<(const VectorIter &iter1, const VectorIter &iter2) {
     return iter1.idx < iter2.idx;
   }
-  friend bool operator<=(VectorIter &iter1, VectorIter &iter2) {
+  friend bool operator<=(const VectorIter &iter1, const VectorIter &iter2) {
     return iter1.idx <= iter2.idx;
   }
-  friend bool operator>(VectorIter &iter1, VectorIter &iter2) {
+  friend bool operator>(const VectorIter &iter1, const VectorIter &iter2) {
     return iter1.idx > iter2.idx;
   }
-  friend bool operator>=(VectorIter &iter1, VectorIter &iter2) {
+  friend bool operator>=(const VectorIter &iter1, const VectorIter &iter2) {
     return iter1.idx >= iter2.idx;
   }
 
