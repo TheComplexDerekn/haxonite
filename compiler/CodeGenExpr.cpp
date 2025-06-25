@@ -278,6 +278,7 @@ static ExprResult codeGenBinaryOpExpr(BinaryOpExpr *expr, Context &ctx, Bytecode
     case BinaryOp::gt: bcFunc.addInstr(bcOpcodeCmpgt); break;
     case BinaryOp::le: bcFunc.addInstr(bcOpcodeCmple); break;
     case BinaryOp::ge: bcFunc.addInstr(bcOpcodeCmpge); break;
+    default: break;
     }
     return ExprResult(std::make_unique<CSimpleTypeRef>(expr->loc, ctx.boolType));
   }

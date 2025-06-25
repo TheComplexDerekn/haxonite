@@ -31,6 +31,7 @@ std::string mangleFunctionName(CFuncDecl *func) {
 	switch (keyType->type->kind()) {
 	case CTypeKind::intType:    s += "ZI"; break;
 	case CTypeKind::stringType: s += "ZS"; break;
+	default: break;
 	}
 	break;
       }
@@ -39,9 +40,12 @@ std::string mangleFunctionName(CFuncDecl *func) {
 	switch (keyType->type->kind()) {
 	case CTypeKind::intType:    s += "MI"; break;
 	case CTypeKind::stringType: s += "MS"; break;
+	default: break;
 	}
 	break;
       }
+      default:
+	break;
       }
     }
   } else {
