@@ -2,6 +2,7 @@
 # Copyright 2025 Derek Noonburg
 
 cmake_minimum_required(VERSION 3.10)
+include(CheckStructHasMember)
 
 project(haxonite)
 
@@ -21,7 +22,12 @@ find_package(Fontconfig REQUIRED)
 find_package(double-conversion REQUIRED)
 find_package(X11 REQUIRED)
 
+check_struct_has_member("struct stat" st_mtim      sys/stat.h HAVE_STAT_ST_MTIM)
+check_struct_has_member("struct stat" st_mtimespec sys/stat.h HAVE_STAT_ST_MTIMESPEC)
+
 add_subdirectory(bytecode)
 add_subdirectory(compiler)
 add_subdirectory(runtime)
 add_subdirectory(util)
+
+configure_file("util/aconf.h.in" "util/aconf.h")

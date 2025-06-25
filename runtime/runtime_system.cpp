@@ -17,6 +17,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <string>
+#include "aconf.h"
 #include "runtime_datetime.h"
 #include "runtime_String.h"
 #include "runtime_StringBuf.h"
@@ -115,7 +116,14 @@ static NativeFuncDefn(runtime_modTime_S) {
   if (stat(path.c_str(), &st)) {
     engine.push(cellMakeError());
   } else {
-    engine.push(timestampMake((int64_t)st.st_mtime, (int64_t)st.st_mtim.tv_nsec, engine));
+#if HAVE_STAT_ST_MTIM
+    int64_t ns = (int64_t)st.st_mtim.tv_nsec;
+#elif HAVE_STAT_ST_MTIMESPEC
+    int64_t ns = (int64_t)st.st_mtimespec.tv_nsec;
+#else
+    int64_t ns = 0;
+#endif
+    engine.push(timestampMake((int64_t)st.st_mtime, ns, engine));
   }
 }
 

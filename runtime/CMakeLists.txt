@@ -4,6 +4,7 @@
 include_directories("${PROJECT_SOURCE_DIR}/bytecode")
 include_directories("${PROJECT_SOURCE_DIR}/runtime")
 include_directories("${PROJECT_SOURCE_DIR}/util")
+include_directories("${PROJECT_BINARY_DIR}/util")
 include_directories(${FREETYPE_INCLUDE_DIRS})
 
 add_executable(haxrun
