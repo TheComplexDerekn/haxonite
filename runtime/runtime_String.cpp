@@ -278,14 +278,21 @@ static NativeFuncDefn(runtime_rfind_SII) {
 
   int64_t sLength = stringLength(sCell);
   uint8_t *sData = (uint8_t *)stringData(sCell);
-  int64_t term = cellInt(termCell);
+  uint8_t term = (uint8_t)cellInt(termCell);
   int64_t start = cellInt(startCell);
   if (start < 0 || start > sLength - 1) {
     BytecodeEngine::fatalError("Invalid argument");
   }
 
-  void *p = memrchr(sData, (int)term & 0xff, start + 1);
-  int64_t pos = p ? (int64_t)((uint8_t *)p - sData) : -1;
+  // could use memrchr() here, but it's not available on some systems
+  // (e.g., MacOS)
+  int64_t pos = -1;
+  for (int64_t i = start; i >= 0; --i) {
+    if (sData[i] == term) {
+      pos = i;
+      break;
+    }
+  }
 
   engine.push(cellMakeInt(pos));
 }
