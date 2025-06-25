@@ -6,6 +6,7 @@ cmake_minimum_required(VERSION 3.10)
 project(haxonite)
 
 enable_language(CXX)
+set(CMAKE_CXX_STANDARD 17)
 
 # There are apparently no standard FindXXX.cmake files for:
 # - cairo
