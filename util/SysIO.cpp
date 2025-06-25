@@ -16,6 +16,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include "aconf.h"
 
 //------------------------------------------------------------------------
 
@@ -56,7 +57,14 @@ DateTime pathModTime(const std::string &path) {
   if (stat(path.c_str(), &st)) {
     return DateTime();
   }
-  return DateTime(st.st_mtime, st.st_mtim.tv_nsec);
+#if HAVE_STAT_ST_MTIM
+  int ns = (int)st.st_mtim.tv_nsec;
+#elif HAVE_STAT_ST_MTIMESPEC
+  int ns = (int)st.st_mtimespec.tv_nsec;
+#else
+  int ns = 0;
+#endif
+  return DateTime(st.st_mtime, ns);
 }
 
 bool readFile(const std::string &path, std::string &contents) {
