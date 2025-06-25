@@ -892,14 +892,14 @@ static ExprResult codeGenMakeExpr(MakeExpr *expr, Context &ctx, BytecodeFile &bc
     return ExprResult();
   }
   if (typeCheckStruct(typeRef.get())) {
-    return codeGenMakeStructExpr(expr, std::move(typeRef), (CStructType *)typeRef->type,
-				 ctx, bcFunc);
+    CStructType *type = (CStructType *)typeRef->type;
+    return codeGenMakeStructExpr(expr, std::move(typeRef), type, ctx, bcFunc);
   } else if (typeCheckVarStruct(typeRef.get())) {
     error(expr->loc, "Varstruct type in 'make'");
     return ExprResult();
   } else if (typeCheckSubStruct(typeRef.get())) {
-    return codeGenMakeSubStructExpr(expr, std::move(typeRef), (CSubStructType *)typeRef->type,
-				    ctx, bcFunc);
+    CSubStructType *type = (CSubStructType *)typeRef->type;
+    return codeGenMakeSubStructExpr(expr, std::move(typeRef), type, ctx, bcFunc);
   } else {
     error(expr->loc, "Invalid type in 'make' (must be struct or substruct)");
     return ExprResult();
