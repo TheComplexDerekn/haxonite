@@ -1,8 +1,8 @@
 Haxonite
 --------
 
-Haxonite is a programming language that features:
-* a small, easy-to-learn core language
+Haxonite is a small, elegant, easy-to-learn programming language that
+features:
 * a clean separation between language and libraries
 * strong, static typing
 * memory safety via bounds checking and garbage collection
