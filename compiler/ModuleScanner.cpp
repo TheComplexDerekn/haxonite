@@ -135,6 +135,9 @@ static CModule *scanModule(const std::string &moduleName, bool builtin, Context 
   }
   ctx.moduleBeingCompiled = nullptr;
 
+  if (!ok) {
+    return nullptr;
+  }
   return cmod;
 }
 
