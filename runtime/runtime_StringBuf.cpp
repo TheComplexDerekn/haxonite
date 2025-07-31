@@ -146,6 +146,30 @@ static NativeFuncDefn(runtime_length_T) {
   engine.push(cellMakeInt(length));
 }
 
+// ulength(sb: StringBuf) -> Int
+static NativeFuncDefn(runtime_ulength_T) {
+#if CHECK_RUNTIME_FUNC_ARGS
+  if (engine.nArgs() != 1 ||
+      !cellIsPtr(engine.arg(0))) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+#endif
+  Cell &sbCell = engine.arg(0);
+
+  StringBufHandle *sb = (StringBufHandle *)cellPtr(sbCell);
+  engine.failOnNilPtr(sb);
+  int64_t length = heapObjSize(sb);
+  StringBufData *data = (StringBufData *)cellPtr(sb->dataPtr);
+
+  int64_t i = 0;
+  int64_t n = 0;
+  while (i < length) {
+    i += utf8Length(data->bytes, length, i);
+    ++n;
+  }
+  engine.push(cellMakeInt(n));
+}
+
 // get(sb: StringBuf, idx: Int) -> Int
 // iget(sb: StringBuf, iter: Int) -> Int
 static NativeFuncDefn(runtime_get_TI) {
@@ -383,6 +407,7 @@ static NativeFuncDefn(runtime_imore_TI) {
 void runtime_StringBuf_init(BytecodeEngine &engine) {
   engine.addNativeFunction("_allocStringBuf", &runtime_allocStringBuf);
   engine.addNativeFunction("length_T", &runtime_length_T);
+  engine.addNativeFunction("ulength_T", &runtime_ulength_T);
   engine.addNativeFunction("get_TI", &runtime_get_TI);
   engine.addNativeFunction("byte_TI", &runtime_byte_TI);
   engine.addNativeFunction("next_TI", &runtime_next_TI);

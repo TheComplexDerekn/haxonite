@@ -26,6 +26,27 @@ static NativeFuncDefn(runtime_length_S) {
   engine.push(cellMakeInt(stringLength(s)));
 }
 
+// ulength(s: String) -> Int
+static NativeFuncDefn(runtime_ulength_S) {
+#if CHECK_RUNTIME_FUNC_ARGS
+  if (engine.nArgs() != 1 ||
+      !cellIsPtr(engine.arg(0))) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+#endif
+  Cell &s = engine.arg(0);
+
+  int64_t i = 0;
+  int64_t n = 0;
+  int64_t length = stringLength(s);
+  uint8_t *sData = (uint8_t *)stringData(s);
+  while (i < length) {
+    i += utf8Length(sData, length, i);
+    ++n;
+  }
+  engine.push(cellMakeInt(n));
+}
+
 // get(s: String, idx: Int) -> Int
 // iget(s: String, iter: Int) -> Int
 static NativeFuncDefn(runtime_get_SI) {
@@ -415,6 +436,7 @@ static NativeFuncDefn(runtime_imore_SI) {
 
 void runtime_String_init(BytecodeEngine &engine) {
   engine.addNativeFunction("length_S", &runtime_length_S);
+  engine.addNativeFunction("ulength_S", &runtime_ulength_S);
   engine.addNativeFunction("get_SI", &runtime_get_SI);
   engine.addNativeFunction("next_SI", &runtime_next_SI);
   engine.addNativeFunction("byte_SI", &runtime_byte_SI);
