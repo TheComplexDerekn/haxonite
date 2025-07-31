@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <signal.h>
+#include <pwd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -125,6 +126,28 @@ static NativeFuncDefn(runtime_modTime_S) {
 #endif
     engine.push(timestampMake((int64_t)st.st_mtime, ns, engine));
   }
+}
+
+// homeDir() -> String
+static NativeFuncDefn(runtime_homeDir) {
+#if CHECK_RUNTIME_FUNC_ARGS
+  if (engine.nArgs() != 0) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+#endif
+
+  const char *s;
+  if (!(s = getenv("HOME"))) {
+    struct passwd *pw;
+    char *user = getenv("USER");
+    pw = user ? getpwnam(user) : getpwuid(getuid());
+    if (pw) {
+      s = pw->pw_dir;
+    } else {
+      s = ".";
+    }
+  }
+  engine.push(stringMake((const uint8_t *)s, (int64_t)strlen(s), engine));
 }
 
 // createDir(path: String) -> Result[]
@@ -480,6 +503,7 @@ void runtime_system_init(BytecodeEngine &engine) {
   engine.addNativeFunction("pathIsDir_S", &runtime_pathIsDir_S);
   engine.addNativeFunction("pathIsFile_S", &runtime_pathIsFile_S);
   engine.addNativeFunction("modTime_S", &runtime_modTime_S);
+  engine.addNativeFunction("homeDir", &runtime_homeDir);
   engine.addNativeFunction("createDir_S", &runtime_createDir_S);
   engine.addNativeFunction("delete_S", &runtime_delete_S);
   engine.addNativeFunction("deleteDir_S", &runtime_deleteDir_S);

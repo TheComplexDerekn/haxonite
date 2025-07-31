@@ -101,6 +101,7 @@ header haxonite is
   nativefunc pathIsDir(path: String) -> Bool;
   nativefunc pathIsFile(path: String) -> Bool;
   nativefunc modTime(path: String) -> Result[Timestamp];
+  nativefunc homeDir() -> String;
   nativefunc createDir(path: String) -> Result[];
   nativefunc delete(path: String) -> Result[];
   nativefunc deleteDir(path: String) -> Result[];
