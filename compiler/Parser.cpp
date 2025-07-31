@@ -447,7 +447,7 @@ std::unique_ptr<Arg> Parser::parseArg() {
     return nullptr;
   }
   if (!expect(Token::Kind::puncColon)) {
-    error(lexer.get(0).loc(), "Expected ':' after field name");
+    error(lexer.get(0).loc(), "Expected ':' after argument name");
     return nullptr;
   }
   std::unique_ptr<TypeRef> type = parseTypeRef();
