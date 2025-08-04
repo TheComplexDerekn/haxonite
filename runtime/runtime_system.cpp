@@ -128,6 +128,21 @@ static NativeFuncDefn(runtime_modTime_S) {
   }
 }
 
+// currentDir() -> String
+static NativeFuncDefn(runtime_currentDir) {
+#if CHECK_RUNTIME_FUNC_ARGS
+  if (engine.nArgs() != 0) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+#endif
+
+  char s[PATH_MAX + 1];
+  if (!getcwd(s, sizeof(s))) {
+    s[0] = '\0';
+  }
+  engine.push(stringMake((const uint8_t *)s, (int64_t)strlen(s), engine));
+}
+
 // homeDir() -> String
 static NativeFuncDefn(runtime_homeDir) {
 #if CHECK_RUNTIME_FUNC_ARGS
@@ -503,6 +518,7 @@ void runtime_system_init(BytecodeEngine &engine) {
   engine.addNativeFunction("pathIsDir_S", &runtime_pathIsDir_S);
   engine.addNativeFunction("pathIsFile_S", &runtime_pathIsFile_S);
   engine.addNativeFunction("modTime_S", &runtime_modTime_S);
+  engine.addNativeFunction("currentDir", &runtime_currentDir);
   engine.addNativeFunction("homeDir", &runtime_homeDir);
   engine.addNativeFunction("createDir_S", &runtime_createDir_S);
   engine.addNativeFunction("delete_S", &runtime_delete_S);
