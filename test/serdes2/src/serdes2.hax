@@ -67,7 +67,7 @@ module serdes2 is
   end
 
   func dumpStringBuf(sb: StringBuf) is
-    var n = #sb;
+    var n = byteLength(sb);
     write($"StringBuf [{n}]:");
     for i : 0 .. n - 1 do
       var byte = byte(sb, i);

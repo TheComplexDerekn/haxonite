@@ -25,7 +25,7 @@ uint64_t hashInt(int64_t x) {
 }
 
 uint64_t hashString(Cell &s) {
-  return hash((uint8_t *)stringData(s), stringLength(s));
+  return hash((uint8_t *)stringData(s), stringByteLength(s));
 }
 
 int64_t hashFold(uint64_t h, int64_t size) {

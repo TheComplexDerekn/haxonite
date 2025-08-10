@@ -1,8 +1,8 @@
 module string1 is
 
   func run(s1: String, s2: String) is
-    var n1 = length(s1);
-    var n2 = length(s2);
+    var n1 = byteLength(s1);
+    var n2 = byteLength(s2);
     var cmp = "";
     if s1 < s2 then
       cmp = "lt";

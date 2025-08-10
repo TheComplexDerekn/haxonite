@@ -328,20 +328,6 @@ static BlockResult codeGenForContainerStmt(ForStmt *stmt, Context &ctx, Bytecode
   const char *inextFuncName = nullptr;
   const char *igetFuncName = nullptr;
   switch (res.type->type->kind()) {
-  case CTypeKind::stringType:
-    elemType = std::make_unique<CSimpleTypeRef>(stmt->loc, ctx.intType);
-    ifirstFuncName = "ifirst_S";
-    imoreFuncName = "imore_SI";
-    inextFuncName = "inext_SI";
-    igetFuncName = "iget_SI";
-    break;
-  case CTypeKind::stringBufType:
-    elemType = std::make_unique<CSimpleTypeRef>(stmt->loc, ctx.intType);
-    ifirstFuncName = "ifirst_T";
-    imoreFuncName = "imore_TI";
-    inextFuncName = "inext_TI";
-    igetFuncName = "iget_TI";
-    break;
   case CTypeKind::vectorType:
     elemType = std::unique_ptr<CTypeRef>(((CParamTypeRef *)res.type.get())->params[0]->copy());
     ifirstFuncName = "ifirst_V";
@@ -386,7 +372,7 @@ static BlockResult codeGenForContainerStmt(ForStmt *stmt, Context &ctx, Bytecode
     }
     break;
   default:
-    error(stmt->loc, "For loop container must be String, StringBuf, Vector, Set, or Map");
+    error(stmt->loc, "For loop container must be Vector, Set, or Map");
     ctx.popFrame();
     return BlockResult();
   }

@@ -1,4 +1,4 @@
-// Test the regular expression split() function.
+// Test the regular expression reSplit() function.
 
 module regex3 is
 
@@ -10,10 +10,10 @@ module regex3 is
   end
 
   func doSplit(re: String, s: String) is
-    var vRes = split(re, s);
+    var vRes = reSplit(re, s);
     if (ok(vRes)) then
       var v = vRes!;
-      write($"split('{re}', '{s}') -> ");
+      write($"reSplit('{re}', '{s}') -> ");
       for i : 0 .. #v - 1 do
         if i > 0 then
           write(", ");
@@ -22,7 +22,7 @@ module regex3 is
       end
       write("\n");
     else
-      write($"split('{re}', '{s}') -> invalid regex\n");
+      write($"reSplit('{re}', '{s}') -> invalid regex\n");
     end
   end
 

@@ -1,4 +1,4 @@
-// String iterator functions.
+// String byte and codepoint iterator functions.
 
 module string2 is
 
@@ -11,18 +11,18 @@ module string2 is
 
   func run(s: String) is
     write($"'{s}':");
-    var i = ifirst(s);
-    while imore(s, i) do
-      var c = iget(s, i);
+    var i = 0;
+    while i < byteLength(s) do
+      var c = codepoint(s, i);
       write($" '{c:c}' ({c:02x})");
-      i = inext(s, i);
+      i = nextCodepoint(s, i);
     end    
     write("\n");
   end
 
   func run2(s: String) is
     write($"'{s}':");
-    for i : 0 .. #s - 1 do
+    for i : 0 .. byteLength(s) - 1 do
       var b = byte(s, i);
       write($" {b:02x}");
     end    

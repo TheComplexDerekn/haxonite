@@ -315,7 +315,7 @@ static NativeFuncDefn(runtime_writeFile_SS) {
 
   FILE *f = fopen(path.c_str(), "wb");
   if (f) {
-    int64_t n = stringLength(sCell);
+    int64_t n = stringByteLength(sCell);
     if (fwrite(stringData(sCell), 1, n, f) == n) {
       engine.push(cellMakeInt(0));
     } else {

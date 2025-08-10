@@ -12,109 +12,7 @@
 #include "BytecodeDefs.h"
 #include "NumConversion.h"
 #include "UTF8.h"
-
-// length(s: String) -> Int
-static NativeFuncDefn(runtime_length_S) {
-#if CHECK_RUNTIME_FUNC_ARGS
-  if (engine.nArgs() != 1 ||
-      !cellIsPtr(engine.arg(0))) {
-    BytecodeEngine::fatalError("Invalid argument");
-  }
-#endif
-  Cell &s = engine.arg(0);
-
-  engine.push(cellMakeInt(stringLength(s)));
-}
-
-// ulength(s: String) -> Int
-static NativeFuncDefn(runtime_ulength_S) {
-#if CHECK_RUNTIME_FUNC_ARGS
-  if (engine.nArgs() != 1 ||
-      !cellIsPtr(engine.arg(0))) {
-    BytecodeEngine::fatalError("Invalid argument");
-  }
-#endif
-  Cell &s = engine.arg(0);
-
-  int64_t i = 0;
-  int64_t n = 0;
-  int64_t length = stringLength(s);
-  uint8_t *sData = (uint8_t *)stringData(s);
-  while (i < length) {
-    i += utf8Length(sData, length, i);
-    ++n;
-  }
-  engine.push(cellMakeInt(n));
-}
-
-// get(s: String, idx: Int) -> Int
-// iget(s: String, iter: Int) -> Int
-static NativeFuncDefn(runtime_get_SI) {
-#if CHECK_RUNTIME_FUNC_ARGS
-  if (engine.nArgs() != 2 ||
-      !cellIsPtr(engine.arg(0)) ||
-      !cellIsInt(engine.arg(1))) {
-    BytecodeEngine::fatalError("Invalid argument");
-  }
-#endif
-  Cell &s = engine.arg(0);
-  Cell &idxCell = engine.arg(1);
-
-  int64_t idx = cellInt(idxCell);
-  int64_t length = stringLength(s);
-  if (idx < 0 || idx >= length) {
-    BytecodeEngine::fatalError("Index out of bounds");
-  }
-  uint32_t u;
-  if (!utf8Get(stringData(s), length, idx, u)) {
-    BytecodeEngine::fatalError("Index out of bounds");
-  }
-  engine.push(cellMakeInt((int64_t)u));
-}
-
-// next(s: String, idx: Int) -> Int
-// inext(s: String, iter: Int) -> Int
-static NativeFuncDefn(runtime_next_SI) {
-#if CHECK_RUNTIME_FUNC_ARGS
-  if (engine.nArgs() != 2 ||
-      !cellIsPtr(engine.arg(0)) ||
-      !cellIsInt(engine.arg(1))) {
-    BytecodeEngine::fatalError("Invalid argument");
-  }
-#endif
-  Cell &s = engine.arg(0);
-  Cell &iterCell = engine.arg(1);
-
-  int64_t iter = cellInt(iterCell);
-  int64_t length = stringLength(s);
-  if (iter < 0 || iter >= length) {
-    BytecodeEngine::fatalError("Index out of bounds");
-  }
-  int n = utf8Length(stringData(s), length, iter);
-  engine.push(cellMakeInt(iter + n));
-}
-
-// byte(s: String, idx: Int) -> Int
-static NativeFuncDefn(runtime_byte_SI) {
-#if CHECK_RUNTIME_FUNC_ARGS
-  if (engine.nArgs() != 2 ||
-      !cellIsPtr(engine.arg(0)) ||
-      !cellIsInt(engine.arg(1))) {
-    BytecodeEngine::fatalError("Invalid argument");
-  }
-#endif
-  Cell &s = engine.arg(0);
-  Cell &idxCell = engine.arg(1);
-
-  int64_t idx = cellInt(idxCell);
-  int64_t length = stringLength(s);
-  if (idx < 0 || idx >= length) {
-    BytecodeEngine::fatalError("Index out of bounds");
-  }
-  uint8_t *sData = (uint8_t *)stringData(s);
-
-  engine.push(cellMakeInt(sData[idx]));
-}
+#include "runtime_Vector.h"
 
 // compare(s1: String, s2: String) -> Int
 static NativeFuncDefn(runtime_compare_SS) {
@@ -160,9 +58,9 @@ static NativeFuncDefn(runtime_startsWith_SS) {
   Cell &sCell = engine.arg(0);
   Cell &prefixCell = engine.arg(1);
 
-  int64_t sLength = stringLength(sCell);
+  int64_t sLength = stringByteLength(sCell);
   uint8_t *sData = (uint8_t *)stringData(sCell);
-  int64_t prefixLength = stringLength(prefixCell);
+  int64_t prefixLength = stringByteLength(prefixCell);
   uint8_t *prefixData = (uint8_t *)stringData(prefixCell);
   bool result = sLength >= prefixLength && !memcmp(sData, prefixData, prefixLength);
 
@@ -181,9 +79,9 @@ static NativeFuncDefn(runtime_endsWith_SS) {
   Cell &sCell = engine.arg(0);
   Cell &suffixCell = engine.arg(1);
 
-  int64_t sLength = stringLength(sCell);
+  int64_t sLength = stringByteLength(sCell);
   uint8_t *sData = (uint8_t *)stringData(sCell);
-  int64_t suffixLength = stringLength(suffixCell);
+  int64_t suffixLength = stringByteLength(suffixCell);
   uint8_t *suffixData = (uint8_t *)stringData(suffixCell);
   bool result = sLength >= suffixLength &&
                 !memcmp(sData + (sLength - suffixLength), suffixData, suffixLength);
@@ -191,156 +89,115 @@ static NativeFuncDefn(runtime_endsWith_SS) {
   engine.push(cellMakeBool(result));
 }
 
-// find(s: String, term: String, start: Int) -> Int
-static NativeFuncDefn(runtime_find_SSI) {
+// split(term: String, s: String) -> Vector[String]
+static NativeFuncDefn(runtime_split_SS) {
 #if CHECK_RUNTIME_FUNC_ARGS
-  if (engine.nArgs() != 3 ||
+  if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
-      !cellIsPtr(engine.arg(1)) ||
-      !cellIsInt(engine.arg(2))) {
+      !cellIsPtr(engine.arg(1))) {
     BytecodeEngine::fatalError("Invalid argument");
   }
 #endif
   Cell &sCell = engine.arg(0);
   Cell &termCell = engine.arg(1);
-  Cell &startCell = engine.arg(2);
 
-  int64_t sLength = stringLength(sCell);
-  uint8_t *sData = (uint8_t *)stringData(sCell);
-  int64_t termLength = stringLength(termCell);
-  uint8_t *termData = (uint8_t *)stringData(termCell);
-  int64_t start = cellInt(startCell);
-  if (start < 0 || start > sLength) {
-    BytecodeEngine::fatalError("Invalid argument");
+  Cell vCell = vectorMake(engine);
+  engine.pushGCRoot(vCell);
+
+  int64_t sLength = stringByteLength(sCell);
+  int64_t termLength = stringByteLength(termCell);
+  int64_t i = 0;
+  while (true) {
+    uint8_t *sData = stringData(sCell);
+    uint8_t *p = (uint8_t *)memmem(sData + i, sLength - i, stringData(termCell), termLength);
+    if (p) {
+      int64_t j = (int64_t)(p - sData);
+      Cell substrCell = stringMake(sCell, i, j - i, engine);
+      vectorAppend(vCell, substrCell, engine);
+      i = j + termLength;
+    } else {
+      Cell substrCell = stringMake(sCell, i, sLength - i, engine);
+      vectorAppend(vCell, substrCell, engine);
+      break;
+    }
   }
 
-  void *p = memmem(sData + start, sLength - start, termData, termLength);
-  int64_t pos = p ? (int64_t)((uint8_t *)p - sData) : -1;
-
-  engine.push(cellMakeInt(pos));
+  engine.push(vCell);
+  engine.popGCRoot(vCell);
 }
 
-// find(s: String, c: Int, start: Int) -> Int
-static NativeFuncDefn(runtime_find_SII) {
+// splitFirst(term: String, s: String) -> Vector[String]
+static NativeFuncDefn(runtime_splitFirst_SS) {
 #if CHECK_RUNTIME_FUNC_ARGS
-  if (engine.nArgs() != 3 ||
+  if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
-      !cellIsInt(engine.arg(1)) ||
-      !cellIsInt(engine.arg(2))) {
+      !cellIsPtr(engine.arg(1))) {
     BytecodeEngine::fatalError("Invalid argument");
   }
 #endif
   Cell &sCell = engine.arg(0);
   Cell &termCell = engine.arg(1);
-  Cell &startCell = engine.arg(2);
 
-  int64_t sLength = stringLength(sCell);
-  uint8_t *sData = (uint8_t *)stringData(sCell);
-  int64_t term = cellInt(termCell);
-  int64_t start = cellInt(startCell);
-  if (start < 0 || start > sLength) {
-    BytecodeEngine::fatalError("Invalid argument");
+  Cell vCell = vectorMake(engine);
+  engine.pushGCRoot(vCell);
+
+  uint8_t *sData = stringData(sCell);
+  int64_t sLength = stringByteLength(sCell);
+  int64_t termLength = stringByteLength(termCell);
+  uint8_t *p = (uint8_t *)memmem(sData, sLength, stringData(termCell), termLength);
+  if (p) {
+    int64_t i = (int64_t)(p - sData);
+    int64_t j = i + termLength;
+    Cell substr1Cell = stringMake(sCell, 0, i, engine);
+    vectorAppend(vCell, substr1Cell, engine);
+    Cell substr2Cell = stringMake(sCell, j, sLength - j, engine);
+    vectorAppend(vCell, substr2Cell, engine);
+  } else {
+    vectorAppend(vCell, sCell, engine);
   }
 
-  void *p = memchr(sData + start, (int)term & 0xff, sLength - start);
-  int64_t pos = p ? (int64_t)((uint8_t *)p - sData) : -1;
-
-  engine.push(cellMakeInt(pos));
+  engine.push(vCell);
+  engine.popGCRoot(vCell);
 }
 
-// rfind(s: String, term: String, start: Int) -> Int
-static NativeFuncDefn(runtime_rfind_SSI) {
+// splitLast(term: String, s: String) -> Vector[String]
+static NativeFuncDefn(runtime_splitLast_SS) {
 #if CHECK_RUNTIME_FUNC_ARGS
-  if (engine.nArgs() != 3 ||
+  if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
-      !cellIsPtr(engine.arg(1)) ||
-      !cellIsInt(engine.arg(2))) {
+      !cellIsPtr(engine.arg(1))) {
     BytecodeEngine::fatalError("Invalid argument");
   }
 #endif
   Cell &sCell = engine.arg(0);
   Cell &termCell = engine.arg(1);
-  Cell &startCell = engine.arg(2);
 
-  int64_t sLength = stringLength(sCell);
-  uint8_t *sData = (uint8_t *)stringData(sCell);
-  int64_t termLength = stringLength(termCell);
-  uint8_t *termData = (uint8_t *)stringData(termCell);
-  int64_t start = cellInt(startCell);
-  if (start < 0 || start > sLength - 1) {
-    BytecodeEngine::fatalError("Invalid argument");
-  }
+  Cell vCell = vectorMake(engine);
+  engine.pushGCRoot(vCell);
 
+  uint8_t *sData = stringData(sCell);
+  int64_t sLength = stringByteLength(sCell);
+  uint8_t *termData = stringData(termCell);
+  int64_t termLength = stringByteLength(termCell);
   //~ this should use a more efficient string search algorithm
-  int64_t pos = -1;
-  for (int64_t i = std::min(start, sLength - termLength); i >= 0; --i) {
+  int64_t i;
+  for (i = sLength - termLength; i >= 0; --i) {
     if (!memcmp(sData + i, termData, termLength)) {
-      pos = i;
       break;
     }
   }
-
-  engine.push(cellMakeInt(pos));
-}
-
-// rfind(s: String, c: Int, start: Int) -> Int
-static NativeFuncDefn(runtime_rfind_SII) {
-#if CHECK_RUNTIME_FUNC_ARGS
-  if (engine.nArgs() != 3 ||
-      !cellIsPtr(engine.arg(0)) ||
-      !cellIsInt(engine.arg(1)) ||
-      !cellIsInt(engine.arg(2))) {
-    BytecodeEngine::fatalError("Invalid argument");
-  }
-#endif
-  Cell &sCell = engine.arg(0);
-  Cell &termCell = engine.arg(1);
-  Cell &startCell = engine.arg(2);
-
-  int64_t sLength = stringLength(sCell);
-  uint8_t *sData = (uint8_t *)stringData(sCell);
-  uint8_t term = (uint8_t)cellInt(termCell);
-  int64_t start = cellInt(startCell);
-  if (start < 0 || start > sLength - 1) {
-    BytecodeEngine::fatalError("Invalid argument");
+  if (i >= 0) {
+    int64_t j = i + termLength;
+    Cell substr1Cell = stringMake(sCell, 0, i, engine);
+    vectorAppend(vCell, substr1Cell, engine);
+    Cell substr2Cell = stringMake(sCell, j, sLength - j, engine);
+    vectorAppend(vCell, substr2Cell, engine);
+  } else {
+    vectorAppend(vCell, sCell, engine);
   }
 
-  // could use memrchr() here, but it's not available on some systems
-  // (e.g., MacOS)
-  int64_t pos = -1;
-  for (int64_t i = start; i >= 0; --i) {
-    if (sData[i] == term) {
-      pos = i;
-      break;
-    }
-  }
-
-  engine.push(cellMakeInt(pos));
-}
-
-// substr(s: String, start: Int, n: Int) -> String
-static NativeFuncDefn(runtime_substr_SII) {
-#if CHECK_RUNTIME_FUNC_ARGS
-  if (engine.nArgs() != 3 ||
-      !cellIsPtr(engine.arg(0)) ||
-      !cellIsInt(engine.arg(1)) ||
-      !cellIsInt(engine.arg(2))) {
-    BytecodeEngine::fatalError("Invalid argument");
-  }
-#endif
-  Cell &sCell = engine.arg(0);
-  Cell &startCell = engine.arg(1);
-  Cell &nCell = engine.arg(2);
-
-  int64_t sLength = stringLength(sCell);
-  int64_t start = cellInt(startCell);
-  int64_t n = cellInt(nCell);
-  if (start < 0 || start > sLength ||
-      n < 0 || start > sLength - n) {
-    BytecodeEngine::fatalError("Invalid argument");
-  }
-
-  engine.push(stringMake(sCell, start, n, engine));
+  engine.push(vCell);
+  engine.popGCRoot(vCell);
 }
 
 // toInt(s: String) -> Result[Int]
@@ -404,8 +261,8 @@ static NativeFuncDefn(runtime_toFloat_S) {
   }
 }
 
-// ifirst(s: String) -> Int
-static NativeFuncDefn(runtime_ifirst_S) {
+// byteLength(s: String) -> Int
+static NativeFuncDefn(runtime_byteLength_S) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 1 ||
       !cellIsPtr(engine.arg(0))) {
@@ -414,11 +271,11 @@ static NativeFuncDefn(runtime_ifirst_S) {
 #endif
   Cell &s = engine.arg(0);
 
-  engine.push(cellMakeInt(0));
+  engine.push(cellMakeInt(stringByteLength(s)));
 }
 
-// imore(s: String, iter: Int) -> Bool
-static NativeFuncDefn(runtime_imore_SI) {
+// byte(s: String, idx: Int) -> Int
+static NativeFuncDefn(runtime_byte_SI) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -427,42 +284,113 @@ static NativeFuncDefn(runtime_imore_SI) {
   }
 #endif
   Cell &s = engine.arg(0);
-  Cell &iterCell = engine.arg(1);
+  Cell &idxCell = engine.arg(1);
 
-  engine.push(cellMakeBool(cellInt(iterCell) < stringLength(s)));
+  int64_t idx = cellInt(idxCell);
+  int64_t length = stringByteLength(s);
+  if (idx < 0 || idx >= length) {
+    BytecodeEngine::fatalError("Index out of bounds");
+  }
+  uint8_t *sData = (uint8_t *)stringData(s);
+
+  engine.push(cellMakeInt(sData[idx]));
+}
+
+// codepoint(s: String, idx: Int) -> Int
+static NativeFuncDefn(runtime_codepoint_SI) {
+#if CHECK_RUNTIME_FUNC_ARGS
+  if (engine.nArgs() != 2 ||
+      !cellIsPtr(engine.arg(0)) ||
+      !cellIsInt(engine.arg(1))) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+#endif
+  Cell &s = engine.arg(0);
+  Cell &idxCell = engine.arg(1);
+
+  int64_t idx = cellInt(idxCell);
+  int64_t length = stringByteLength(s);
+  if (idx < 0 || idx >= length) {
+    BytecodeEngine::fatalError("Index out of bounds");
+  }
+  uint32_t u;
+  if (!utf8Get(stringData(s), length, idx, u)) {
+    BytecodeEngine::fatalError("Index out of bounds");
+  }
+  engine.push(cellMakeInt((int64_t)u));
+}
+
+// nextCodepoint(s: String, idx: Int) -> Int
+static NativeFuncDefn(runtime_nextCodepoint_SI) {
+#if CHECK_RUNTIME_FUNC_ARGS
+  if (engine.nArgs() != 2 ||
+      !cellIsPtr(engine.arg(0)) ||
+      !cellIsInt(engine.arg(1))) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+#endif
+  Cell &s = engine.arg(0);
+  Cell &idxCell = engine.arg(1);
+
+  int64_t idx = cellInt(idxCell);
+  int64_t length = stringByteLength(s);
+  if (idx < 0 || idx >= length) {
+    BytecodeEngine::fatalError("Index out of bounds");
+  }
+  int n = utf8Length(stringData(s), length, idx);
+  engine.push(cellMakeInt(idx + n));
+}
+
+// substr(s: String, first: Int, last: Int) -> String
+static NativeFuncDefn(runtime_substr_SII) {
+#if CHECK_RUNTIME_FUNC_ARGS
+  if (engine.nArgs() != 3 ||
+      !cellIsPtr(engine.arg(0)) ||
+      !cellIsInt(engine.arg(1)) ||
+      !cellIsInt(engine.arg(2))) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+#endif
+  Cell &sCell = engine.arg(0);
+  Cell &firstCell = engine.arg(1);
+  Cell &lastCell = engine.arg(2);
+
+  int64_t sLength = stringByteLength(sCell);
+  int64_t first = cellInt(firstCell);
+  int64_t last = cellInt(lastCell);
+  if (first < 0 || first > sLength ||
+      last < first || last > sLength) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+
+  engine.push(stringMake(sCell, first, last - first, engine));
 }
 
 //------------------------------------------------------------------------
 
 void runtime_String_init(BytecodeEngine &engine) {
-  engine.addNativeFunction("length_S", &runtime_length_S);
-  engine.addNativeFunction("ulength_S", &runtime_ulength_S);
-  engine.addNativeFunction("get_SI", &runtime_get_SI);
-  engine.addNativeFunction("next_SI", &runtime_next_SI);
-  engine.addNativeFunction("byte_SI", &runtime_byte_SI);
   engine.addNativeFunction("compare_SS", &runtime_compare_SS);
   engine.addNativeFunction("concat_SS", &runtime_concat_SS);
   engine.addNativeFunction("startsWith_SS", &runtime_startsWith_SS);
   engine.addNativeFunction("endsWith_SS", &runtime_endsWith_SS);
-  engine.addNativeFunction("find_SSI", &runtime_find_SSI);
-  engine.addNativeFunction("find_SII", &runtime_find_SII);
-  engine.addNativeFunction("rfind_SSI", &runtime_rfind_SSI);
-  engine.addNativeFunction("rfind_SII", &runtime_rfind_SII);
-  engine.addNativeFunction("substr_SII", &runtime_substr_SII);
+  engine.addNativeFunction("split_SS", &runtime_split_SS);
+  engine.addNativeFunction("splitFirst_SS", &runtime_splitFirst_SS);
+  engine.addNativeFunction("splitLast_SS", &runtime_splitLast_SS);
   engine.addNativeFunction("toInt_S", &runtime_toInt_S);
   engine.addNativeFunction("toInt_SI", &runtime_toInt_SI);
   engine.addNativeFunction("toFloat_S", &runtime_toFloat_S);
-  engine.addNativeFunction("ifirst_S", &runtime_ifirst_S);
-  engine.addNativeFunction("imore_SI", &runtime_imore_SI);
-  engine.addNativeFunction("inext_SI", &runtime_next_SI);
-  engine.addNativeFunction("iget_SI", &runtime_get_SI);
+  engine.addNativeFunction("byteLength_S", &runtime_byteLength_S);
+  engine.addNativeFunction("byte_SI", &runtime_byte_SI);
+  engine.addNativeFunction("codepoint_SI", &runtime_codepoint_SI);
+  engine.addNativeFunction("nextCodepoint_SI", &runtime_nextCodepoint_SI);
+  engine.addNativeFunction("substr_SII", &runtime_substr_SII);
 }
 
 //------------------------------------------------------------------------
 // support functions
 //------------------------------------------------------------------------
 
-int64_t stringLength(Cell &s) {
+int64_t stringByteLength(Cell &s) {
   void *sPtr = cellPtr(s);
   BytecodeEngine::failOnNilPtr(sPtr);
   return heapObjSize(sPtr);
@@ -497,8 +425,8 @@ Cell stringMake(Cell &s, int64_t offset, int64_t length, BytecodeEngine &engine)
 }
 
 int64_t stringCompare(Cell &s1, Cell &s2) {
-  int64_t n1 = stringLength(s1);
-  int64_t n2 = stringLength(s2);
+  int64_t n1 = stringByteLength(s1);
+  int64_t n2 = stringByteLength(s2);
   uint8_t *p1 = (uint8_t *)stringData(s1);
   uint8_t *p2 = (uint8_t *)stringData(s2);
   int64_t n = std::min(n1, n2);
@@ -515,8 +443,8 @@ int64_t stringCompare(Cell &s1, Cell &s2) {
 }
 
 uint8_t *stringConcat(Cell &s1, Cell &s2, BytecodeEngine &engine) {
-  int64_t n1 = stringLength(s1);
-  int64_t n2 = stringLength(s2);
+  int64_t n1 = stringByteLength(s1);
+  int64_t n2 = stringByteLength(s2);
   if (n1 > bytecodeMaxInt - n2) {
     BytecodeEngine::fatalError("Integer overflow");
   }

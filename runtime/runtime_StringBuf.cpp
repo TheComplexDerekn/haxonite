@@ -129,50 +129,8 @@ static NativeFuncDefn(runtime_allocStringBuf) {
   engine.push(cellMakeHeapPtr(sb));
 }
 
-// length(sb: StringBuf) -> Int
-static NativeFuncDefn(runtime_length_T) {
-#if CHECK_RUNTIME_FUNC_ARGS
-  if (engine.nArgs() != 1 ||
-      !cellIsPtr(engine.arg(0))) {
-    BytecodeEngine::fatalError("Invalid argument");
-  }
-#endif
-  Cell &sbCell = engine.arg(0);
-
-  StringBufHandle *sb = (StringBufHandle *)cellPtr(sbCell);
-  engine.failOnNilPtr(sb);
-  int64_t length = heapObjSize(sb);
-
-  engine.push(cellMakeInt(length));
-}
-
-// ulength(sb: StringBuf) -> Int
-static NativeFuncDefn(runtime_ulength_T) {
-#if CHECK_RUNTIME_FUNC_ARGS
-  if (engine.nArgs() != 1 ||
-      !cellIsPtr(engine.arg(0))) {
-    BytecodeEngine::fatalError("Invalid argument");
-  }
-#endif
-  Cell &sbCell = engine.arg(0);
-
-  StringBufHandle *sb = (StringBufHandle *)cellPtr(sbCell);
-  engine.failOnNilPtr(sb);
-  int64_t length = heapObjSize(sb);
-  StringBufData *data = (StringBufData *)cellPtr(sb->dataPtr);
-
-  int64_t i = 0;
-  int64_t n = 0;
-  while (i < length) {
-    i += utf8Length(data->bytes, length, i);
-    ++n;
-  }
-  engine.push(cellMakeInt(n));
-}
-
-// get(sb: StringBuf, idx: Int) -> Int
-// iget(sb: StringBuf, iter: Int) -> Int
-static NativeFuncDefn(runtime_get_TI) {
+// appendCodepoint(sb: StringBuf, codepoint: Int)
+static NativeFuncDefn(runtime_appendCodepoint_TI) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -181,89 +139,11 @@ static NativeFuncDefn(runtime_get_TI) {
   }
 #endif
   Cell &sbCell = engine.arg(0);
-  Cell &idxCell = engine.arg(1);
+  Cell &codepointCell = engine.arg(1);
 
-  StringBufHandle *sb = (StringBufHandle *)cellPtr(sbCell);
-  engine.failOnNilPtr(sb);
-  int64_t idx = cellInt(idxCell);
-
-  int64_t length = heapObjSize(sb);
-  if (idx < 0 || idx >= length) {
-    BytecodeEngine::fatalError("Index out of bounds");
-  }
-  StringBufData *data = (StringBufData *)cellPtr(sb->dataPtr);
-  uint32_t u;
-  if (!utf8Get(data->bytes, length, idx, u)) {
-    BytecodeEngine::fatalError("Index out of bounds");
-  }
-  engine.push(cellMakeInt((int64_t)u));
-}
-
-// byte(sb: StringBuf, idx: Int) -> Int
-static NativeFuncDefn(runtime_byte_TI) {
-#if CHECK_RUNTIME_FUNC_ARGS
-  if (engine.nArgs() != 2 ||
-      !cellIsPtr(engine.arg(0)) ||
-      !cellIsInt(engine.arg(1))) {
-    BytecodeEngine::fatalError("Invalid argument");
-  }
-#endif
-  Cell &sbCell = engine.arg(0);
-  Cell &idxCell = engine.arg(1);
-
-  StringBufHandle *sb = (StringBufHandle *)cellPtr(sbCell);
-  engine.failOnNilPtr(sb);
-  int64_t idx = cellInt(idxCell);
-
-  int64_t length = heapObjSize(sb);
-  if (idx < 0 || idx >= length) {
-    BytecodeEngine::fatalError("Index out of bounds");
-  }
-  StringBufData *data = (StringBufData *)cellPtr(sb->dataPtr);
-  engine.push(cellMakeInt(data->bytes[idx]));
-}
-
-// next(sb: StringBuf, idx: Int) -> Int
-// inext(sb: StringBuf, iter: Int) -> Int
-static NativeFuncDefn(runtime_next_TI) {
-#if CHECK_RUNTIME_FUNC_ARGS
-  if (engine.nArgs() != 2 ||
-      !cellIsPtr(engine.arg(0)) ||
-      !cellIsInt(engine.arg(1))) {
-    BytecodeEngine::fatalError("Invalid argument");
-  }
-#endif
-  Cell &sbCell = engine.arg(0);
-  Cell &idxCell = engine.arg(1);
-
-  StringBufHandle *sb = (StringBufHandle *)cellPtr(sbCell);
-  engine.failOnNilPtr(sb);
-  int64_t idx = cellInt(idxCell);
-
-  int64_t length = heapObjSize(sb);
-  if (idx < 0 || idx >= length) {
-    BytecodeEngine::fatalError("Index out of bounds");
-  }
-  StringBufData *data = (StringBufData *)cellPtr(sb->dataPtr);
-  int n = utf8Length(data->bytes, length, idx);
-  engine.push(cellMakeInt(idx + n));
-}
-
-// append(sb: StringBuf, c: Int)
-static NativeFuncDefn(runtime_append_TI) {
-#if CHECK_RUNTIME_FUNC_ARGS
-  if (engine.nArgs() != 2 ||
-      !cellIsPtr(engine.arg(0)) ||
-      !cellIsInt(engine.arg(1))) {
-    BytecodeEngine::fatalError("Invalid argument");
-  }
-#endif
-  Cell &sbCell = engine.arg(0);
-  Cell &cCell = engine.arg(1);
-
-  int64_t c = cellInt(cCell);
+  int64_t codepoint = cellInt(codepointCell);
   uint8_t u[utf8MaxBytes];
-  int uLen = utf8Encode(c, u);
+  int uLen = utf8Encode(codepoint, u);
   if (uLen > 0) {
     // NB: this may trigger GC
     stringBufAppend(sbCell, u, uLen, engine);
@@ -303,7 +183,7 @@ static NativeFuncDefn(runtime_append_TT) {
   Cell &otherCell = engine.arg(1);
 
   // can't use stringBufAppend here, because GC can invalidate the
-  // string data pointer
+  // StringBuf data pointer
 
   StringBufHandle *sb = (StringBufHandle *)cellPtr(sbCell);
   engine.failOnNilPtr(sb);
@@ -324,6 +204,32 @@ static NativeFuncDefn(runtime_append_TT) {
   StringBufData *otherData = (StringBufData *)cellPtr(other->dataPtr);
   memcpy(sbData->bytes + sbLength, otherData->bytes, otherLength);
   heapObjSetSize(sb, sbLength + otherLength);
+  engine.push(cellMakeInt(0));
+}
+
+// appendByte(sb: StringBuf, b: Int)
+static NativeFuncDefn(runtime_appendByte_TI) {
+#if CHECK_RUNTIME_FUNC_ARGS
+  if (engine.nArgs() != 2 ||
+      !cellIsPtr(engine.arg(0)) ||
+      !cellIsInt(engine.arg(1))) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+#endif
+  Cell &sbCell = engine.arg(0);
+  Cell &bCell = engine.arg(1);
+
+  StringBufHandle *sb = (StringBufHandle *)cellPtr(sbCell);
+  engine.failOnNilPtr(sb);
+  int64_t sbLength = heapObjSize(sb);
+  engine.failOnNilPtr(sb);
+  if (sbLength > bytecodeMaxInt - 1) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+
+  // NB: this may trigger GC
+  stringBufAppendByte(sbCell, cellInt(bCell), engine);
+
   engine.push(cellMakeInt(0));
 }
 
@@ -370,8 +276,8 @@ static NativeFuncDefn(runtime_toString_T) {
   engine.push(s);
 }
 
-// ifirst(sb: StringBuf) -> Int
-static NativeFuncDefn(runtime_ifirst_T) {
+// byteLength(sb: StringBuf) -> Int
+static NativeFuncDefn(runtime_byteLength_T) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 1 ||
       !cellIsPtr(engine.arg(0))) {
@@ -380,11 +286,14 @@ static NativeFuncDefn(runtime_ifirst_T) {
 #endif
   Cell &sbCell = engine.arg(0);
 
-  engine.push(cellMakeInt(0));
+  StringBufHandle *sb = (StringBufHandle *)cellPtr(sbCell);
+  engine.failOnNilPtr(sb);
+  int64_t length = heapObjSize(sb);
+
+  engine.push(cellMakeInt(length));
 }
 
-// imore(sb: StringBuf, iter: Int) -> Bool
-static NativeFuncDefn(runtime_imore_TI) {
+static NativeFuncDefn(runtime_byte_TI) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -393,33 +302,32 @@ static NativeFuncDefn(runtime_imore_TI) {
   }
 #endif
   Cell &sbCell = engine.arg(0);
-  Cell &iterCell = engine.arg(1);
+  Cell &idxCell = engine.arg(1);
 
   StringBufHandle *sb = (StringBufHandle *)cellPtr(sbCell);
   engine.failOnNilPtr(sb);
-  int64_t iter = cellInt(iterCell);
+  int64_t idx = cellInt(idxCell);
+
   int64_t length = heapObjSize(sb);
-  engine.push(cellMakeBool(iter < length));
+  if (idx < 0 || idx >= length) {
+    BytecodeEngine::fatalError("Index out of bounds");
+  }
+  StringBufData *data = (StringBufData *)cellPtr(sb->dataPtr);
+  engine.push(cellMakeInt(data->bytes[idx]));
 }
 
 //------------------------------------------------------------------------
 
 void runtime_StringBuf_init(BytecodeEngine &engine) {
   engine.addNativeFunction("_allocStringBuf", &runtime_allocStringBuf);
-  engine.addNativeFunction("length_T", &runtime_length_T);
-  engine.addNativeFunction("ulength_T", &runtime_ulength_T);
-  engine.addNativeFunction("get_TI", &runtime_get_TI);
-  engine.addNativeFunction("byte_TI", &runtime_byte_TI);
-  engine.addNativeFunction("next_TI", &runtime_next_TI);
-  engine.addNativeFunction("append_TI", &runtime_append_TI);
+  engine.addNativeFunction("appendCodepoint_TI", &runtime_appendCodepoint_TI);
   engine.addNativeFunction("append_TS", &runtime_append_TS);
   engine.addNativeFunction("append_TT", &runtime_append_TT);
+  engine.addNativeFunction("appendByte_TI", &runtime_appendByte_TI);
   engine.addNativeFunction("clear_T", &runtime_clear_T);
   engine.addNativeFunction("toString_T", &runtime_toString_T);
-  engine.addNativeFunction("ifirst_T", &runtime_ifirst_T);
-  engine.addNativeFunction("imore_TI", &runtime_imore_TI);
-  engine.addNativeFunction("inext_TI", &runtime_next_TI);
-  engine.addNativeFunction("iget_TI", &runtime_get_TI);
+  engine.addNativeFunction("byteLength_T", &runtime_byteLength_T);
+  engine.addNativeFunction("byte_TI", &runtime_byte_TI);
 }
 
 //------------------------------------------------------------------------
@@ -460,7 +368,7 @@ void stringBufAppendString(Cell &sbCell, Cell &sCell, BytecodeEngine &engine) {
   StringBufHandle *sb = (StringBufHandle *)cellPtr(sbCell);
   engine.failOnNilPtr(sb);
   int64_t sbLength = heapObjSize(sb);
-  int64_t sLength = stringLength(sCell);
+  int64_t sLength = stringByteLength(sCell);
   if (sbLength > bytecodeMaxInt - sLength) {
     BytecodeEngine::fatalError("Integer overflow");
   }
@@ -472,4 +380,21 @@ void stringBufAppendString(Cell &sbCell, Cell &sCell, BytecodeEngine &engine) {
   StringBufData *data = (StringBufData *)cellPtr(sb->dataPtr);
   memcpy(data->bytes + sbLength, stringData(sCell), sLength);
   heapObjSetSize(sb, sbLength + sLength);
+}
+
+void stringBufAppendByte(Cell &sbCell, int64_t b, BytecodeEngine &engine) {
+  StringBufHandle *sb = (StringBufHandle *)cellPtr(sbCell);
+  engine.failOnNilPtr(sb);
+  int64_t sbLength = heapObjSize(sb);
+  if (sbLength > bytecodeMaxInt - 1) {
+    BytecodeEngine::fatalError("Integer overflow");
+  }
+
+  // NB: this may trigger GC
+  stringBufExpand(sbCell, sbLength + 1, engine);
+
+  sb = (StringBufHandle *)cellPtr(sbCell);
+  StringBufData *data = (StringBufData *)cellPtr(sb->dataPtr);
+  data->bytes[sbLength] = (uint8_t)b;
+  heapObjSetSize(sb, sbLength + 1);
 }

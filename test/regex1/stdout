@@ -1,4 +1,4 @@
-test('a+b+', 'xxaabyy') -> true
-test('a+b+', 'xxxaaybbz') -> false
-test('(a+b+', 'xxxaaybbz') -> invalid regex
-test('*', 'abc*def') -> invalid regex
+reTest('a+b+', 'xxaabyy') -> true
+reTest('a+b+', 'xxxaaybbz') -> false
+reTest('(a+b+', 'xxxaaybbz') -> invalid regex
+reTest('*', 'abc*def') -> invalid regex

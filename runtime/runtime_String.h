@@ -14,8 +14,8 @@
 
 #include "BytecodeEngine.h"
 
-// Return the length of [s].
-extern int64_t stringLength(Cell &s);
+// Return the length of [s], in bytes.
+extern int64_t stringByteLength(Cell &s);
 
 // Return the data pointer of [s]. If the string is on the heap, the
 // returned pointer is invalidated by anything that can trigger GC.

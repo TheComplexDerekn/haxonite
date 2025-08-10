@@ -29,6 +29,10 @@ extern void stringBufAppend(Cell &sbCell, uint8_t *buf, int64_t n, BytecodeEngin
 // NB: this may trigger GC.
 extern void stringBufAppendString(Cell &sbCell, Cell &sCell, BytecodeEngine &engine);
 
+// Append one byte to [sbCell].
+// NB: this may trigger GC.
+extern void stringBufAppendByte(Cell &sbCell, int64_t b, BytecodeEngine &engine);
+
 extern void runtime_StringBuf_init(BytecodeEngine &engine);
 
 #endif // runtime_StringBuf_h

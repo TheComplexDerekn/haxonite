@@ -1,4 +1,4 @@
-// Test the regular expression replace() function.
+// Test the regular expression reReplace() function.
 
 module regex4 is
 
@@ -10,12 +10,12 @@ module regex4 is
   end
 
   func doReplace(re: String, s: String, sub: String) is
-    var outRes = replace(re, s, sub);
+    var outRes = reReplace(re, s, sub);
     if (ok(outRes)) then
       var out = outRes!;
-      write($"replace('{re}', '{s}', '{sub}') -> '{out}'\n");
+      write($"reReplace('{re}', '{s}', '{sub}') -> '{out}'\n");
     else
-      write($"replace('{re}', '{s}', '{sub}') -> invalid regex\n");
+      write($"reReplace('{re}', '{s}', '{sub}') -> invalid regex\n");
     end
   end
 

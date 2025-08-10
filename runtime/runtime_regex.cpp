@@ -17,7 +17,7 @@
 
 static pcre2_code *makeRE(Cell &reCell, BytecodeEngine &engine) {
   uint8_t *reData = stringData(reCell);
-  int64_t reLength = stringLength(reCell);
+  int64_t reLength = stringByteLength(reCell);
   if (reLength > PCRE2_SIZE_MAX) {
     BytecodeEngine::fatalError("Integer overflow");
   }
@@ -31,8 +31,8 @@ static void freeRE(pcre2_code *re) {
   pcre2_code_free(re);
 }
 
-// test(re: String, s: String) -> Result[Bool]
-static NativeFuncDefn(runtime_test_SS) {
+// reTest(re: String, s: String) -> Result[Bool]
+static NativeFuncDefn(runtime_reTest_SS) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -46,7 +46,7 @@ static NativeFuncDefn(runtime_test_SS) {
   pcre2_code *re = makeRE(reCell, engine);
   if (re) {
     uint8_t *sData = stringData(sCell);
-    int64_t sLength = stringLength(sCell);
+    int64_t sLength = stringByteLength(sCell);
     if (sLength > PCRE2_SIZE_MAX) {
       BytecodeEngine::fatalError("Integer overflow");
     }
@@ -63,8 +63,8 @@ static NativeFuncDefn(runtime_test_SS) {
   }
 }
 
-// match(re: String, s: String) -> Result[Vector[String]]
-static NativeFuncDefn(runtime_match_SS) {
+// reMatch(re: String, s: String) -> Result[Vector[String]]
+static NativeFuncDefn(runtime_reMatch_SS) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -78,7 +78,7 @@ static NativeFuncDefn(runtime_match_SS) {
   pcre2_code *re = makeRE(reCell, engine);
   if (re) {
     uint8_t *sData = stringData(sCell);
-    int64_t sLength = stringLength(sCell);
+    int64_t sLength = stringByteLength(sCell);
     if (sLength > PCRE2_SIZE_MAX) {
       BytecodeEngine::fatalError("Integer overflow");
     }
@@ -108,8 +108,8 @@ static NativeFuncDefn(runtime_match_SS) {
   }
 }
 
-// split(re: String, s: String) -> Result[Vector[String]]
-static NativeFuncDefn(runtime_split_SS) {
+// reSplit(re: String, s: String) -> Result[Vector[String]]
+static NativeFuncDefn(runtime_reSplit_SS) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -120,7 +120,7 @@ static NativeFuncDefn(runtime_split_SS) {
   Cell &reCell = engine.arg(0);
   Cell &sCell = engine.arg(1);
 
-  int64_t sLength = stringLength(sCell);
+  int64_t sLength = stringByteLength(sCell);
   if (sLength > PCRE2_SIZE_MAX) {
     BytecodeEngine::fatalError("Integer overflow");
   }
@@ -161,8 +161,8 @@ static NativeFuncDefn(runtime_split_SS) {
   }
 }
 
-// replace(re: String, s: String, sub: String) -> Result[String]
-static NativeFuncDefn(runtime_replace_SSS) {
+// reReplace(re: String, s: String, sub: String) -> Result[String]
+static NativeFuncDefn(runtime_reReplace_SSS) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 3 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -176,13 +176,13 @@ static NativeFuncDefn(runtime_replace_SSS) {
   Cell &subCell = engine.arg(2);
 
   uint8_t *sData = stringData(sCell);
-  int64_t sLength = stringLength(sCell);
+  int64_t sLength = stringByteLength(sCell);
   if (sLength > PCRE2_SIZE_MAX) {
     BytecodeEngine::fatalError("Integer overflow");
   }
 
   uint8_t *subData = stringData(subCell);
-  int64_t subLength = stringLength(subCell);
+  int64_t subLength = stringByteLength(subCell);
 
   pcre2_code *re = makeRE(reCell, engine);
   if (re) {
@@ -219,8 +219,8 @@ static NativeFuncDefn(runtime_replace_SSS) {
 //------------------------------------------------------------------------
 
 void runtime_regex_init(BytecodeEngine &engine) {
-  engine.addNativeFunction("test_SS", &runtime_test_SS);
-  engine.addNativeFunction("match_SS", &runtime_match_SS);
-  engine.addNativeFunction("split_SS", &runtime_split_SS);
-  engine.addNativeFunction("replace_SSS", &runtime_replace_SSS);
+  engine.addNativeFunction("reTest_SS", &runtime_reTest_SS);
+  engine.addNativeFunction("reMatch_SS", &runtime_reMatch_SS);
+  engine.addNativeFunction("reSplit_SS", &runtime_reSplit_SS);
+  engine.addNativeFunction("reReplace_SSS", &runtime_reReplace_SSS);
 }

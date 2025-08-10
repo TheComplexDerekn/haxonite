@@ -261,7 +261,7 @@ static NativeFuncDefn(runtime_write_4FileS) {
   FileResource *fileResource = (FileResource *)cellResourcePtr(file->fileResource);
 
   uint8_t *s = stringData(sCell);
-  int64_t n = stringLength(sCell);
+  int64_t n = stringByteLength(sCell);
   size_t nBytesWritten = fwrite(s, 1, n, fileResource->f);
   if (nBytesWritten == (size_t)n) {
     engine.push(cellMakeInt((int64_t)nBytesWritten));
@@ -355,7 +355,7 @@ static NativeFuncDefn(runtime_write_S) {
   Cell &sCell = engine.arg(0);
 
   uint8_t *s = stringData(sCell);
-  int64_t n = stringLength(sCell);
+  int64_t n = stringByteLength(sCell);
   size_t nBytesWritten = fwrite(s, 1, n, stdout);
   if (nBytesWritten == (size_t)n) {
     engine.push(cellMakeInt((int64_t)nBytesWritten));
@@ -375,7 +375,7 @@ static NativeFuncDefn(runtime_ewrite_S) {
   Cell &sCell = engine.arg(0);
 
   uint8_t *s = stringData(sCell);
-  int64_t n = stringLength(sCell);
+  int64_t n = stringByteLength(sCell);
   size_t nBytesWritten = fwrite(s, 1, n, stderr);
   if (nBytesWritten == (size_t)n) {
     engine.push(cellMakeInt((int64_t)nBytesWritten));

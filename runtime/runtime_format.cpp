@@ -152,7 +152,7 @@ static NativeFuncDefn(runtime_format_SIII) {
   int64_t precision = cellInt(precisionCell);
   int64_t format = cellInt(formatCell);
 
-  int64_t n = stringLength(x);
+  int64_t n = stringByteLength(x);
   if (precision >= 0 && n > precision) {
     n = precision;
   }

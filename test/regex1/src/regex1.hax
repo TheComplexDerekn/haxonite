@@ -1,4 +1,4 @@
-// Test the regular expression test() function.
+// Test the regular expression reTest() function.
 
 module regex1 is
 
@@ -11,12 +11,12 @@ module regex1 is
   end
 
   func doTest(re: String, s: String) is
-    var tRes = test(re, s);
+    var tRes = reTest(re, s);
     if (ok(tRes)) then
       var t = tRes!;
-      write($"test('{re}', '{s}') -> {t}\n");
+      write($"reTest('{re}', '{s}') -> {t}\n");
     else
-      write($"test('{re}', '{s}') -> invalid regex\n");
+      write($"reTest('{re}', '{s}') -> invalid regex\n");
     end
   end
 

@@ -21,7 +21,7 @@ module TurtleGfx is
   end
 
   func close(gfx: TurtleGfx) is
-    writePNG(gfx.img, gfx.pngFileName);
+    writePNG(gfx.img, false, gfx.pngFileName);
   end
 
   func moveTo(gfx: TurtleGfx, x: Float, y: Float) is

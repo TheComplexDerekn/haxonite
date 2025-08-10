@@ -1,4 +1,4 @@
 substr('hello world', 0, 5) = 'hello'
-substr('hello world', 6, 5) = 'world'
-substr('hello world', 5, 1) = ' '
-substr('hello world', 5, 0) = ''
+substr('hello world', 6, 11) = 'world'
+substr('hello world', 5, 6) = ' '
+substr('hello world', 5, 5) = ''

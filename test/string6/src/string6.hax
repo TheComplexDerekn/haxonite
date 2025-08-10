@@ -4,9 +4,9 @@ module string6 is
 
   func main() is
     run("hello world", 0, 5);
-    run("hello world", 6, 5);
-    run("hello world", 5, 1);
-    run("hello world", 5, 0);
+    run("hello world", 6, 11);
+    run("hello world", 5, 6);
+    run("hello world", 5, 5);
   end
 
   func run(s: String, start: Int, n: Int) is

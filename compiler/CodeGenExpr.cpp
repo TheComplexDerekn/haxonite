@@ -357,9 +357,7 @@ static ExprResult codeGenUnaryOpExpr(UnaryOpExpr *expr, Context &ctx, BytecodeFi
   //--- special cases
 
   // container length
-  if (expr->op == UnaryOp::length && (typeCheckString(exprRes.type.get()) ||
-				      typeCheckStringBuf(exprRes.type.get()) ||
-				      typeCheckContainer(exprRes.type.get()))) {
+  if (expr->op == UnaryOp::length && typeCheckContainer(exprRes.type.get())) {
     std::vector<ExprResult> args;
     args.push_back(ExprResult(std::unique_ptr<CTypeRef>(exprRes.type->copy())));
     CFuncDecl *funcDecl = findFunction("length", args, ctx);
@@ -800,9 +798,7 @@ static ExprResult codeGenIndexExpr(IndexExpr *expr, Context &ctx, BytecodeFile &
     error(expr->obj->loc, "Non-value as object in index operator");
     return ExprResult();
   }
-  if (!(typeCheckString(objRes.type.get()) ||
-	typeCheckStringBuf(objRes.type.get()) ||
-	typeCheckVector(objRes.type.get()) ||
+  if (!(typeCheckVector(objRes.type.get()) ||
 	typeCheckMap(objRes.type.get()))) {
     error(expr->obj->loc, "Invalid type for object in index operator");
     return ExprResult();

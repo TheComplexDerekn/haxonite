@@ -1,4 +1,4 @@
-// Test the regular expression match() function.
+// Test the regular expression reMatch() function.
 
 module regex2 is
 
@@ -11,10 +11,10 @@ module regex2 is
   end
 
   func doMatch(re: String, s: String) is
-    var mRes = match(re, s);
+    var mRes = reMatch(re, s);
     if (ok(mRes)) then
       var m = mRes!;
-      write($"match('{re}', '{s}') -> ");
+      write($"reMatch('{re}', '{s}') -> ");
       for i : 0 .. #m - 1 do
         if i > 0 then
           write(", ");
@@ -23,7 +23,7 @@ module regex2 is
       end
       write("\n");
     else
-      write($"match('{re}', '{s}') -> invalid regex\n");
+      write($"reMatch('{re}', '{s}') -> invalid regex\n");
     end
   end
 

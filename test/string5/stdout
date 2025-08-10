@@ -1,24 +1,5 @@
-find('abcXYZdefXYZXYZghiXYZ', 'XYZ')
-         ^     ^  ^     ^
-find('abcXYZdefXYZXYZghiXYZ', 'XXX')
-      
-find('0000', '0')
-      ^^^^
-rfind('abcXYZdefXYZXYZghiXYZ', 'XYZ')
-          ^     ^  ^     ^
-rfind('abcXYZdefXYZXYZghiXYZ', 'XXX')
-       
-rfind('0000', '0')
-       ^^^^
-find('*abc*def**ghi*', *)
-      ^   ^   ^^   ^
-find('*abc*def**ghi*', +)
-      
-find('****', *)
-      ^^^^
-rfind('*abc*def**ghi*', *)
-       ^   ^   ^^   ^
-rfind('*abc*def**ghi*', +)
-       
-rfind('****', *)
-       ^^^^
+split('abcXYZdefXYZXYZghiXYZ', 'XYZ') -> 'abc' 'def' '' 'ghi' ''
+split('abcXYZdefXYZXYZghiXYZ', 'XXX') -> 'abcXYZdefXYZXYZghiXYZ'
+split('*abc*def**ghi*', '*') -> '' 'abc' 'def' '' 'ghi' ''
+split('0000', '0') -> '' '' '' '' ''
+split('', 'x') -> ''

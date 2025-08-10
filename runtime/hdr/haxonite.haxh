@@ -10,49 +10,37 @@
 header haxonite is
 
   //--- String
-  nativefunc length(s: String) -> Int;
-  nativefunc ulength(s: String) -> Int;
-  nativefunc get(s: String, idx: Int) -> Int;
-  nativefunc next(s: String, idx: Int) -> Int;
-  nativefunc byte(s: String, idx: Int) -> Int;
   nativefunc compare(s1: String, s2: String) -> Int;
   nativefunc concat(s1: String, s2: String) -> String;
   nativefunc startsWith(s: String, prefix: String) -> Bool;
   nativefunc endsWith(s: String, suffix: String) -> Bool;
-  nativefunc find(s: String, term: String, start: Int) -> Int;
-  nativefunc find(s: String, c: Int, start: Int) -> Int;
-  nativefunc rfind(s: String, term: String, start: Int) -> Int;
-  nativefunc rfind(s: String, c: Int, start: Int) -> Int;
-  nativefunc substr(s: String, start: Int, n: Int) -> String;
+  nativefunc split(term: String, s: String) -> Vector[String];
+  nativefunc splitFirst(term: String, s: String) -> Vector[String];
+  nativefunc splitLast(term: String, s: String) -> Vector[String];
   nativefunc toInt(s: String) -> Result[Int];
   nativefunc toInt(s: String, base: Int) -> Result[Int];
   nativefunc toFloat(s: String) -> Result[Float];
-  nativefunc ifirst(s: String) -> Int;
-  nativefunc imore(s: String, iter: Int) -> Bool;
-  nativefunc inext(s: String, iter: Int) -> Int;
-  nativefunc iget(s: String, iter: Int) -> Int;
+  nativefunc byteLength(s: String) -> Int;
+  nativefunc byte(s: String, idx: Int) -> Int;
+  nativefunc codepoint(s: String, idx: Int) -> Int;
+  nativefunc nextCodepoint(s: String, idx: Int) -> Int;
+  nativefunc substr(s: String, first: Int, last: Int) -> String;
 
   //--- regular expression
-  nativefunc test(re: String, s: String) -> Result[Bool];
-  nativefunc match(re: String, s: String) -> Result[Vector[String]];
-  nativefunc split(re: String, s: String) -> Result[Vector[String]];
-  nativefunc replace(re: String, s: String, sub: String) -> Result[String];
+  nativefunc reTest(re: String, s: String) -> Result[Bool];
+  nativefunc reMatch(re: String, s: String) -> Result[Vector[String]];
+  nativefunc reSplit(re: String, s: String) -> Result[Vector[String]];
+  nativefunc reReplace(re: String, s: String, sub: String) -> Result[String];
 
   //--- StringBuf
-  nativefunc length(sb: StringBuf) -> Int;
-  nativefunc ulength(sb: StringBuf) -> Int;
-  nativefunc get(sb: StringBuf, idx: Int) -> Int;
-  nativefunc byte(sb: StringBuf, idx: Int) -> Int;
-  nativefunc next(sb: StringBuf, idx: Int) -> Int;
-  nativefunc append(sb: StringBuf, c: Int);
+  nativefunc appendCodepoint(sb: StringBuf, codepoint: Int);
   nativefunc append(sb: StringBuf, s: String);
   nativefunc append(sb: StringBuf, other: StringBuf);
+  nativefunc appendByte(sb: StringBuf, b: Int);
   nativefunc clear(sb: StringBuf);
   nativefunc toString(sb: StringBuf) -> String;
-  nativefunc ifirst(sb: StringBuf) -> Int;
-  nativefunc imore(sb: StringBuf, iter: Int) -> Bool;
-  nativefunc inext(sb: StringBuf, iter: Int) -> Int;
-  nativefunc iget(sb: StringBuf, iter: Int) -> Int;
+  nativefunc byteLength(sb: StringBuf) -> Int;
+  nativefunc byte(sb: StringBuf, idx: Int) -> Int;
 
   //--- formatting
   nativefunc format(x: Int, width: Int, precision: Int, format: Int) -> String;

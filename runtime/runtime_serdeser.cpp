@@ -89,7 +89,7 @@ static NativeFuncDefn(runtime_ser_ST) {
   Cell &valCell = engine.arg(0);
   Cell &outCell = engine.arg(1);
 
-  int64_t length = stringLength(valCell);
+  int64_t length = stringByteLength(valCell);
   stringBufAppend(outCell, (uint8_t *)&length, 8, engine);
   stringBufAppendString(outCell, valCell, engine);
 
@@ -249,7 +249,7 @@ static NativeFuncDefn(runtime_deserHeader_S8DeserBuf) {
   engine.failOnNilPtr(in);
   int64_t pos = cellInt(in->pos);
   int64_t length = stringBufLength(in->data);
-  int64_t n = stringLength(hdrCell);
+  int64_t n = stringByteLength(hdrCell);
 
   if (pos <= length - n) {
     if (memcmp(stringBufData(in->data) + pos, stringData(hdrCell), n) == 0) {

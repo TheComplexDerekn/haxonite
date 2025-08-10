@@ -13,7 +13,7 @@ module file1 is
     var f = openFile(path, FileMode.read)!;
     while true do
       var line = readLine(f)!;
-      if #line == 0 then
+      if line == "" then
         break;
       end
       write($">> {line}");

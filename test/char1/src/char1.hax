@@ -4,7 +4,9 @@ module char1 is
 
   func main() is
     var s = "The quick brown fox_";
-    for c : s do
+    var i = 0;
+    while i < byteLength(s) do
+      var c = codepoint(s, i);
       var cc = c;
       if c == ' ' then
         cc = '*';
@@ -12,6 +14,7 @@ module char1 is
         cc = '\n';
       end
       write($"{cc:c}");
+      i = nextCodepoint(s, i);
     end
   end
 

@@ -11,10 +11,6 @@ module unary1 is
     x = 999;
     var negX = -x;
     write($"-{x} = {negX}\n");
-
-    var s = "hello";
-    var len = #s;
-    write($"#'{s}' = {len}\n");
   end
 
 end

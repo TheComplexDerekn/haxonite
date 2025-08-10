@@ -260,10 +260,10 @@ module calc is
       return "0";
     end
     if endsWith(s, "E") then
-      return substr(s, 0, #s - 1);
+      return splitLast(s, "E")[0];
     end
     if endsWith(s, "E-") then
-      return substr(s, 0, #s - 2);
+      return splitLast(s, "E-")[0];
     end
     return s;
   end
@@ -295,7 +295,7 @@ module calc is
   func cmdEex(state: State) is
     beginEdit(state);
     var s = "";
-    if #state.xEdit == 0 then
+    if state.xEdit == "" then
       s = "1E";
     else
       s = state.xEdit + "E";
@@ -309,8 +309,8 @@ module calc is
     if nil(state.xEdit) then
       state.xEdit = "";
     else
-      if #state.xEdit > 0 then
-        state.xEdit = substr(state.xEdit, 0, #state.xEdit - 1);
+      if state.xEdit != "" then
+        state.xEdit = substr(state.xEdit, 0, byteLength(state.xEdit) - 1);
       end
     end
   end
@@ -324,19 +324,15 @@ module calc is
     if nil(state.xEdit) then
       state.x = -state.x;
     else
-      var n = #state.xEdit;
-      var eIdx = find(state.xEdit, "E", 0);
-      if eIdx >= 0 then
-        if eIdx+1 < n && state.xEdit[eIdx+1] == '-' then
-          state.xEdit = substr(state.xEdit, 0, eIdx+1) +
-                        substr(state.xEdit, eIdx+2, n-eIdx-2);
-        else
-          state.xEdit = substr(state.xEdit, 0, eIdx+1) + "-" +
-                        substr(state.xEdit, eIdx+1, n-eIdx-1);
-        end
+      var v = splitFirst(state.xEdit, "E-");
+      if #v == 2 then
+        state.xEdit = v[0] + "E" + v[1];
       else
-        if n > 0 && state.xEdit[0] == '-' then
-          state.xEdit = substr(state.xEdit, 1, n-1);
+        v = splitFirst(state.xEdit, "E");
+        if #v == 2 then
+          state.xEdit = v[0] + "E-" + v[1];
+        elseif startsWith(state.xEdit, "-") then
+          state.xEdit = splitFirst(state.xEdit, "-")[1];
         else
           state.xEdit = "-" + state.xEdit;
         end

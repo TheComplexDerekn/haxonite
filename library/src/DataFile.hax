@@ -45,14 +45,14 @@ module DataFile is
       return error[DataFile];
     end
     var line = readLine(parser, err)?;
-    if #line != 1 || line[0][0] != '@' then
+    if #line != 1 || !startsWith(line[0], "@") then
       (err)(parser.lineNum - 1, "Invalid file header");
       return error[DataFile];
     end
 
     //--- construct the DataFile object
     var sections = new Vector[DataSection];
-    var dataFile = make DataFile(tag: substr(line[0], 1, #line[0] - 1),
+    var dataFile = make DataFile(tag: substr(line[0], 1, byteLength(line[0])),
                                  sections: sections);
 
     //--- data: sections and items
@@ -61,8 +61,8 @@ module DataFile is
       line = readLine(parser, err)?;
 
       //--- section
-      if #line == 1 && line[0][0] == '-' then
-        var tag = substr(line[0], 1, #line[0] - 1);
+      if #line == 1 && startsWith(line[0], "-") then
+        var tag = substr(line[0], 1, byteLength(line[0]));
         section = make DataSection(tag: tag,
                                    items: new Vector[DataItem],
                                    lineNum: parser.lineNum - 1);
@@ -93,30 +93,31 @@ module DataFile is
   func more(parser: DataParser) -> Bool is
     while true do
       // end of data
-      if parser.pos >= #parser.buf then
+      if parser.pos >= byteLength(parser.buf) then
         return false;
       end
       var pos2 = parser.pos;
 
       // skip spaces at start of line
-      while pos2 < #parser.buf && parser.buf[pos2] == ' ' do
+      while pos2 < byteLength(parser.buf) && byte(parser.buf, pos2) == ' ' do
         pos2 = pos2 + 1;
       end
 
       // skip comment
-      if pos2 <= #parser.buf - 2 && parser.buf[pos2] == '/' && parser.buf[pos2+1] == '/' then
+      if pos2 <= byteLength(parser.buf) - 2 && byte(parser.buf, pos2) == '/' &&
+         byte(parser.buf, pos2+1) == '/' then
         pos2 = pos2 + 2;
-        while pos2 < #parser.buf && parser.buf[pos2] != '\n' do
+        while pos2 < byteLength(parser.buf) && byte(parser.buf, pos2) != '\n' do
           pos2 = pos2 + 1;
         end
       end
 
       // end of data (unterminated last line)
-      if pos2 >= #parser.buf then
+      if pos2 >= byteLength(parser.buf) then
         return false;
 
       // blank line or comment
-      elseif parser.buf[pos2] == '\n' then
+      elseif byte(parser.buf, pos2) == '\n' then
         parser.pos = pos2 + 1;
         parser.lineNum = parser.lineNum + 1;
 
@@ -133,17 +134,17 @@ module DataFile is
   // only after more() returns true.
   func readLine(parser: DataParser, err: Func[Int,String]) -> Result[Vector[String]] is
     // skip spaces at start of line
-    while parser.pos < #parser.buf && parser.buf[parser.pos] == ' ' do
+    while parser.pos < byteLength(parser.buf) && byte(parser.buf, parser.pos) == ' ' do
       parser.pos = parser.pos + 1;
     end
-    if parser.pos == #parser.buf then
+    if parser.pos == byteLength(parser.buf) then
       (err)(parser.lineNum, "Syntax error");
       return error[Vector[String]];
     end
 
     var tokens = new Vector[String];
     while true do
-      var c = parser.buf[parser.pos];
+      var c = byte(parser.buf, parser.pos);
 
       // end of line
       if c == '\n' then
@@ -158,54 +159,54 @@ module DataFile is
       if c == '"' then
         parser.pos = parser.pos + 1;
         while true do
-          if parser.pos == #parser.buf then
+          if parser.pos == byteLength(parser.buf) then
             (err)(parser.lineNum, "Unterminated string");
             return error[Vector[String]];
           end
-          c = parser.buf[parser.pos];
-          parser.pos = next(parser.buf, parser.pos);
+          c = byte(parser.buf, parser.pos);
+          parser.pos = parser.pos + 1;
           if c == '"' then
             break;
           end
           if c == '\\' then
-            if parser.pos == #parser.buf then
+            if parser.pos == byteLength(parser.buf) then
               (err)(parser.lineNum, "Invalid escape character in string");
               return error[Vector[String]];
             end
-            c = parser.buf[parser.pos];
+            c = byte(parser.buf, parser.pos);
             parser.pos = parser.pos + 1;
             if c == '"' || c == '\\' then
-              append(token, c);
+              appendByte(token, c);
             else
               (err)(parser.lineNum, "Invalid escape character in string");
               return error[Vector[String]];
             end
           else
-            append(token, c);
+            appendByte(token, c);
           end
         end
 
       // unquoted token
       else
-        while parser.pos < #parser.buf do
-          c = parser.buf[parser.pos];
+        while parser.pos < byteLength(parser.buf) do
+          c = byte(parser.buf, parser.pos);
           if c == ' ' || c == '\n' then
             break;
           end
-          append(token, c);
-          parser.pos = next(parser.buf, parser.pos);
+          appendByte(token, c);
+          parser.pos = parser.pos + 1;
         end
       end
 
       append(tokens, toString(token));
 
       // skip spaces before next token
-      while parser.pos < #parser.buf && parser.buf[parser.pos] == ' ' do
+      while parser.pos < byteLength(parser.buf) && byte(parser.buf, parser.pos) == ' ' do
         parser.pos = parser.pos + 1;
       end
 
       // unterminated line
-      if parser.pos == #parser.buf then
+      if parser.pos == byteLength(parser.buf) then
         // increment lineNum here because parseDataFile() error messages use lineNum - 1
         parser.lineNum = parser.lineNum + 1;
         break;

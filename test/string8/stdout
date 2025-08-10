@@ -1,38 +1,44 @@
-   abcXYZdefXYZXYZghiXYZ
- 0 
- 1 
- 2 
- 3    ^
- 4    ^
- 5    ^
- 6    ^
- 7    ^
- 8    ^
- 9          ^
-10          ^
-11          ^
-12             ^
-13             ^
-14             ^
-15             ^
-16             ^
-17             ^
-18                   ^
-19                   ^
-20                   ^
-
-   *abc*def**ghi*
- 0 ^
- 1 ^
- 2 ^
- 3 ^
- 4     ^
- 5     ^
- 6     ^
- 7     ^
- 8         ^
- 9          ^
-10          ^
-11          ^
-12          ^
-13              ^
+splitFirst('abc/def/ghi/jkl', '/'):
+    'abc' | 'def/ghi/jkl'
+    'def' | 'ghi/jkl'
+    'ghi' | 'jkl'
+    'jkl'
+splitLast('abc/def/ghi/jkl', '/'):
+    'abc/def/ghi' | 'jkl'
+    'abc/def' | 'ghi'
+    'abc' | 'def'
+    'abc'
+splitFirst('XYZabcXYZdefXYZXYZghiXYZ', 'XYZ'):
+    '' | 'abcXYZdefXYZXYZghiXYZ'
+    'abc' | 'defXYZXYZghiXYZ'
+    'def' | 'XYZghiXYZ'
+    '' | 'ghiXYZ'
+    'ghi' | ''
+    ''
+splitLast('XYZabcXYZdefXYZXYZghiXYZ', 'XYZ'):
+    'XYZabcXYZdefXYZXYZghi' | ''
+    'XYZabcXYZdefXYZ' | 'ghi'
+    'XYZabcXYZdef' | ''
+    'XYZabc' | 'def'
+    '' | 'abc'
+    ''
+splitFirst('abcXYZdefXYZXYZghiXYZ', 'XXX'):
+    'abcXYZdefXYZXYZghiXYZ'
+splitLast('abcXYZdefXYZXYZghiXYZ', 'XXX'):
+    'abcXYZdefXYZXYZghiXYZ'
+splitFirst('0000', '0'):
+    '' | '000'
+    '' | '00'
+    '' | '0'
+    '' | ''
+    ''
+splitLast('0000', '0'):
+    '000' | ''
+    '00' | ''
+    '0' | ''
+    '' | ''
+    ''
+splitFirst('', 'x'):
+    ''
+splitLast('', 'x'):
+    ''

@@ -10,7 +10,7 @@ module edge3 is
   func main() is
     var args = commandLineArgs();
     if #args != 1 then
-      ewrite("Usage: kock1 <png-file>\n");
+      ewrite("Usage: edge3 <png-file>\n");
       return;
     end
     var pngFileName = args[0];
@@ -29,7 +29,7 @@ module edge3 is
     var step = 500.0 / pow(2.5, toFloat(n));
 
     var sequence = generate(axiom, rules, n);
-    var length = #sequence;
+    var length = byteLength(sequence);
     write($"sequence has {length} steps\n");
     // write($"sequence = '{sequence}'\n");
     draw(sequence, x0, y0, angle0, step, angleDivs, pngFileName, w, h);
@@ -40,11 +40,12 @@ module edge3 is
     var s = axiom;
     for i : 0 .. n-1 do
       var ss = new StringBuf;
-      for c : s do
+      for j : 0 .. byteLength(s) - 1 do
+        var c = byte(s, j);
         if contains(rules, c) then
           append(ss, rules[c]);
         else
-          append(ss, c);
+          appendByte(ss, c);
         end
       end
       s = toString(ss);
@@ -59,7 +60,8 @@ module edge3 is
     moveTo(gfx, x0, y0);
     turnTo(gfx, angle0);
     setColor(gfx, rgb(0, 0, 255));
-    for c : sequence do
+    for i : 0 .. byteLength(sequence) - 1 do
+      var c = byte(sequence, i);
       if c == 'L' | c == 'R' then
         penDown(gfx);
         forward(gfx, step);
