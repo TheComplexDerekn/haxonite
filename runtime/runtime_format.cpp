@@ -10,6 +10,7 @@
 #include "runtime_format.h"
 #include <string.h>
 #include "NumConversion.h"
+#include "UTF8.h"
 #include "runtime_String.h"
 
 // Create a string on the heap, using [length] bytes of [s].  If
@@ -67,7 +68,11 @@ static NativeFuncDefn(runtime_format_IIII) {
 
   std::string s;
   if (format == 'c') {
-    s = std::string(1, (char)x);
+    uint8_t u[utf8MaxBytes];
+    int uLen = utf8Encode((uint32_t)x, u);
+    if (uLen > 0) {
+      s = std::string((char *)u, uLen);
+    }
   } else {
     int radix;
     if (format == 'b') {
