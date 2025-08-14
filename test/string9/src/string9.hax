@@ -1,0 +1,31 @@
+// Test the removePrefix and removeSuffix functions.
+
+module string9 is
+
+  func main() is
+    runPrefix("abc.defghi", "abc.");
+    runPrefix("abc.defghi", "a");
+    runPrefix("abc.defghi", "abd.");
+    runPrefix("abc.defghi", "ghi");
+    runPrefix("abc.defghi", "abc.defghi");
+    runPrefix("abc.defghi", "");
+
+    runSuffix("abcdef.ghi", ".ghi");
+    runSuffix("abcdef.ghi", "i");
+    runSuffix("abcdef.ghi", ".ghj");
+    runSuffix("abcdef.ghi", "abc");
+    runSuffix("abcdef.ghi", "abcdef.ghi");
+    runSuffix("abcdef.ghi", "");
+  end
+
+  func runPrefix(s: String, prefix: String) is
+    var out = removePrefix(s, prefix);
+    write($"removePrefix('{s}', '{prefix}') -> '{out}'\n");
+  end
+
+  func runSuffix(s: String, suffix: String) is
+    var out = removeSuffix(s, suffix);
+    write($"removeSuffix('{s}', '{suffix}') -> '{out}'\n");
+  end
+
+end

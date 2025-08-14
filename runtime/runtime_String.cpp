@@ -200,6 +200,53 @@ static NativeFuncDefn(runtime_splitLast_SS) {
   engine.popGCRoot(vCell);
 }
 
+// removePrefix(s: String, prefix: String) -> String
+static NativeFuncDefn(runtime_removePrefix_SS) {
+#if CHECK_RUNTIME_FUNC_ARGS
+  if (engine.nArgs() != 2 ||
+      !cellIsPtr(engine.arg(0)) ||
+      !cellIsPtr(engine.arg(1))) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+#endif
+  Cell &sCell = engine.arg(0);
+  Cell &prefixCell = engine.arg(1);
+
+  int64_t sLength = stringByteLength(sCell);
+  uint8_t *sData = (uint8_t *)stringData(sCell);
+  int64_t prefixLength = stringByteLength(prefixCell);
+  uint8_t *prefixData = (uint8_t *)stringData(prefixCell);
+  if (sLength >= prefixLength && !memcmp(sData, prefixData, prefixLength)) {
+    engine.push(stringMake(sCell, prefixLength, sLength - prefixLength, engine));
+  } else {
+    engine.push(sCell);
+  }
+}
+
+// removeSuffix(s: String, suffix: String) -> String
+static NativeFuncDefn(runtime_removeSuffix_SS) {
+#if CHECK_RUNTIME_FUNC_ARGS
+  if (engine.nArgs() != 2 ||
+      !cellIsPtr(engine.arg(0)) ||
+      !cellIsPtr(engine.arg(1))) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+#endif
+  Cell &sCell = engine.arg(0);
+  Cell &suffixCell = engine.arg(1);
+
+  int64_t sLength = stringByteLength(sCell);
+  uint8_t *sData = (uint8_t *)stringData(sCell);
+  int64_t suffixLength = stringByteLength(suffixCell);
+  uint8_t *suffixData = (uint8_t *)stringData(suffixCell);
+  if (sLength >= suffixLength &&
+      !memcmp(sData + (sLength - suffixLength), suffixData, suffixLength)) {
+    engine.push(stringMake(sCell, 0, sLength - suffixLength, engine));
+  } else {
+    engine.push(sCell);
+  }
+}
+
 // toInt(s: String) -> Result[Int]
 static NativeFuncDefn(runtime_toInt_S) {
 #if CHECK_RUNTIME_FUNC_ARGS
@@ -393,6 +440,8 @@ void runtime_String_init(BytecodeEngine &engine) {
   engine.addNativeFunction("split_SS", &runtime_split_SS);
   engine.addNativeFunction("splitFirst_SS", &runtime_splitFirst_SS);
   engine.addNativeFunction("splitLast_SS", &runtime_splitLast_SS);
+  engine.addNativeFunction("removePrefix_SS", &runtime_removePrefix_SS);
+  engine.addNativeFunction("removeSuffix_SS", &runtime_removeSuffix_SS);
   engine.addNativeFunction("toInt_S", &runtime_toInt_S);
   engine.addNativeFunction("toInt_SI", &runtime_toInt_SI);
   engine.addNativeFunction("toFloat_S", &runtime_toFloat_S);

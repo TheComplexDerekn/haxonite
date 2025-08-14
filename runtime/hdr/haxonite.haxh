@@ -17,6 +17,8 @@ header haxonite is
   nativefunc split(term: String, s: String) -> Vector[String];
   nativefunc splitFirst(term: String, s: String) -> Vector[String];
   nativefunc splitLast(term: String, s: String) -> Vector[String];
+  nativefunc removePrefix(s: String, prefix: String) -> String;
+  nativefunc removeSuffix(s: String, suffix: String) -> String;
   nativefunc toInt(s: String) -> Result[Int];
   nativefunc toInt(s: String, base: Int) -> Result[Int];
   nativefunc toFloat(s: String) -> Result[Float];
