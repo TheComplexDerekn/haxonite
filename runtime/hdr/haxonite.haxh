@@ -25,6 +25,7 @@ header haxonite is
   nativefunc codepoint(s: String, idx: Int) -> Int;
   nativefunc nextCodepoint(s: String, idx: Int) -> Int;
   nativefunc substr(s: String, first: Int, last: Int) -> String;
+  nativefunc codepointToString(c: Int) -> String;
 
   //--- regular expression
   nativefunc reTest(re: String, s: String) -> Result[Bool];
