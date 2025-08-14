@@ -1693,6 +1693,7 @@ void gfxCloseWindow(Cell &windowCell, BytecodeEngine &engine) {
       }
       break;
     }
+    p = (Window *)cellHeapPtr(p->next);
   }
 
   gfxCloseImage(win->frontBuf, engine);
@@ -2856,10 +2857,17 @@ bool gfxPasteFromClipboard(Cell &windowCell, std::string &s) {
       xcb_get_selection_owner(gfxApp->connection, gfxApp->clipboardAtom);
   xcb_get_selection_owner_reply_t *ownerReply =
       xcb_get_selection_owner_reply(gfxApp->connection, ownerCookie, nullptr);
-  bool hasOwner = ownerReply && ownerReply->owner != XCB_NONE;
+  xcb_window_t owner = ownerReply->owner;
+  bool hasOwner = ownerReply && owner != XCB_NONE;
   free(ownerReply);
   if (!hasOwner) {
     return false;
+  }
+
+  //--- pasting from this application to itself
+  if (findWindow(owner)) {
+    s = gfxApp->clipText;
+    return true;
   }
 
   //--- request selection
