@@ -98,8 +98,8 @@ static NativeFuncDefn(runtime_split_SS) {
     BytecodeEngine::fatalError("Invalid argument");
   }
 #endif
-  Cell &sCell = engine.arg(0);
-  Cell &termCell = engine.arg(1);
+  Cell &termCell = engine.arg(0);
+  Cell &sCell = engine.arg(1);
 
   Cell vCell = vectorMake(engine);
   engine.pushGCRoot(vCell);
@@ -135,8 +135,8 @@ static NativeFuncDefn(runtime_splitFirst_SS) {
     BytecodeEngine::fatalError("Invalid argument");
   }
 #endif
-  Cell &sCell = engine.arg(0);
-  Cell &termCell = engine.arg(1);
+  Cell &termCell = engine.arg(0);
+  Cell &sCell = engine.arg(1);
 
   Cell vCell = vectorMake(engine);
   engine.pushGCRoot(vCell);
@@ -169,8 +169,8 @@ static NativeFuncDefn(runtime_splitLast_SS) {
     BytecodeEngine::fatalError("Invalid argument");
   }
 #endif
-  Cell &sCell = engine.arg(0);
-  Cell &termCell = engine.arg(1);
+  Cell &termCell = engine.arg(0);
+  Cell &sCell = engine.arg(1);
 
   Cell vCell = vectorMake(engine);
   engine.pushGCRoot(vCell);

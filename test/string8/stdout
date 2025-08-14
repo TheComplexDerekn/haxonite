@@ -1,44 +1,44 @@
-splitFirst('abc/def/ghi/jkl', '/'):
+splitFirst('/', 'abc/def/ghi/jkl'):
     'abc' | 'def/ghi/jkl'
     'def' | 'ghi/jkl'
     'ghi' | 'jkl'
     'jkl'
-splitLast('abc/def/ghi/jkl', '/'):
+splitLast('/', 'abc/def/ghi/jkl'):
     'abc/def/ghi' | 'jkl'
     'abc/def' | 'ghi'
     'abc' | 'def'
     'abc'
-splitFirst('XYZabcXYZdefXYZXYZghiXYZ', 'XYZ'):
+splitFirst('XYZ', 'XYZabcXYZdefXYZXYZghiXYZ'):
     '' | 'abcXYZdefXYZXYZghiXYZ'
     'abc' | 'defXYZXYZghiXYZ'
     'def' | 'XYZghiXYZ'
     '' | 'ghiXYZ'
     'ghi' | ''
     ''
-splitLast('XYZabcXYZdefXYZXYZghiXYZ', 'XYZ'):
+splitLast('XYZ', 'XYZabcXYZdefXYZXYZghiXYZ'):
     'XYZabcXYZdefXYZXYZghi' | ''
     'XYZabcXYZdefXYZ' | 'ghi'
     'XYZabcXYZdef' | ''
     'XYZabc' | 'def'
     '' | 'abc'
     ''
-splitFirst('abcXYZdefXYZXYZghiXYZ', 'XXX'):
+splitFirst('XXX', 'abcXYZdefXYZXYZghiXYZ'):
     'abcXYZdefXYZXYZghiXYZ'
-splitLast('abcXYZdefXYZXYZghiXYZ', 'XXX'):
+splitLast('XXX', 'abcXYZdefXYZXYZghiXYZ'):
     'abcXYZdefXYZXYZghiXYZ'
-splitFirst('0000', '0'):
+splitFirst('0', '0000'):
     '' | '000'
     '' | '00'
     '' | '0'
     '' | ''
     ''
-splitLast('0000', '0'):
+splitLast('0', '0000'):
     '000' | ''
     '00' | ''
     '0' | ''
     '' | ''
     ''
-splitFirst('', 'x'):
+splitFirst('x', ''):
     ''
-splitLast('', 'x'):
+splitLast('x', ''):
     ''

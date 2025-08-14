@@ -2,11 +2,11 @@
 
 module string8 is
 
-  func runSplitFirst(s: String, term: String) is
-    write($"splitFirst('{s}', '{term}'):\n");
+  func runSplitFirst(term: String, s: String) is
+    write($"splitFirst('{term}', '{s}'):\n");
     var s1 = s;
     while true do
-      var v = splitFirst(s1, term);
+      var v = splitFirst(term, s1);
       if #v == 1 then
         write($"    '{v[0]}'\n");
         break;
@@ -20,11 +20,11 @@ module string8 is
     end
   end
 
-  func runSplitLast(s: String, term: String) is
-    write($"splitLast('{s}', '{term}'):\n");
+  func runSplitLast(term: String, s: String) is
+    write($"splitLast('{term}', '{s}'):\n");
     var s1 = s;
     while true do
-      var v = splitLast(s1, term);
+      var v = splitLast(term, s1);
       if #v == 1 then
         write($"    '{v[0]}'\n");
         break;
@@ -39,16 +39,16 @@ module string8 is
   end
 
   func main() is
-    runSplitFirst("abc/def/ghi/jkl", "/");
-    runSplitLast("abc/def/ghi/jkl", "/");
-    runSplitFirst("XYZabcXYZdefXYZXYZghiXYZ", "XYZ");
-    runSplitLast("XYZabcXYZdefXYZXYZghiXYZ", "XYZ");
-    runSplitFirst("abcXYZdefXYZXYZghiXYZ", "XXX");
-    runSplitLast("abcXYZdefXYZXYZghiXYZ", "XXX");
-    runSplitFirst("0000", "0");
-    runSplitLast("0000", "0");
-    runSplitFirst("", "x");
-    runSplitLast("", "x");
+    runSplitFirst("/", "abc/def/ghi/jkl");
+    runSplitLast("/", "abc/def/ghi/jkl");
+    runSplitFirst("XYZ", "XYZabcXYZdefXYZXYZghiXYZ");
+    runSplitLast("XYZ", "XYZabcXYZdefXYZXYZghiXYZ");
+    runSplitFirst("XXX", "abcXYZdefXYZXYZghiXYZ");
+    runSplitLast("XXX", "abcXYZdefXYZXYZghiXYZ");
+    runSplitFirst("0", "0000");
+    runSplitLast("0", "0000");
+    runSplitFirst("x", "");
+    runSplitLast("x", "");
   end
 
 end

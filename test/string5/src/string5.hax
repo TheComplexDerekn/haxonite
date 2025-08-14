@@ -2,9 +2,9 @@
 
 module string5 is
 
-  func runSplit(s: String, term: String) is
-    var v = split(s, term);
-    write($"split('{s}', '{term}') ->");
+  func runSplit(term: String, s: String) is
+    var v = split(term, s);
+    write($"split('{term}', '{s}') ->");
     for ss : v do
       write($" '{ss}'");
     end
@@ -12,11 +12,11 @@ module string5 is
   end
 
   func main() is
-    runSplit("abcXYZdefXYZXYZghiXYZ", "XYZ");
-    runSplit("abcXYZdefXYZXYZghiXYZ", "XXX");
-    runSplit("*abc*def**ghi*", "*");
-    runSplit("0000", "0");
-    runSplit("", "x");
+    runSplit("XYZ", "abcXYZdefXYZXYZghiXYZ");
+    runSplit("XXX", "abcXYZdefXYZXYZghiXYZ");
+    runSplit("*", "*abc*def**ghi*");
+    runSplit("0", "0000");
+    runSplit("x", "");
   end
 
 end
