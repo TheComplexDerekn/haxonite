@@ -379,6 +379,42 @@ static NativeFuncDefn(runtime_delete_V2) {
   engine.push(cellMakeInt(0));
 }
 
+// delete(v: Vector[$T], idx: Int, n: Int)
+static NativeFuncDefn(runtime_delete_V3) {
+#if CHECK_RUNTIME_FUNC_ARGS
+  if (engine.nArgs() != 3 ||
+      !cellIsPtr(engine.arg(0)) ||
+      !cellIsInt(engine.arg(1)) ||
+      !cellIsInt(engine.arg(2))) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+#endif
+  Cell &vCell = engine.arg(0);
+  Cell &idxCell = engine.arg(1);
+  Cell &nCell = engine.arg(2);
+
+  VectorHandle *v = (VectorHandle *)cellPtr(vCell);
+  engine.failOnNilPtr(v);
+  int64_t idx = cellInt(idxCell);
+  int64_t n = cellInt(nCell);
+
+  int64_t length = heapObjSize(v);
+  if (idx < 0 || idx > length || n < 0 || n > length - idx) {
+    BytecodeEngine::fatalError("Index out of bounds");
+  }
+
+  VectorData *data = (VectorData *)cellPtr(v->dataPtr);
+  if (n < length - idx) {
+    memmove(&data->elems[idx], &data->elems[idx+n], (length - idx) * bytesPerElement);
+  }
+  heapObjSetSize(v, length - n);
+
+  // NB: this may trigger GC
+  vectorShrink(vCell, engine);
+
+  engine.push(cellMakeInt(0));
+}
+
 // clear(v: Vector[$T])
 static NativeFuncDefn(runtime_clear_V1) {
 #if CHECK_RUNTIME_FUNC_ARGS
@@ -483,6 +519,7 @@ void runtime_Vector_init(BytecodeEngine &engine) {
   engine.addNativeFunction("append_V2", &runtime_append_V2);
   engine.addNativeFunction("insert_V3", &runtime_insert_V3);
   engine.addNativeFunction("delete_V2", &runtime_delete_V2);
+  engine.addNativeFunction("delete_V3", &runtime_delete_V3);
   engine.addNativeFunction("clear_V1", &runtime_clear_V1);
   engine.addNativeFunction("sort_V2", &runtime_sort_V2);
   engine.addNativeFunction("ifirst_V1", &runtime_ifirst_V1);

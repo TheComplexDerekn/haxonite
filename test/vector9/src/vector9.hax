@@ -1,0 +1,52 @@
+// Test delete(Vector,Int,Int).
+
+module vector9 is
+
+  func main() is
+    var v = new Vector[Int];
+    for i : 0 .. 20 do
+      append(v, i);
+    end
+
+    write("A:");
+    for x : v do
+      write($" {x}");
+    end
+    write("\n");
+
+    delete(v, 5, 3);
+
+    write("B:");
+    for x : v do
+      write($" {x}");
+    end
+    write("\n");
+
+    delete(v, 0, 0);
+    delete(v, 7, 0);
+    delete(v, 18, 0);
+
+    write("C:");
+    for x : v do
+      write($" {x}");
+    end
+    write("\n");
+
+    delete(v, 0, 5);
+
+    write("D:");
+    for x : v do
+      write($" {x}");
+    end
+    write("\n");
+
+    delete(v, 0, 13);
+
+    write("E:");
+    for x : v do
+      write($" {x}");
+    end
+    write("\n");
+  end
+
+end
