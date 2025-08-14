@@ -9,6 +9,7 @@
 
 #include "Mangle.h"
 #include "Error.h"
+#include "TypeCheck.h"
 
 //------------------------------------------------------------------------
 
@@ -24,13 +25,13 @@ std::string mangleFunctionName(CFuncDecl *func) {
       CParamTypeRef *arg0Type = (CParamTypeRef *)func->args[0]->type.get();
       switch (arg0Type->type->kind()) {
       case CTypeKind::vectorType:
-	s += "V";
+	s += "V" + std::to_string(func->args.size());
 	break;
       case CTypeKind::setType: {
 	CTypeRef *keyType = arg0Type->params[0].get();
 	switch (keyType->type->kind()) {
-	case CTypeKind::intType:    s += "ZI"; break;
-	case CTypeKind::stringType: s += "ZS"; break;
+	case CTypeKind::intType:    s += "ZI" + std::to_string(func->args.size()); break;
+	case CTypeKind::stringType: s += "ZS" + std::to_string(func->args.size()); break;
 	default: break;
 	}
 	break;
@@ -38,8 +39,8 @@ std::string mangleFunctionName(CFuncDecl *func) {
       case CTypeKind::mapType: {
 	CTypeRef *keyType = arg0Type->params[0].get();
 	switch (keyType->type->kind()) {
-	case CTypeKind::intType:    s += "MI"; break;
-	case CTypeKind::stringType: s += "MS"; break;
+	case CTypeKind::intType:    s += "MI" + std::to_string(func->args.size()); break;
+	case CTypeKind::stringType: s += "MS" + std::to_string(func->args.size()); break;
 	default: break;
 	}
 	break;
@@ -109,5 +110,149 @@ static std::string mangleTypeRef(CTypeRef *typeRef) {
       error(simpleTypeRef->loc, "Internal error: mangleTypeRef");
       return "ZZZ";
     }
+  }
+}
+
+std::string mangleIntFormatFuncName() {
+  return "format_IIII";
+}
+
+std::string mangleFloatFormatFuncName() {
+  return "format_FIII";
+}
+
+std::string mangleBoolFormatFuncName() {
+  return "format_BIII";
+}
+
+std::string mangleStringConcatFuncName() {
+  return "concat_SS";
+}
+
+std::string mangleStringCompareFuncName() {
+  return "compare_SS";
+}
+
+std::string mangleStringFormatFuncName() {
+  return "format_SIII";
+}
+
+std::string mangleVectorAppendFuncName() {
+  return "append_V2";
+}
+
+std::string mangleVectorIfirstFuncName() {
+  return "ifirst_V1";
+}
+
+std::string mangleVectorImoreFuncName() {
+  return "imore_V2";
+}
+
+std::string mangleVectorInextFuncName() {
+  return "inext_V2";
+}
+
+std::string mangleVectorIgetFuncName() {
+  return "iget_V2";
+}
+
+std::string mangleSetInsertFuncName(CTypeRef *elemType) {
+  if (typeCheckString(elemType)) {
+    return "insert_ZS2";
+  } else if (typeCheckInt(elemType)) {
+    return "insert_ZI2";
+  } else {
+    return "???";
+  }
+}
+
+std::string mangleSetIfirstFuncName(CTypeRef *elemType) {
+  if (typeCheckString(elemType)) {
+    return "ifirst_ZS1";
+  } else if (typeCheckInt(elemType)) {
+    return "ifirst_ZI1";
+  } else {
+    return "???";
+  }
+}
+
+std::string mangleSetImoreFuncName(CTypeRef *elemType) {
+  if (typeCheckString(elemType)) {
+    return "imore_ZS2";
+  } else if (typeCheckInt(elemType)) {
+    return "imore_ZI2";
+  } else {
+    return "???";
+  }
+}
+
+std::string mangleSetInextFuncName(CTypeRef *elemType) {
+  if (typeCheckString(elemType)) {
+    return "inext_ZS2";
+  } else if (typeCheckInt(elemType)) {
+    return "inext_ZI2";
+  } else {
+    return "???";
+  }
+}
+
+std::string mangleSetIgetFuncName(CTypeRef *elemType) {
+  if (typeCheckString(elemType)) {
+    return "iget_ZS2";
+  } else if (typeCheckInt(elemType)) {
+    return "iget_ZI2";
+  } else {
+    return "???";
+  }
+}
+
+std::string mangleMapSetFuncName(CTypeRef *keyType) {
+  if (typeCheckString(keyType)) {
+    return "set_MS3";
+  } else if (typeCheckInt(keyType)) {
+    return "set_MI3";
+  } else {
+    return "???";
+  }
+}
+
+std::string mangleMapIfirstFuncName(CTypeRef *keyType) {
+  if (typeCheckString(keyType)) {
+    return "ifirst_MS1";
+  } else if (typeCheckInt(keyType)) {
+    return "ifirst_MI1";
+  } else {
+    return "???";
+  }
+}
+
+std::string mangleMapImoreFuncName(CTypeRef *keyType) {
+  if (typeCheckString(keyType)) {
+    return "imore_MS2";
+  } else if (typeCheckInt(keyType)) {
+    return "imore_MI2";
+  } else {
+    return "???";
+  }
+}
+
+std::string mangleMapInextFuncName(CTypeRef *keyType) {
+  if (typeCheckString(keyType)) {
+    return "inext_MS2";
+  } else if (typeCheckInt(keyType)) {
+    return "inext_MI2";
+  } else {
+    return "???";
+  }
+}
+
+std::string mangleMapIgetFuncName(CTypeRef *keyType) {
+  if (typeCheckString(keyType)) {
+    return "iget_MS2";
+  } else if (typeCheckInt(keyType)) {
+    return "iget_MI2";
+  } else {
+    return "???";
   }
 }

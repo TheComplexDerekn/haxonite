@@ -323,30 +323,26 @@ static BlockResult codeGenForContainerStmt(ForStmt *stmt, Context &ctx, Bytecode
 
   //--- check container type
   std::unique_ptr<CTypeRef> elemType;
-  const char *ifirstFuncName = nullptr;
-  const char *imoreFuncName = nullptr;
-  const char *inextFuncName = nullptr;
-  const char *igetFuncName = nullptr;
+  std::string ifirstFuncName;
+  std::string imoreFuncName;
+  std::string inextFuncName;
+  std::string igetFuncName;
   switch (res.type->type->kind()) {
   case CTypeKind::vectorType:
     elemType = std::unique_ptr<CTypeRef>(((CParamTypeRef *)res.type.get())->params[0]->copy());
-    ifirstFuncName = "ifirst_V";
-    imoreFuncName = "imore_V";
-    inextFuncName = "inext_V";
-    igetFuncName = "iget_V";
+    ifirstFuncName = mangleVectorIfirstFuncName();
+    imoreFuncName = mangleVectorImoreFuncName();
+    inextFuncName = mangleVectorInextFuncName();
+    igetFuncName = mangleVectorIgetFuncName();
     break;
   case CTypeKind::setType:
     elemType = std::unique_ptr<CTypeRef>(((CParamTypeRef *)res.type.get())->params[0]->copy());
-    if (typeCheckString(elemType.get())) {
-      ifirstFuncName = "ifirst_ZS";
-      imoreFuncName = "imore_ZS";
-      inextFuncName = "inext_ZS";
-      igetFuncName = "iget_ZS";
-    } else if (typeCheckInt(elemType.get())) {
-      ifirstFuncName = "ifirst_ZI";
-      imoreFuncName = "imore_ZI";
-      inextFuncName = "inext_ZI";
-      igetFuncName = "iget_ZI";
+    if (typeCheckString(elemType.get()) ||
+	typeCheckInt(elemType.get())) {
+      ifirstFuncName = mangleSetIfirstFuncName(elemType.get());
+      imoreFuncName = mangleSetImoreFuncName(elemType.get());
+      inextFuncName = mangleSetInextFuncName(elemType.get());
+      igetFuncName = mangleSetIgetFuncName(elemType.get());
     } else {
       error(stmt->loc, "Internal: bad Set param (codeGenForContainerStmt)");
       ctx.popFrame();
@@ -355,16 +351,12 @@ static BlockResult codeGenForContainerStmt(ForStmt *stmt, Context &ctx, Bytecode
     break;
   case CTypeKind::mapType:
     elemType = std::unique_ptr<CTypeRef>(((CParamTypeRef *)res.type.get())->params[0]->copy());
-    if (typeCheckString(elemType.get())) {
-      ifirstFuncName = "ifirst_MS";
-      imoreFuncName = "imore_MS";
-      inextFuncName = "inext_MS";
-      igetFuncName = "iget_MS";
-    } else if (typeCheckInt(elemType.get())) {
-      ifirstFuncName = "ifirst_MI";
-      imoreFuncName = "imore_MI";
-      inextFuncName = "inext_MI";
-      igetFuncName = "iget_MI";
+    if (typeCheckString(elemType.get()) ||
+	typeCheckInt(elemType.get())) {
+      ifirstFuncName = mangleMapIfirstFuncName(elemType.get());
+      imoreFuncName = mangleMapImoreFuncName(elemType.get());
+      inextFuncName = mangleMapInextFuncName(elemType.get());
+      igetFuncName = mangleMapIgetFuncName(elemType.get());
     } else {
       error(stmt->loc, "Internal: bad Map param (codeGenForContainerStmt)");
       ctx.popFrame();

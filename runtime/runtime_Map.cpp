@@ -227,7 +227,7 @@ static NativeFuncDefn(runtime_allocMap) {
 }
 
 // length(m: Map[$K:$T]) -> Int
-static NativeFuncDefn(runtime_length_M) {
+static NativeFuncDefn(runtime_length_M1) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 1 ||
       !cellIsPtr(engine.arg(0))) {
@@ -270,7 +270,7 @@ static void doContains(Cell &mCell, Cell &keyCell,
 }
 
 // contains(m: Map[String:$T], key: String) -> Bool
-static NativeFuncDefn(runtime_contains_MS) {
+static NativeFuncDefn(runtime_contains_MS2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -285,7 +285,7 @@ static NativeFuncDefn(runtime_contains_MS) {
 }
 
 // contains(m: Map[Int:$T], key: Int) -> Bool
-static NativeFuncDefn(runtime_contains_MI) {
+static NativeFuncDefn(runtime_contains_MI2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -325,7 +325,7 @@ static void doGet(Cell &mCell, Cell &keyCell,
 }
 
 // get(m: Map[String:$T], key: String) -> $T
-static NativeFuncDefn(runtime_get_MS) {
+static NativeFuncDefn(runtime_get_MS2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -340,7 +340,7 @@ static NativeFuncDefn(runtime_get_MS) {
 }
 
 // get(m: Map[Int:$T], key: Int) -> $T
-static NativeFuncDefn(runtime_get_MI) {
+static NativeFuncDefn(runtime_get_MI2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -411,7 +411,7 @@ static void doSet(Cell &mCell, Cell &keyCell, Cell &valueCell,
 }
 
 // set(m: Map[String:$T], key: String, value: $T)
-static NativeFuncDefn(runtime_set_MS) {
+static NativeFuncDefn(runtime_set_MS3) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 3 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -427,7 +427,7 @@ static NativeFuncDefn(runtime_set_MS) {
 }
 
 // set(m: Map[Int:$T], key: Int, value: $T)
-static NativeFuncDefn(runtime_set_MI) {
+static NativeFuncDefn(runtime_set_MI3) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 3 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -487,7 +487,7 @@ static void doDelete(Cell &mCell, Cell &keyCell,
 }
 
 // delete(m: Map[String:$T], key: String)
-static NativeFuncDefn(runtime_delete_MS) {
+static NativeFuncDefn(runtime_delete_MS2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -502,7 +502,7 @@ static NativeFuncDefn(runtime_delete_MS) {
 }
 
 // delete(m: Map[Int], key: Int)
-static NativeFuncDefn(runtime_delete_MI) {
+static NativeFuncDefn(runtime_delete_MI2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -516,7 +516,7 @@ static NativeFuncDefn(runtime_delete_MI) {
 }
 
 // clear(m: Map[$K:$T])
-static NativeFuncDefn(runtime_clear_M) {
+static NativeFuncDefn(runtime_clear_M1) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 1 ||
       !cellIsPtr(engine.arg(0))) {
@@ -534,7 +534,7 @@ static NativeFuncDefn(runtime_clear_M) {
 }
 
 // ifirst(m: Map[$K:$T]) -> Int
-static NativeFuncDefn(runtime_ifirst_M) {
+static NativeFuncDefn(runtime_ifirst_M1) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 1 ||
       !cellIsPtr(engine.arg(0))) {
@@ -554,7 +554,7 @@ static NativeFuncDefn(runtime_ifirst_M) {
 }
 
 // imore(m: Map[$K:$T], iter: Int) -> Bool
-static NativeFuncDefn(runtime_imore_M) {
+static NativeFuncDefn(runtime_imore_M2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -575,7 +575,7 @@ static NativeFuncDefn(runtime_imore_M) {
 }
 
 // inext(m: Map[$K:$T], iter: Int) -> Int
-static NativeFuncDefn(runtime_inext_M) {
+static NativeFuncDefn(runtime_inext_M2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -599,7 +599,7 @@ static NativeFuncDefn(runtime_inext_M) {
 }
 
 // iget(m: Map[$K:$T], iter: Int) -> $K
-static NativeFuncDefn(runtime_iget_M) {
+static NativeFuncDefn(runtime_iget_M2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -625,25 +625,25 @@ static NativeFuncDefn(runtime_iget_M) {
 void runtime_Map_init(BytecodeEngine &engine) {
   engine.addNativeFunction("_allocMap", &runtime_allocMap);
 
-  engine.addNativeFunction("length_MS", &runtime_length_M);
-  engine.addNativeFunction("contains_MS", &runtime_contains_MS);
-  engine.addNativeFunction("get_MS", &runtime_get_MS);
-  engine.addNativeFunction("set_MS", &runtime_set_MS);
-  engine.addNativeFunction("delete_MS", &runtime_delete_MS);
-  engine.addNativeFunction("clear_MS", &runtime_clear_M);
-  engine.addNativeFunction("ifirst_MS", &runtime_ifirst_M);
-  engine.addNativeFunction("imore_MS", &runtime_imore_M);
-  engine.addNativeFunction("inext_MS", &runtime_inext_M);
-  engine.addNativeFunction("iget_MS", &runtime_iget_M);
+  engine.addNativeFunction("length_MS1", &runtime_length_M1);
+  engine.addNativeFunction("contains_MS2", &runtime_contains_MS2);
+  engine.addNativeFunction("get_MS2", &runtime_get_MS2);
+  engine.addNativeFunction("set_MS3", &runtime_set_MS3);
+  engine.addNativeFunction("delete_MS2", &runtime_delete_MS2);
+  engine.addNativeFunction("clear_MS1", &runtime_clear_M1);
+  engine.addNativeFunction("ifirst_MS1", &runtime_ifirst_M1);
+  engine.addNativeFunction("imore_MS2", &runtime_imore_M2);
+  engine.addNativeFunction("inext_MS2", &runtime_inext_M2);
+  engine.addNativeFunction("iget_MS2", &runtime_iget_M2);
 
-  engine.addNativeFunction("length_MI", &runtime_length_M);
-  engine.addNativeFunction("contains_MI", &runtime_contains_MI);
-  engine.addNativeFunction("get_MI", &runtime_get_MI);
-  engine.addNativeFunction("set_MI", &runtime_set_MI);
-  engine.addNativeFunction("delete_MI", &runtime_delete_MI);
-  engine.addNativeFunction("clear_MI", &runtime_clear_M);
-  engine.addNativeFunction("ifirst_MI", &runtime_ifirst_M);
-  engine.addNativeFunction("imore_MI", &runtime_imore_M);
-  engine.addNativeFunction("inext_MI", &runtime_inext_M);
-  engine.addNativeFunction("iget_MI", &runtime_iget_M);
+  engine.addNativeFunction("length_MI1", &runtime_length_M1);
+  engine.addNativeFunction("contains_MI2", &runtime_contains_MI2);
+  engine.addNativeFunction("get_MI2", &runtime_get_MI2);
+  engine.addNativeFunction("set_MI3", &runtime_set_MI3);
+  engine.addNativeFunction("delete_MI2", &runtime_delete_MI2);
+  engine.addNativeFunction("clear_MI1", &runtime_clear_M1);
+  engine.addNativeFunction("ifirst_MI1", &runtime_ifirst_M1);
+  engine.addNativeFunction("imore_MI2", &runtime_imore_M2);
+  engine.addNativeFunction("inext_MI2", &runtime_inext_M2);
+  engine.addNativeFunction("iget_MI2", &runtime_iget_M2);
 }

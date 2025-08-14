@@ -15,6 +15,7 @@ header Vector[$T] is
   nativefunc append(v: Vector[$T], value: $T);
   nativefunc insert(v: Vector[$T], idx: Int, value: $T);
   nativefunc delete(v: Vector[$T], idx: Int);
+  nativefunc delete(v: Vector[$T], idx: Int, n: Int);
   nativefunc clear(v: Vector[$T]);
   nativefunc sort(v: Vector[$T], cmp: Func[$T,$T->Bool]);
   nativefunc ifirst(v: Vector[$T]) -> Int;

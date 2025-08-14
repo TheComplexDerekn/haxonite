@@ -223,7 +223,7 @@ static NativeFuncDefn(runtime_allocSet) {
 }
 
 // length(s: Set[$K]) -> Int
-static NativeFuncDefn(runtime_length_Z) {
+static NativeFuncDefn(runtime_length_Z1) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 1 ||
       !cellIsPtr(engine.arg(0))) {
@@ -266,7 +266,7 @@ static void doContains(Cell &sCell, Cell &elemCell,
 }
 
 // contains(s: Set[String], elem: String) -> Bool
-static NativeFuncDefn(runtime_contains_ZS) {
+static NativeFuncDefn(runtime_contains_ZS2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -281,7 +281,7 @@ static NativeFuncDefn(runtime_contains_ZS) {
 }
 
 // contains(s: Set[Int], elem: Int) -> Bool
-static NativeFuncDefn(runtime_contains_ZI) {
+static NativeFuncDefn(runtime_contains_ZI2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -347,7 +347,7 @@ static void doInsert(Cell &sCell, Cell &elemCell,
 }
 
 // insert(s: Set[String], elem: String)
-static NativeFuncDefn(runtime_insert_ZS) {
+static NativeFuncDefn(runtime_insert_ZS2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -362,7 +362,7 @@ static NativeFuncDefn(runtime_insert_ZS) {
 }
 
 // insert(s: Set[Int], elem: Int)
-static NativeFuncDefn(runtime_insert_ZI) {
+static NativeFuncDefn(runtime_insert_ZI2) {
   if (engine.nArgs() != 2) {
     BytecodeEngine::fatalError("Invalid argument");
   }
@@ -419,7 +419,7 @@ static void doDelete(Cell &sCell, Cell &elemCell,
 }
 
 // delete(s: Set[String], elem: String)
-static NativeFuncDefn(runtime_delete_ZS) {
+static NativeFuncDefn(runtime_delete_ZS2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -434,7 +434,7 @@ static NativeFuncDefn(runtime_delete_ZS) {
 }
 
 // delete(s: Set[Int], elem: Int)
-static NativeFuncDefn(runtime_delete_ZI) {
+static NativeFuncDefn(runtime_delete_ZI2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -448,7 +448,7 @@ static NativeFuncDefn(runtime_delete_ZI) {
 }
 
 // clear(s: Set[$K])
-static NativeFuncDefn(runtime_clear_Z) {
+static NativeFuncDefn(runtime_clear_Z1) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 1 ||
       !cellIsPtr(engine.arg(0))) {
@@ -466,7 +466,7 @@ static NativeFuncDefn(runtime_clear_Z) {
 }
 
 // ifirst(s: Set[$K]) -> Int
-static NativeFuncDefn(runtime_ifirst_Z) {
+static NativeFuncDefn(runtime_ifirst_Z1) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 1 ||
       !cellIsPtr(engine.arg(0))) {
@@ -486,7 +486,7 @@ static NativeFuncDefn(runtime_ifirst_Z) {
 }
 
 // imore(s: Set[$K], iter: Int) -> Bool
-static NativeFuncDefn(runtime_imore_Z) {
+static NativeFuncDefn(runtime_imore_Z2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -507,7 +507,7 @@ static NativeFuncDefn(runtime_imore_Z) {
 }
 
 // inext(s: Set[$K], iter: Int) -> Int
-static NativeFuncDefn(runtime_inext_Z) {
+static NativeFuncDefn(runtime_inext_Z2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -531,7 +531,7 @@ static NativeFuncDefn(runtime_inext_Z) {
 }
 
 // iget(s: Set[$K], iter: Int) -> $K
-static NativeFuncDefn(runtime_iget_Z) {
+static NativeFuncDefn(runtime_iget_Z2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -557,23 +557,23 @@ static NativeFuncDefn(runtime_iget_Z) {
 void runtime_Set_init(BytecodeEngine &engine) {
   engine.addNativeFunction("_allocSet", &runtime_allocSet);
 
-  engine.addNativeFunction("length_ZS", &runtime_length_Z);
-  engine.addNativeFunction("contains_ZS", &runtime_contains_ZS);
-  engine.addNativeFunction("insert_ZS", &runtime_insert_ZS);
-  engine.addNativeFunction("delete_ZS", &runtime_delete_ZS);
-  engine.addNativeFunction("clear_ZS", &runtime_clear_Z);
-  engine.addNativeFunction("ifirst_ZS", &runtime_ifirst_Z);
-  engine.addNativeFunction("imore_ZS", &runtime_imore_Z);
-  engine.addNativeFunction("inext_ZS", &runtime_inext_Z);
-  engine.addNativeFunction("iget_ZS", &runtime_iget_Z);
+  engine.addNativeFunction("length_ZS1", &runtime_length_Z1);
+  engine.addNativeFunction("contains_ZS2", &runtime_contains_ZS2);
+  engine.addNativeFunction("insert_ZS2", &runtime_insert_ZS2);
+  engine.addNativeFunction("delete_ZS2", &runtime_delete_ZS2);
+  engine.addNativeFunction("clear_ZS1", &runtime_clear_Z1);
+  engine.addNativeFunction("ifirst_ZS1", &runtime_ifirst_Z1);
+  engine.addNativeFunction("imore_ZS2", &runtime_imore_Z2);
+  engine.addNativeFunction("inext_ZS2", &runtime_inext_Z2);
+  engine.addNativeFunction("iget_ZS2", &runtime_iget_Z2);
 
-  engine.addNativeFunction("length_ZI", &runtime_length_Z);
-  engine.addNativeFunction("contains_ZI", &runtime_contains_ZI);
-  engine.addNativeFunction("insert_ZI", &runtime_insert_ZI);
-  engine.addNativeFunction("delete_ZI", &runtime_delete_ZI);
-  engine.addNativeFunction("clear_ZI", &runtime_clear_Z);
-  engine.addNativeFunction("ifirst_ZI", &runtime_ifirst_Z);
-  engine.addNativeFunction("imore_ZI", &runtime_imore_Z);
-  engine.addNativeFunction("inext_ZI", &runtime_inext_Z);
-  engine.addNativeFunction("iget_ZI", &runtime_iget_Z);
+  engine.addNativeFunction("length_ZI1", &runtime_length_Z1);
+  engine.addNativeFunction("contains_ZI2", &runtime_contains_ZI2);
+  engine.addNativeFunction("insert_ZI2", &runtime_insert_ZI2);
+  engine.addNativeFunction("delete_ZI2", &runtime_delete_ZI2);
+  engine.addNativeFunction("clear_ZI1", &runtime_clear_Z1);
+  engine.addNativeFunction("ifirst_ZI1", &runtime_ifirst_Z1);
+  engine.addNativeFunction("imore_ZI2", &runtime_imore_Z2);
+  engine.addNativeFunction("inext_ZI2", &runtime_inext_Z2);
+  engine.addNativeFunction("iget_ZI2", &runtime_iget_Z2);
 }

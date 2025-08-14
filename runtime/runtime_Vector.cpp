@@ -221,7 +221,7 @@ static NativeFuncDefn(runtime_allocVector) {
 }
 
 // length(v: Vector[$T]) -> Int
-static NativeFuncDefn(runtime_length_V) {
+static NativeFuncDefn(runtime_length_V1) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 1 ||
       !cellIsPtr(engine.arg(0))) {
@@ -239,7 +239,7 @@ static NativeFuncDefn(runtime_length_V) {
 
 // get(v: Vector[$T], idx: Int) -> $T
 // iget(v: Vector[$T], iter: Int) -> $T
-static NativeFuncDefn(runtime_get_V) {
+static NativeFuncDefn(runtime_get_V2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -264,7 +264,7 @@ static NativeFuncDefn(runtime_get_V) {
 }
 
 // set(v: Vector[$T], idx: Int, value: $T)
-static NativeFuncDefn(runtime_set_V) {
+static NativeFuncDefn(runtime_set_V3) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 3 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -291,7 +291,7 @@ static NativeFuncDefn(runtime_set_V) {
 }
 
 // append(v: Vector[$T], value: $T)
-static NativeFuncDefn(runtime_append_V) {
+static NativeFuncDefn(runtime_append_V2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0))) {
@@ -307,7 +307,7 @@ static NativeFuncDefn(runtime_append_V) {
 }
 
 // insert(v: Vector[$T], idx: Int, value: $T)
-static NativeFuncDefn(runtime_insert_V) {
+static NativeFuncDefn(runtime_insert_V3) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 3 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -346,7 +346,7 @@ static NativeFuncDefn(runtime_insert_V) {
 }
 
 // delete(v: Vector[$T], idx: Int)
-static NativeFuncDefn(runtime_delete_V) {
+static NativeFuncDefn(runtime_delete_V2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -380,7 +380,7 @@ static NativeFuncDefn(runtime_delete_V) {
 }
 
 // clear(v: Vector[$T])
-static NativeFuncDefn(runtime_clear_V) {
+static NativeFuncDefn(runtime_clear_V1) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 1 ||
       !cellIsPtr(engine.arg(0))) {
@@ -398,7 +398,7 @@ static NativeFuncDefn(runtime_clear_V) {
 }
 
 // sort(v: Vector[$T], cmp: Func[$T,$T->Bool])
-static NativeFuncDefn(runtime_sort_V) {
+static NativeFuncDefn(runtime_sort_V2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -425,7 +425,7 @@ static NativeFuncDefn(runtime_sort_V) {
 }
 
 // ifirst(v: Vector[$T]) -> Int
-static NativeFuncDefn(runtime_ifirst_V) {
+static NativeFuncDefn(runtime_ifirst_V1) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 1 ||
       !cellIsPtr(engine.arg(0))) {
@@ -438,7 +438,7 @@ static NativeFuncDefn(runtime_ifirst_V) {
 }
 
 // imore(v: Vector[$T], iter: Int) -> Bool
-static NativeFuncDefn(runtime_imore_V) {
+static NativeFuncDefn(runtime_imore_V2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -457,7 +457,7 @@ static NativeFuncDefn(runtime_imore_V) {
 }
 
 // inext(v: Vector[$T], iter: Int) -> Int
-static NativeFuncDefn(runtime_inext_V) {
+static NativeFuncDefn(runtime_inext_V2) {
 #if CHECK_RUNTIME_FUNC_ARGS
   if (engine.nArgs() != 2 ||
       !cellIsPtr(engine.arg(0)) ||
@@ -477,18 +477,18 @@ static NativeFuncDefn(runtime_inext_V) {
 
 void runtime_Vector_init(BytecodeEngine &engine) {
   engine.addNativeFunction("_allocVector", &runtime_allocVector);
-  engine.addNativeFunction("length_V", &runtime_length_V);
-  engine.addNativeFunction("get_V", &runtime_get_V);
-  engine.addNativeFunction("set_V", &runtime_set_V);
-  engine.addNativeFunction("append_V", &runtime_append_V);
-  engine.addNativeFunction("insert_V", &runtime_insert_V);
-  engine.addNativeFunction("delete_V", &runtime_delete_V);
-  engine.addNativeFunction("clear_V", &runtime_clear_V);
-  engine.addNativeFunction("sort_V", &runtime_sort_V);
-  engine.addNativeFunction("ifirst_V", &runtime_ifirst_V);
-  engine.addNativeFunction("imore_V", &runtime_imore_V);
-  engine.addNativeFunction("inext_V", &runtime_inext_V);
-  engine.addNativeFunction("iget_V", &runtime_get_V);
+  engine.addNativeFunction("length_V1", &runtime_length_V1);
+  engine.addNativeFunction("get_V2", &runtime_get_V2);
+  engine.addNativeFunction("set_V3", &runtime_set_V3);
+  engine.addNativeFunction("append_V2", &runtime_append_V2);
+  engine.addNativeFunction("insert_V3", &runtime_insert_V3);
+  engine.addNativeFunction("delete_V2", &runtime_delete_V2);
+  engine.addNativeFunction("clear_V1", &runtime_clear_V1);
+  engine.addNativeFunction("sort_V2", &runtime_sort_V2);
+  engine.addNativeFunction("ifirst_V1", &runtime_ifirst_V1);
+  engine.addNativeFunction("imore_V2", &runtime_imore_V2);
+  engine.addNativeFunction("inext_V2", &runtime_inext_V2);
+  engine.addNativeFunction("iget_V2", &runtime_get_V2);
 }
 
 //------------------------------------------------------------------------

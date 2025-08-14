@@ -257,7 +257,7 @@ static ExprResult codeGenBinaryOpExpr(BinaryOpExpr *expr, Context &ctx, Bytecode
   if (expr->op == BinaryOp::add &&
       typeCheckString(lhsRes.type.get()) && typeCheckString(rhsRes.type.get())) {
     bcFunc.addPushIInstr(2);
-    bcFunc.addPushNativeInstr("concat_SS");
+    bcFunc.addPushNativeInstr(mangleStringConcatFuncName());
     bcFunc.addInstr(bcOpcodeCall);
     return ExprResult(std::make_unique<CSimpleTypeRef>(expr->loc, ctx.stringType));
   }
@@ -268,7 +268,7 @@ static ExprResult codeGenBinaryOpExpr(BinaryOpExpr *expr, Context &ctx, Bytecode
        expr->op == BinaryOp::le || expr->op == BinaryOp::ge) &&
       typeCheckString(lhsRes.type.get()) && typeCheckString(rhsRes.type.get())) {
     bcFunc.addPushIInstr(2);
-    bcFunc.addPushNativeInstr("compare_SS");
+    bcFunc.addPushNativeInstr(mangleStringCompareFuncName());
     bcFunc.addInstr(bcOpcodeCall);
     bcFunc.addPushIInstr(0);
     switch (expr->op) {
@@ -1231,7 +1231,7 @@ static ExprResult codeGenLitVectorExpr(LitVectorExpr *expr, Context &ctx, Byteco
       }
     }
     bcFunc.addPushIInstr(2);
-    bcFunc.addPushNativeInstr("append_V");
+    bcFunc.addPushNativeInstr(mangleVectorAppendFuncName());
     bcFunc.addInstr(bcOpcodeCall);
     bcFunc.addInstr(bcOpcodePop);
   }
@@ -1250,7 +1250,7 @@ static ExprResult codeGenLitSetExpr(LitSetExpr *expr, Context &ctx, BytecodeFile
   bcFunc.addInstr(bcOpcodeCall);
 
   std::unique_ptr<CTypeRef> elemType;
-  const char *insertFuncName = nullptr;
+  std::string insertFuncName;
   for (size_t i = 0; i < expr->vals.size(); ++i) {
     bcFunc.addGetStackInstr(0);
     ExprResult res = codeGenExpr(expr->vals[i].get(), ctx, bcFunc);
@@ -1262,10 +1262,9 @@ static ExprResult codeGenLitSetExpr(LitSetExpr *expr, Context &ctx, BytecodeFile
       return ExprResult();
     }
     if (i == 0) {
-      if (typeCheckString(res.type.get())) {
-	insertFuncName = "insert_ZS";
-      } else if (typeCheckInt(res.type.get())) {
-	insertFuncName = "insert_ZI";
+      if (typeCheckString(res.type.get()) ||
+	  typeCheckInt(res.type.get())) {
+	insertFuncName = mangleSetInsertFuncName(res.type.get());
       } else {
 	error(expr->loc, "Set element type must be String or Int");
 	return ExprResult();
@@ -1297,7 +1296,7 @@ static ExprResult codeGenLitMapExpr(LitMapExpr *expr, Context &ctx, BytecodeFile
   bcFunc.addInstr(bcOpcodeCall);
 
   std::unique_ptr<CTypeRef> keyType, valueType;
-  const char *setFuncName = nullptr;
+  std::string setFuncName;
   for (size_t i = 0; i < expr->pairs.size(); ++i) {
     Expr *keyExpr = expr->pairs[i].first.get();
     Expr *valueExpr = expr->pairs[i].second.get();
@@ -1319,10 +1318,9 @@ static ExprResult codeGenLitMapExpr(LitMapExpr *expr, Context &ctx, BytecodeFile
       return ExprResult();
     }
     if (i == 0) {
-      if (typeCheckString(keyRes.type.get())) {
-	setFuncName = "set_MS";
-      } else if (typeCheckInt(keyRes.type.get())) {
-	setFuncName = "set_MI";
+      if (typeCheckString(keyRes.type.get()) ||
+	  typeCheckInt(keyRes.type.get())) {
+	setFuncName = mangleMapSetFuncName(keyRes.type.get());
       } else {
 	error(expr->loc, "Map key type must be String or Int");
 	return ExprResult();
@@ -1411,7 +1409,7 @@ static ExprResult codeGenInterpStringExpr(InterpStringExpr *expr, Context &ctx,
     }
     if (i > 0) {
       bcFunc.addPushIInstr(2);
-      bcFunc.addPushNativeInstr("concat_SS");
+      bcFunc.addPushNativeInstr(mangleStringConcatFuncName());
       bcFunc.addInstr(bcOpcodeCall);
     }
   }
@@ -1431,15 +1429,15 @@ static bool codeGenInterpStringArg(InterpStringArg *arg, Context &ctx, BytecodeF
     error(arg->loc, "Non-value used in interpolated string");
     return false;
   }
-  const char *formatFunc;
+  std::string formatFunc;
   if (typeCheckInt(res.type.get())) {
-    formatFunc = "format_IIII";
+    formatFunc = mangleIntFormatFuncName();
   } else if (typeCheckFloat(res.type.get())) {
-    formatFunc = "format_FIII";
+    formatFunc = mangleFloatFormatFuncName();
   } else if (typeCheckBool(res.type.get())) {
-    formatFunc = "format_BIII";
+    formatFunc = mangleBoolFormatFuncName();
   } else if (typeCheckString(res.type.get())) {
-    formatFunc = "format_SIII";
+    formatFunc = mangleStringFormatFuncName();
   } else {
     error(arg->loc, "Unsupported type for argument in interpolated string");
     return false;
