@@ -81,7 +81,7 @@ int utf8Length(const uint8_t *s, int64_t length, int64_t idx) {
   if (idx < 0 || idx >= length) {
     return 0;
   }
-  uint32_t c0 = s[idx];
+  uint8_t c0 = s[idx];
   if (c0 < 0x80) {
     return 1;
   } else if (c0 < 0xe0 && idx <= INT64_MAX - 1 && idx + 1 <= length) {
@@ -116,6 +116,45 @@ int utf8Length(const uint8_t *s, int64_t length, int64_t idx) {
     }
   }
   return 1;
+}
+
+int utf8PrevLength(const uint8_t *s, int64_t length, int64_t idx) {
+  if (idx <= 0 || idx > length) {
+    return 0;
+  }
+  uint8_t c0 = s[idx-1];
+  if (c0 < 0x80) {
+    return 1;
+  } else if ((c0 & 0xc0) != 0x80) {
+    return 1;
+  } else if (idx >= 2 &&
+	     (s[idx-2] & 0xe0) == 0xc0) {
+    return 2;
+  } else if (idx >= 3 &&
+	     (s[idx-2] & 0xc0) == 0x80 &&
+	     (s[idx-3] & 0xf0) == 0xe0) {
+    return 3;
+  } else if (idx >= 4 &&
+	     (s[idx-2] & 0xc0) == 0x80 &&
+	     (s[idx-3] & 0xc0) == 0x80 &&
+	     (s[idx-4] & 0xf8) == 0xf0) {
+    return 4;
+  } else if (idx >= 5 &&
+	     (s[idx-2] & 0xc0) == 0x80 &&
+	     (s[idx-3] & 0xc0) == 0x80 &&
+	     (s[idx-4] & 0xc0) == 0x80 &&
+	     (s[idx-5] & 0xfc) == 0xf8) {
+    return 5;
+  } else if (idx >= 6 &&
+	     (s[idx-2] & 0xc0) == 0x80 &&
+	     (s[idx-3] & 0xc0) == 0x80 &&
+	     (s[idx-4] & 0xc0) == 0x80 &&
+	     (s[idx-5] & 0xc0) == 0x80 &&
+	     (s[idx-6] & 0xfe) == 0xfc) {
+    return 6;
+  } else {
+    return 1;
+  }
 }
 
 int utf8Encode(uint32_t u, uint8_t *out) {

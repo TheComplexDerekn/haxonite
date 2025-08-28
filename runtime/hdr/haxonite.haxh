@@ -26,6 +26,7 @@ header haxonite is
   nativefunc byte(s: String, idx: Int) -> Int;
   nativefunc codepoint(s: String, idx: Int) -> Int;
   nativefunc nextCodepoint(s: String, idx: Int) -> Int;
+  nativefunc prevCodepoint(s: String, idx: Int) -> Int;
   nativefunc substr(s: String, first: Int, last: Int) -> String;
   nativefunc codepointToString(c: Int) -> String;
 

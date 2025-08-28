@@ -388,6 +388,27 @@ static NativeFuncDefn(runtime_nextCodepoint_SI) {
   engine.push(cellMakeInt(idx + n));
 }
 
+// prevCodepoint(s: String, idx: Int) -> Int
+static NativeFuncDefn(runtime_prevCodepoint_SI) {
+#if CHECK_RUNTIME_FUNC_ARGS
+  if (engine.nArgs() != 2 ||
+      !cellIsPtr(engine.arg(0)) ||
+      !cellIsInt(engine.arg(1))) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+#endif
+  Cell &s = engine.arg(0);
+  Cell &idxCell = engine.arg(1);
+
+  int64_t idx = cellInt(idxCell);
+  int64_t length = stringByteLength(s);
+  if (idx <= 0 || idx > length) {
+    BytecodeEngine::fatalError("Index out of bounds");
+  }
+  int n = utf8PrevLength(stringData(s), length, idx);
+  engine.push(cellMakeInt(idx - n));
+}
+
 // substr(s: String, first: Int, last: Int) -> String
 static NativeFuncDefn(runtime_substr_SII) {
 #if CHECK_RUNTIME_FUNC_ARGS
@@ -449,6 +470,7 @@ void runtime_String_init(BytecodeEngine &engine) {
   engine.addNativeFunction("byte_SI", &runtime_byte_SI);
   engine.addNativeFunction("codepoint_SI", &runtime_codepoint_SI);
   engine.addNativeFunction("nextCodepoint_SI", &runtime_nextCodepoint_SI);
+  engine.addNativeFunction("prevCodepoint_SI", &runtime_prevCodepoint_SI);
   engine.addNativeFunction("substr_SII", &runtime_substr_SII);
   engine.addNativeFunction("codepointToString_I", &runtime_codepointToString_I);
 }
