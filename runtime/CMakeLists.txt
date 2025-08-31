@@ -28,7 +28,7 @@ add_executable(haxrun
   CairoXCBGfx.cpp
 )
 target_link_libraries(haxrun bytecode util
-                      cairo png jpeg fontconfig double-conversion pcre2-8
+                      cairo png jpeg fontconfig double-conversion pcre2-8 icuuc
                       xcb-icccm xcb-shm xcb-xkb xcb-randr xcb xkbcommon-x11 xkbcommon
 )
 

@@ -20,6 +20,7 @@ find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
 find_package(Fontconfig REQUIRED)
 find_package(double-conversion REQUIRED)
+find_package(ICU REQUIRED COMPONENTS uc)
 find_package(X11 REQUIRED)
 
 check_struct_has_member("struct stat" st_mtim      sys/stat.h HAVE_STAT_ST_MTIM)

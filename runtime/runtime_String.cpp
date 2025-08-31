@@ -9,6 +9,7 @@
 
 #include "runtime_String.h"
 #include <string.h>
+#include <unicode/uchar.h>
 #include "BytecodeDefs.h"
 #include "NumConversion.h"
 #include "UTF8.h"
@@ -451,6 +452,34 @@ static NativeFuncDefn(runtime_codepointToString_I) {
   engine.push(stringMake(u, uLen, engine));
 }
 
+// codepointToLower(c: Int) -> Int
+static NativeFuncDefn(runtime_codepointToLower_I) {
+#if CHECK_RUNTIME_FUNC_ARGS
+  if (engine.nArgs() != 1 ||
+      !cellIsInt(engine.arg(0))) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+#endif
+  Cell &cCell = engine.arg(0);
+
+  int64_t c = cellInt(cCell);
+  engine.push(cellMakeInt((int64_t)u_tolower((UChar32)c)));
+}
+
+// codepointToUpper(c: Int) -> Int
+static NativeFuncDefn(runtime_codepointToUpper_I) {
+#if CHECK_RUNTIME_FUNC_ARGS
+  if (engine.nArgs() != 1 ||
+      !cellIsInt(engine.arg(0))) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+#endif
+  Cell &cCell = engine.arg(0);
+
+  int64_t c = cellInt(cCell);
+  engine.push(cellMakeInt((int64_t)u_toupper((UChar32)c)));
+}
+
 //------------------------------------------------------------------------
 
 void runtime_String_init(BytecodeEngine &engine) {
@@ -473,6 +502,8 @@ void runtime_String_init(BytecodeEngine &engine) {
   engine.addNativeFunction("prevCodepoint_SI", &runtime_prevCodepoint_SI);
   engine.addNativeFunction("substr_SII", &runtime_substr_SII);
   engine.addNativeFunction("codepointToString_I", &runtime_codepointToString_I);
+  engine.addNativeFunction("codepointToLower_I", &runtime_codepointToLower_I);
+  engine.addNativeFunction("codepointToUpper_I", &runtime_codepointToUpper_I);
 }
 
 //------------------------------------------------------------------------
