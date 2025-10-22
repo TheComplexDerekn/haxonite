@@ -30,6 +30,122 @@ static Cell commandLineArgsVector = cellNilHeapPtrInit;
 
 //------------------------------------------------------------------------
 
+static void splitPath(const std::string &path, size_t start, std::vector<std::string> &elements) {
+  size_t i = start;
+  while (i < path.size()) {
+
+    // skip any number of '/' chars
+    while (i < path.size() && path[i] == '/') {
+      ++i;
+    }
+    if (i == path.size()) {
+      break;
+    }
+
+    // grab the next element
+    size_t j = i;
+    while (j < path.size() && path[j] != '/') {
+      ++j;
+    }
+    elements.push_back(std::string(path, i, j - i));
+
+    i = j;
+  }
+}
+
+static std::string getHomeDir() {
+  char *s = getenv("HOME");
+  if (s) {
+    return s;
+  }
+  s = getenv("USER");
+  struct passwd *pw = s ? getpwnam(s) : getpwuid(getuid());
+  if (pw) {
+    return pw->pw_dir;
+  }
+  return "";
+}
+
+static std::string getHomeDir(const std::string &user) {
+  struct passwd *pw = getpwnam(user.c_str());
+  if (pw) {
+    return pw->pw_dir;
+  }
+  return "";
+}
+
+//~ resolveSymLinks is unimplemented
+static std::string normalizePath(const std::string &pathIn, bool resolveSymLinks) {
+  // empty path --> empty path
+  if (pathIn.empty()) {
+    return "";
+  }
+
+  std::vector<std::string> elements;
+
+  // tilde expansion
+  size_t next = 0;
+  if (pathIn[0] == '~') {
+    std::string homeDir;
+    if (pathIn.size() == 1 || pathIn[1] == '/') {
+      homeDir = getHomeDir();
+    } else {
+      for (next = 1; next < pathIn.size() && pathIn[next] != '/'; ++next) ;
+      homeDir = getHomeDir(std::string(pathIn, 1, next));
+      if (next < pathIn.size()) {
+	++next;
+      }
+    }
+    splitPath(homeDir, 0, elements);
+
+  // absolute path
+  } else if (pathIn[0] == '/') {
+    next = 1;
+
+  // prepend current dir
+  } else {
+    char currentDir[PATH_MAX + 1];
+    if (getcwd(currentDir, sizeof(currentDir))) {
+      splitPath(currentDir, 0, elements);
+    }
+  }
+
+  // split on '/'
+  splitPath(pathIn, next, elements);
+
+  // handle "." and ".."
+  size_t i = 0;
+  while (i < elements.size()) {
+    if (elements[i] == ".") {
+      elements.erase(elements.begin() + i);
+    } else if (elements[i] == "..") {
+      if (i == 0) {
+	elements.erase(elements.begin());
+      } else {
+	elements.erase(elements.begin() + (i - 1), elements.begin() + (i + 1));
+	--i;
+      }
+    } else {
+      ++i;
+    }
+  }
+
+  // reassemble the path
+  std::string pathOut;
+  if (elements.empty()) {
+    pathOut = "/";
+  } else {
+    for (size_t i = 0; i < elements.size(); ++i) {
+      pathOut += "/";
+      pathOut += elements[i];
+    }
+  }
+
+  return pathOut;
+}
+
+//------------------------------------------------------------------------
+
 // commandLineArgs() -> Vector[String]
 static NativeFuncDefn(runtime_commandLineArgs) {
 #if CHECK_RUNTIME_FUNC_ARGS
@@ -101,6 +217,22 @@ static NativeFuncDefn(runtime_pathIsFile_S) {
   engine.push(cellMakeBool(!stat(path.c_str(), &st) && S_ISREG(st.st_mode)));
 }
 
+// normalizePath(path: String, resolveSymLinks: Bool) -> String
+static NativeFuncDefn(runtime_normalizePath_SB) {
+#if CHECK_RUNTIME_FUNC_ARGS
+  if (engine.nArgs() != 2 ||
+      !cellIsPtr(engine.arg(0)) ||
+      !cellIsBool(engine.arg(1))) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+#endif
+  Cell &pathCell = engine.arg(0);
+  Cell &resolveSymLinksCell = engine.arg(1);
+
+  std::string out = normalizePath(stringToStdString(pathCell), cellBool(resolveSymLinksCell));
+  engine.push(stringMake((const uint8_t *)out.c_str(), (int64_t)out.size(), engine));
+}
+
 // modTime(path: String) -> Result[Timestamp]
 static NativeFuncDefn(runtime_modTime_S) {
 #if CHECK_RUNTIME_FUNC_ARGS
@@ -151,18 +283,8 @@ static NativeFuncDefn(runtime_homeDir) {
   }
 #endif
 
-  const char *s;
-  if (!(s = getenv("HOME"))) {
-    struct passwd *pw;
-    char *user = getenv("USER");
-    pw = user ? getpwnam(user) : getpwuid(getuid());
-    if (pw) {
-      s = pw->pw_dir;
-    } else {
-      s = ".";
-    }
-  }
-  engine.push(stringMake((const uint8_t *)s, (int64_t)strlen(s), engine));
+  std::string dir = getHomeDir();
+  engine.push(stringMake((const uint8_t *)dir.c_str(), (int64_t)dir.size(), engine));
 }
 
 // createDir(path: String) -> Result[]
@@ -517,6 +639,7 @@ void runtime_system_init(BytecodeEngine &engine) {
   engine.addNativeFunction("pathExists_S", &runtime_pathExists_S);
   engine.addNativeFunction("pathIsDir_S", &runtime_pathIsDir_S);
   engine.addNativeFunction("pathIsFile_S", &runtime_pathIsFile_S);
+  engine.addNativeFunction("normalizePath_SB", &runtime_normalizePath_SB);
   engine.addNativeFunction("modTime_S", &runtime_modTime_S);
   engine.addNativeFunction("currentDir", &runtime_currentDir);
   engine.addNativeFunction("homeDir", &runtime_homeDir);

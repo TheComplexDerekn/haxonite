@@ -94,6 +94,7 @@ header haxonite is
   nativefunc pathExists(path: String) -> Bool;
   nativefunc pathIsDir(path: String) -> Bool;
   nativefunc pathIsFile(path: String) -> Bool;
+  nativefunc normalizePath(path: String, resolveSymLinks: Bool) -> String;
   nativefunc modTime(path: String) -> Result[Timestamp];
   nativefunc currentDir() -> String;
   nativefunc homeDir() -> String;
