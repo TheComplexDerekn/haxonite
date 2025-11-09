@@ -31,6 +31,9 @@ header haxonite is
   nativefunc codepointToString(c: Int) -> String;
   nativefunc codepointToLower(c: Int) -> Int;
   nativefunc codepointToUpper(c: Int) -> Int;
+  nativefunc codepointIsAlpha(c: Int) -> Bool;
+  nativefunc codepointIsDigit(c: Int) -> Bool;
+  nativefunc codepointIsSpace(c: Int) -> Bool;
 
   //--- regular expression
   nativefunc reTest(re: String, s: String) -> Result[Bool];

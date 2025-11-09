@@ -480,6 +480,48 @@ static NativeFuncDefn(runtime_codepointToUpper_I) {
   engine.push(cellMakeInt((int64_t)u_toupper((UChar32)c)));
 }
 
+// codepointIsAlpha(c: Int) -> Bool
+static NativeFuncDefn(runtime_codepointIsAlpha_I) {
+#if CHECK_RUNTIME_FUNC_ARGS
+  if (engine.nArgs() != 1 ||
+      !cellIsInt(engine.arg(0))) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+#endif
+  Cell &cCell = engine.arg(0);
+
+  int64_t c = cellInt(cCell);
+  engine.push(cellMakeBool(u_isalpha((UChar32)c)));
+}
+
+// codepointIsDigit(c: Int) -> Bool
+static NativeFuncDefn(runtime_codepointIsDigit_I) {
+#if CHECK_RUNTIME_FUNC_ARGS
+  if (engine.nArgs() != 1 ||
+      !cellIsInt(engine.arg(0))) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+#endif
+  Cell &cCell = engine.arg(0);
+
+  int64_t c = cellInt(cCell);
+  engine.push(cellMakeBool(u_isdigit((UChar32)c)));
+}
+
+// codepointIsSpace(c: Int) -> Bool
+static NativeFuncDefn(runtime_codepointIsSpace_I) {
+#if CHECK_RUNTIME_FUNC_ARGS
+  if (engine.nArgs() != 1 ||
+      !cellIsInt(engine.arg(0))) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+#endif
+  Cell &cCell = engine.arg(0);
+
+  int64_t c = cellInt(cCell);
+  engine.push(cellMakeBool(u_isspace((UChar32)c)));
+}
+
 //------------------------------------------------------------------------
 
 void runtime_String_init(BytecodeEngine &engine) {
@@ -504,6 +546,9 @@ void runtime_String_init(BytecodeEngine &engine) {
   engine.addNativeFunction("codepointToString_I", &runtime_codepointToString_I);
   engine.addNativeFunction("codepointToLower_I", &runtime_codepointToLower_I);
   engine.addNativeFunction("codepointToUpper_I", &runtime_codepointToUpper_I);
+  engine.addNativeFunction("codepointIsAlpha_I", &runtime_codepointIsAlpha_I);
+  engine.addNativeFunction("codepointIsDigit_I", &runtime_codepointIsDigit_I);
+  engine.addNativeFunction("codepointIsSpace_I", &runtime_codepointIsSpace_I);
 }
 
 //------------------------------------------------------------------------
