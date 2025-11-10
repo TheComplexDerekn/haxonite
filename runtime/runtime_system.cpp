@@ -89,9 +89,10 @@ static std::string normalizePath(const std::string &pathIn, bool resolveSymLinks
     std::string homeDir;
     if (pathIn.size() == 1 || pathIn[1] == '/') {
       homeDir = getHomeDir();
+      next = (pathIn.size() == 1) ? 1 : 2;
     } else {
       for (next = 1; next < pathIn.size() && pathIn[next] != '/'; ++next) ;
-      homeDir = getHomeDir(std::string(pathIn, 1, next));
+      homeDir = getHomeDir(std::string(pathIn, 1, next - 1));
       if (next < pathIn.size()) {
 	++next;
       }
