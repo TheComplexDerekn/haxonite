@@ -722,7 +722,7 @@ static BlockResult codeGenAssignIndexStmt(IndexExpr *lhs, BytecodeFile &bcRHS, E
   args.push_back(ExprResult(std::unique_ptr<CTypeRef>(idxRes.type->copy())));
   args.push_back(ExprResult(std::unique_ptr<CTypeRef>(rhsRes.type->copy())));
   
-  CFuncDecl *funcDecl = findFunction("set", args, ctx);
+  CFuncDecl *funcDecl = ctx.findFunction("set", args);
   if (!funcDecl) {
     error(lhs->idx->loc, "Invalid type for index or value in index assignment");
     return BlockResult();

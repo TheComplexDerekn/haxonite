@@ -9,6 +9,7 @@
 
 #include "Context.h"
 #include "SysIO.h"
+#include "TypeCheck.h"
 
 //------------------------------------------------------------------------
 
@@ -64,6 +65,29 @@ CType *Context::findType(const std::string &name) {
     return nullptr;
   }
   return type;
+}
+
+CFuncDecl *Context::findFunction(const std::string &name, std::vector<ExprResult> &argResults) {
+  auto range = funcs.equal_range(name);
+  for (auto iter = range.first; iter != range.second; ++iter) {
+    CFuncDecl *funcDecl = iter->second.get();
+    if (functionMatch(argResults, funcDecl)) {
+      if (!moduleIsVisible(funcDecl->module)) {
+	return nullptr;
+      }
+      for (std::unique_ptr<CArg> &arg : funcDecl->args) {
+	if (!moduleIsVisible(arg->type->type->module)) {
+	  return nullptr;
+	}
+      }
+      if (funcDecl->returnType &&
+	  !moduleIsVisible(funcDecl->returnType->type->module)) {
+	return nullptr;
+      }
+      return funcDecl;
+    }
+  }
+  return nullptr;
 }
 
 bool Context::moduleIsVisible(CModule *mod) {

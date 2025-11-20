@@ -360,7 +360,7 @@ static ExprResult codeGenUnaryOpExpr(UnaryOpExpr *expr, Context &ctx, BytecodeFi
   if (expr->op == UnaryOp::length && typeCheckContainer(exprRes.type.get())) {
     std::vector<ExprResult> args;
     args.push_back(ExprResult(std::unique_ptr<CTypeRef>(exprRes.type->copy())));
-    CFuncDecl *funcDecl = findFunction("length", args, ctx);
+    CFuncDecl *funcDecl = ctx.findFunction("length", args);
     if (!funcDecl) {
       error(expr->loc, "Internal: length operator");
       return ExprResult();
@@ -578,7 +578,7 @@ static ExprResult codeGenCallExpr(CallExpr *expr, Context &ctx, BytecodeFile &bc
 static ExprResult codeGenFindFunc(const std::string &name, std::vector<ExprResult> &argResults,
 				  Location loc, Context &ctx, BytecodeFile &bcFunc) {
   //--- find the function
-  CFuncDecl *funcDecl = findFunction(name, argResults, ctx);
+  CFuncDecl *funcDecl = ctx.findFunction(name, argResults);
   if (!funcDecl) {
     std::string msg = "Function " + name + "(";
     for (size_t i = 0; i < argResults.size(); ++i) {
@@ -676,30 +676,6 @@ static ExprResult codeGenFindSubstructFunc(const std::string &name,
   bcFunc.setCodeLabel(endLabel);
 
   return ExprResult(std::move(returnType));
-}
-
-CFuncDecl *findFunction(const std::string &name, std::vector<ExprResult> &argResults,
-			Context &ctx) {
-  auto range = ctx.funcs.equal_range(name);
-  for (auto iter = range.first; iter != range.second; ++iter) {
-    CFuncDecl *funcDecl = iter->second.get();
-    if (functionMatch(argResults, funcDecl)) {
-      if (!ctx.moduleIsVisible(funcDecl->module)) {
-	return nullptr;
-      }
-      for (std::unique_ptr<CArg> &arg : funcDecl->args) {
-	if (!ctx.moduleIsVisible(arg->type->type->module)) {
-	  return nullptr;
-	}
-      }
-      if (funcDecl->returnType &&
-	  !ctx.moduleIsVisible(funcDecl->returnType->type->module)) {
-	return nullptr;
-      }
-      return funcDecl;
-    }
-  }
-  return nullptr;
 }
 
 static ExprResult codeGenMemberExpr(MemberExpr *expr, Context &ctx, BytecodeFile &bcFunc) {
@@ -817,7 +793,7 @@ static ExprResult codeGenIndexExpr(IndexExpr *expr, Context &ctx, BytecodeFile &
   args.push_back(ExprResult(std::unique_ptr<CTypeRef>(objRes.type->copy())));
   args.push_back(ExprResult(std::unique_ptr<CTypeRef>(idxRes.type->copy())));
 
-  CFuncDecl *funcDecl = findFunction("get", args, ctx);
+  CFuncDecl *funcDecl = ctx.findFunction("get", args);
   if (!funcDecl) {
     error(expr->idx->loc, "Invalid type for index in index operator");
     return ExprResult();
@@ -1040,7 +1016,7 @@ static ExprResult codeGenFuncPointerExpr(FuncPointerExpr *expr, Context &ctx,
     }
     cArgTypes.push_back(ExprResult(std::move(cArgType)));
   }
-  CFuncDecl *funcDecl = findFunction(expr->name, cArgTypes, ctx);
+  CFuncDecl *funcDecl = ctx.findFunction(expr->name, cArgTypes);
   if (!funcDecl) {
     error(expr->loc, "Undefined function '%s'", expr->name.c_str());
     return ExprResult();

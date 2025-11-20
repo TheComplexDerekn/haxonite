@@ -529,4 +529,19 @@ public:
   std::unique_ptr<CTypeRef> returnType;
 };
 
+//------------------------------------------------------------------------
+
+// Result of generating code for an expression.
+//
+// On error: ok=false; type is invalid.
+// On success, with no value: ok=true, type=null.
+// On success, with value: ok=true, type = value type.
+struct ExprResult {
+  ExprResult(): ok(false) {}
+  explicit ExprResult(std::unique_ptr<CTypeRef> aType): ok(true), type(std::move(aType)) {}
+
+  bool ok;
+  std::unique_ptr<CTypeRef> type;
+};
+
 #endif // CTree_h

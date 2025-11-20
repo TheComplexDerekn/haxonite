@@ -66,6 +66,7 @@ public:
   }
   CModule *findModule(const std::string &name);
   CType *findType(const std::string &name);
+  CFuncDecl *findFunction(const std::string &name, std::vector<ExprResult> &argResults);
   bool moduleIsVisible(CModule *mod);
 
   void pushFrame();
