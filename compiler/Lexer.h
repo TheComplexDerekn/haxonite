@@ -48,6 +48,7 @@ public:
     keywordNew,
     keywordNil,
     keywordOk,
+    keywordPublic,
     keywordReturn,
     keywordStruct,
     keywordSubstruct,

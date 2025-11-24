@@ -244,8 +244,8 @@ static bool scanStructDefn(StructDefn *structDefn, CModule *cmod, Context &ctx) 
     return false;
   }
 
-  ctx.addType(std::make_unique<CStructType>(structDefn->loc, structDefn->name, cmod,
-					    std::move(cFields)));
+  ctx.addType(std::make_unique<CStructType>(structDefn->loc, structDefn->pub, structDefn->name,
+					    cmod, std::move(cFields)));
   return true;
 }
 
@@ -275,8 +275,8 @@ static bool scanVarStructDefn(VarStructDefn *varStructDefn, CModule *cmod, Conte
   }
 
   std::unique_ptr<CVarStructType> cVarStruct =
-      std::make_unique<CVarStructType>(varStructDefn->loc, varStructDefn->name, cmod,
-				       std::move(cFields));
+      std::make_unique<CVarStructType>(varStructDefn->loc, varStructDefn->pub, varStructDefn->name,
+				       cmod, std::move(cFields));
 
   std::vector<CSubStructType*> cSubStructs;
   if (varStructDefn->subStructs.size() > INT_MAX) {
@@ -308,7 +308,8 @@ static bool scanVarStructDefn(VarStructDefn *varStructDefn, CModule *cmod, Conte
       }
     }
     std::unique_ptr<CSubStructType> cSubStruct =
-        std::make_unique<CSubStructType>(subStructDefn->loc, subStructDefn->name, cmod,
+        std::make_unique<CSubStructType>(subStructDefn->loc, varStructDefn->pub,
+					 subStructDefn->name, cmod,
 					 cVarStruct.get(), (int)subStructIdx,
 					 std::move(cSubFields));
     cVarStruct->subStructs.push_back(cSubStruct.get());
@@ -351,7 +352,7 @@ static bool scanEnumDefn(EnumDefn *enumDefn, CModule *cmod, Context &ctx) {
     return false;
   }
 
-  ctx.addType(std::make_unique<CEnumType>(enumDefn->loc, enumDefn->name, cmod,
+  ctx.addType(std::make_unique<CEnumType>(enumDefn->loc, enumDefn->pub, enumDefn->name, cmod,
 					  std::move(cMembers)));
   return true;
 }
@@ -384,10 +385,12 @@ static bool scanNativeTypeDefn(NativeTypeDefn *nativeTypeDefn, CModule *cmod, Co
   }
 
   if (atomic) {
-    ctx.addType(std::make_unique<CAtomicType>(Location(), nativeTypeDefn->name, cmod,
+    ctx.addType(std::make_unique<CAtomicType>(Location(), nativeTypeDefn->pub,
+					      nativeTypeDefn->name, cmod,
 					      CTypeKind::otherAtomicType));
   } else {
-    ctx.addType(std::make_unique<CPointerType>(Location(), nativeTypeDefn->name, cmod,
+    ctx.addType(std::make_unique<CPointerType>(Location(), nativeTypeDefn->pub,
+					       nativeTypeDefn->name, cmod,
 					       CTypeKind::otherPointerType));
   }
 
@@ -413,8 +416,8 @@ static bool scanConstDefn(ConstDefn *constDefn, CModule *cmod, Context &ctx) {
     error(constDefn->loc, "Internal (scanConstDefn)");
     return false;
   }
-  ctx.addConst(std::make_unique<CConst>(constDefn->loc, constDefn->name, cmod, std::move(type),
-					std::move(value)));
+  ctx.addConst(std::make_unique<CConst>(constDefn->loc, constDefn->pub, constDefn->name, cmod,
+					std::move(type), std::move(value)));
   return true;
 }
 
@@ -444,8 +447,9 @@ static bool scanFuncDefn(FuncDefn *funcDefn, CModule *cmod, Context &ctx) {
   if (!ok) {
     return false;
   }
-  ctx.addFunc(std::make_unique<CFuncDecl>(funcDefn->loc, funcDefn->native, false, funcDefn->name,
-					  cmod, std::move(cArgs), std::move(cReturnType)));
+  ctx.addFunc(std::make_unique<CFuncDecl>(funcDefn->loc, funcDefn->pub, funcDefn->native, false,
+					  funcDefn->name, cmod,
+					  std::move(cArgs), std::move(cReturnType)));
   return true;
 }
 

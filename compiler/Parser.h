@@ -39,14 +39,14 @@ private:
   std::unique_ptr<Import> parseImport();
   std::unique_ptr<ModuleElem> parseModuleElem();
   std::unique_ptr<ModuleElem> parseHeaderElem();
-  std::unique_ptr<StructDefn> parseStructDefn();
-  std::unique_ptr<VarStructDefn> parseVarStructDefn();
+  std::unique_ptr<StructDefn> parseStructDefn(bool pub);
+  std::unique_ptr<VarStructDefn> parseVarStructDefn(bool pub);
   std::unique_ptr<SubStructDefn> parseSubStructDefn();
   std::unique_ptr<Field> parseField();
-  std::unique_ptr<EnumDefn> parseEnumDefn();
-  std::unique_ptr<NativeTypeDefn> parseNativeTypeDefn();
-  std::unique_ptr<ConstDefn> parseConstDefn();
-  std::unique_ptr<FuncDefn> parseFuncDefn(bool isDecl);
+  std::unique_ptr<EnumDefn> parseEnumDefn(bool pub);
+  std::unique_ptr<NativeTypeDefn> parseNativeTypeDefn(bool pub);
+  std::unique_ptr<ConstDefn> parseConstDefn(bool pub);
+  std::unique_ptr<FuncDefn> parseFuncDefn(bool isDecl, bool pub);
   std::unique_ptr<Arg> parseArg();
   std::unique_ptr<TypeRef> parseTypeRef();
   std::unique_ptr<Block> parseBlock(Token::Kind end1,

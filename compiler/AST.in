@@ -24,11 +24,13 @@ baseclass ModuleElem
 end
 
 class StructDefn: ModuleElem
+  pub: bool
   name: std::string
   fields: std::vector<std::unique_ptr<Field>>
 end
 
 class VarStructDefn: ModuleElem
+  pub: bool
   name: std::string
   fields: std::vector<std::unique_ptr<Field>>
   subStructs: std::vector<std::unique_ptr<SubStructDefn>>
@@ -45,21 +47,25 @@ class Field
 end
 
 class EnumDefn: ModuleElem
+  pub: bool
   name: std::string
   members: std::vector<std::string>
 end
 
 class NativeTypeDefn: ModuleElem
+  pub: bool
   name: std::string
   attrs: std::vector<std::string>
 end
 
 class ConstDefn: ModuleElem
+  pub: bool
   name: std::string
   val: std::unique_ptr<Expr>
 end
 
 class FuncDefn: ModuleElem
+  pub: bool
   native: bool
   name: std::string
   args: std::vector<std::unique_ptr<Arg>>

@@ -153,16 +153,21 @@ std::unique_ptr<Import> Parser::parseImport() {
 }
 
 std::unique_ptr<ModuleElem> Parser::parseModuleElem() {
+  bool pub = false;
+  if (lexer.get(0).is(Token::Kind::keywordPublic)) {
+    pub = true;
+    lexer.shift();
+  }
   if (lexer.get(0).is(Token::Kind::keywordStruct)) {
-    return parseStructDefn();
+    return parseStructDefn(pub);
   } else if (lexer.get(0).is(Token::Kind::keywordVarstruct)) {
-    return parseVarStructDefn();
+    return parseVarStructDefn(pub);
   } else if (lexer.get(0).is(Token::Kind::keywordEnum)) {
-    return parseEnumDefn();
+    return parseEnumDefn(pub);
   } else if (lexer.get(0).is(Token::Kind::keywordConst)) {
-    return parseConstDefn();
+    return parseConstDefn(pub);
   } else if (lexer.get(0).is(Token::Kind::keywordFunc)) {
-    return parseFuncDefn(false);
+    return parseFuncDefn(false, pub);
   } else {
     error(lexer.get(0).loc(), "Expected constant, struct, or function definition");
     lexer.shift(); // avoid an infinite loop
@@ -171,19 +176,24 @@ std::unique_ptr<ModuleElem> Parser::parseModuleElem() {
 }
 
 std::unique_ptr<ModuleElem> Parser::parseHeaderElem() {
+  bool pub = false;
+  if (lexer.get(0).is(Token::Kind::keywordPublic)) {
+    pub = true;
+    lexer.shift();
+  }
   if (lexer.get(0).is(Token::Kind::keywordStruct)) {
-    return parseStructDefn();
+    return parseStructDefn(pub);
   } else if (lexer.get(0).is(Token::Kind::keywordVarstruct)) {
-    return parseVarStructDefn();
+    return parseVarStructDefn(pub);
   } else if (lexer.get(0).is(Token::Kind::keywordEnum)) {
-    return parseEnumDefn();
+    return parseEnumDefn(pub);
   } else if (lexer.get(0).is(Token::Kind::keywordNativetype)) {
-    return parseNativeTypeDefn();
+    return parseNativeTypeDefn(pub);
   } else if (lexer.get(0).is(Token::Kind::keywordConst)) {
-    return parseConstDefn();
+    return parseConstDefn(pub);
   } else if (lexer.get(0).is(Token::Kind::keywordFunc) ||
 	     lexer.get(0).is(Token::Kind::keywordNativefunc)) {
-    return parseFuncDefn(true);
+    return parseFuncDefn(true, pub);
   } else {
     error(lexer.get(0).loc(), "Expected constant, struct, native type, or function definition");
     lexer.shift(); // avoid an infinite loop
@@ -191,7 +201,7 @@ std::unique_ptr<ModuleElem> Parser::parseHeaderElem() {
   }
 }
 
-std::unique_ptr<StructDefn> Parser::parseStructDefn() {
+std::unique_ptr<StructDefn> Parser::parseStructDefn(bool pub) {
   Location loc = lexer.get(0).loc();
   lexer.shift(); // 'struct'
   std::string name;
@@ -211,10 +221,10 @@ std::unique_ptr<StructDefn> Parser::parseStructDefn() {
     error(lexer.get(0).loc(), "Expected 'end' after struct definition");
     return nullptr;
   }
-  return std::make_unique<StructDefn>(loc, name, std::move(fields));
+  return std::make_unique<StructDefn>(loc, pub, name, std::move(fields));
 }
 
-std::unique_ptr<VarStructDefn> Parser::parseVarStructDefn() {
+std::unique_ptr<VarStructDefn> Parser::parseVarStructDefn(bool pub) {
   Location loc = lexer.get(0).loc();
   lexer.shift(); // 'varstruct'
   std::string name;
@@ -247,7 +257,7 @@ std::unique_ptr<VarStructDefn> Parser::parseVarStructDefn() {
     error(lexer.get(0).loc(), "Expected 'end' after varstruct definition");
     return nullptr;
   }
-  return std::make_unique<VarStructDefn>(loc, name, std::move(fields), std::move(subStructs));
+  return std::make_unique<VarStructDefn>(loc, pub, name, std::move(fields), std::move(subStructs));
 }
 
 std::unique_ptr<SubStructDefn> Parser::parseSubStructDefn() {
@@ -298,7 +308,7 @@ std::unique_ptr<Field> Parser::parseField() {
   return std::make_unique<Field>(loc, name, std::move(type));
 }
 
-std::unique_ptr<EnumDefn> Parser::parseEnumDefn() {
+std::unique_ptr<EnumDefn> Parser::parseEnumDefn(bool pub) {
   Location loc = lexer.get(0).loc();
   lexer.shift(); // 'enum'
   std::string name;
@@ -323,10 +333,10 @@ std::unique_ptr<EnumDefn> Parser::parseEnumDefn() {
     error(lexer.get(0).loc(), "Expected 'end' after enum definition");
     return nullptr;
   }
-  return std::make_unique<EnumDefn>(loc, name, std::move(members));
+  return std::make_unique<EnumDefn>(loc, pub, name, std::move(members));
 }
 
-std::unique_ptr<NativeTypeDefn> Parser::parseNativeTypeDefn() {
+std::unique_ptr<NativeTypeDefn> Parser::parseNativeTypeDefn(bool pub) {
   Location loc = lexer.get(0).loc();
   lexer.shift(); // 'nativetype'
   std::vector<std::string> attrs;
@@ -353,10 +363,10 @@ std::unique_ptr<NativeTypeDefn> Parser::parseNativeTypeDefn() {
     error(lexer.get(0).loc(), "Expected ';' after native type definition");
     return nullptr;
   }
-  return std::make_unique<NativeTypeDefn>(loc, name, attrs);
+  return std::make_unique<NativeTypeDefn>(loc, pub, name, attrs);
 }
 
-std::unique_ptr<ConstDefn> Parser::parseConstDefn() {
+std::unique_ptr<ConstDefn> Parser::parseConstDefn(bool pub) {
   Location loc = lexer.get(0).loc();
   lexer.shift(); // 'const'
   std::string name;
@@ -376,10 +386,10 @@ std::unique_ptr<ConstDefn> Parser::parseConstDefn() {
     error(lexer.get(0).loc(), "Expected ';' after constant");
     return nullptr;
   }
-  return std::make_unique<ConstDefn>(loc, name, std::move(val));
+  return std::make_unique<ConstDefn>(loc, pub, name, std::move(val));
 }
 
-std::unique_ptr<FuncDefn> Parser::parseFuncDefn(bool isDecl) {
+std::unique_ptr<FuncDefn> Parser::parseFuncDefn(bool isDecl, bool pub) {
   Location loc = lexer.get(0).loc();
   bool native = lexer.get(0).is(Token::Kind::keywordNativefunc);
   lexer.shift(); // 'func' or 'nativefunc'
@@ -435,7 +445,7 @@ std::unique_ptr<FuncDefn> Parser::parseFuncDefn(bool isDecl) {
   if (!ok) {
     return nullptr;
   }
-  return std::make_unique<FuncDefn>(loc, native, name, std::move(args),
+  return std::make_unique<FuncDefn>(loc, pub, native, name, std::move(args),
 				    std::move(returnType), std::move(block));
 }
 

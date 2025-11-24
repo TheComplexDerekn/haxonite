@@ -212,8 +212,9 @@ static bool instantiateFuncDefn(FuncDefn *funcDefn,
   if (!ok) {
     return false;
   }
-  ctx.addFunc(std::make_unique<CFuncDecl>(funcDefn->loc, funcDefn->native, true, funcDefn->name,
-					  module, std::move(cArgs), std::move(cReturnType)));
+  ctx.addFunc(std::make_unique<CFuncDecl>(funcDefn->loc, funcDefn->pub, funcDefn->native, true,
+					  funcDefn->name, module,
+					  std::move(cArgs), std::move(cReturnType)));
   return true;
 }
 

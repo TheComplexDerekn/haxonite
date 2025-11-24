@@ -179,8 +179,8 @@ enum class CParamKind {
 class CType {
 public:
 
-  CType(Location aLoc, const std::string &aName, CModule *aModule)
-    : loc(aLoc), name(aName), module(aModule) {}
+  CType(Location aLoc, bool aPub, const std::string &aName, CModule *aModule)
+    : loc(aLoc), pub(aPub), name(aName), module(aModule) {}
   virtual ~CType() {}
   virtual CTypeKind kind() = 0;
   virtual bool isPointer() = 0;
@@ -190,6 +190,7 @@ public:
   int maxParams();
 
   Location loc;
+  bool pub;
   std::string name;
   CModule *module;		// module where this type was defined
 };
@@ -199,8 +200,8 @@ public:
 class CAtomicType: public CType {
 public:
 
-  CAtomicType(Location aLoc, const std::string &aName, CModule *aModule, CTypeKind aKind)
-    : CType(aLoc, aName, aModule)
+  CAtomicType(Location aLoc, bool aPub, const std::string &aName, CModule *aModule, CTypeKind aKind)
+    : CType(aLoc, aPub, aName, aModule)
     , mKind(aKind) {}
   virtual CTypeKind kind() { return mKind; }
   virtual bool isPointer() { return false; }
@@ -216,8 +217,8 @@ private:
 class CStringType: public CType {
 public:
 
-  CStringType(Location aLoc, const std::string &aName, CModule *aModule, CTypeKind aKind)
-    : CType(aLoc, aName, aModule)
+  CStringType(Location aLoc, bool aPub, const std::string &aName, CModule *aModule, CTypeKind aKind)
+    : CType(aLoc, aPub, aName, aModule)
     , mKind(aKind) {}
   virtual CTypeKind kind() { return mKind; }
   virtual bool isPointer() { return true; }
@@ -233,8 +234,9 @@ private:
 class CPointerType: public CType {
 public:
 
-  CPointerType(Location aLoc, const std::string &aName, CModule *aModule, CTypeKind aKind)
-    : CType(aLoc, aName, aModule)
+  CPointerType(Location aLoc, bool aPub, const std::string &aName, CModule *aModule,
+	       CTypeKind aKind)
+    : CType(aLoc, aPub, aName, aModule)
     , mKind(aKind) {}
   virtual CTypeKind kind() { return mKind; }
   virtual bool isPointer() { return true; }
@@ -250,9 +252,9 @@ private:
 class CContainerType: public CType {
 public:
 
-  CContainerType(Location aLoc, const std::string &aName, CModule *aModule,
+  CContainerType(Location aLoc, bool aPub, const std::string &aName, CModule *aModule,
 		 CTypeKind aKind, CParamKind aParamKind)
-    : CType(aLoc, aName, aModule)
+    : CType(aLoc, aPub, aName, aModule)
     , mKind(aKind), mParamKind(aParamKind) {}
   virtual CTypeKind kind() { return mKind; }
   virtual bool isPointer() { return true; }
@@ -273,8 +275,8 @@ private:
 class CFuncType: public CType {
 public:
 
-  CFuncType(Location aLoc, const std::string &aName, CModule *aModule)
-    : CType(aLoc, aName, aModule) {}
+  CFuncType(Location aLoc, bool aPub, const std::string &aName, CModule *aModule)
+    : CType(aLoc, aPub, aName, aModule) {}
   virtual CTypeKind kind() { return CTypeKind::funcType; }
   virtual bool isPointer() { return true; }
   virtual CParamKind paramKind() { return CParamKind::zeroOrMore; }
@@ -285,8 +287,8 @@ public:
 class CResultType: public CType {
 public:
 
-  CResultType(Location aLoc, const std::string &aName, CModule *aModule)
-    : CType(aLoc, aName, aModule) {}
+  CResultType(Location aLoc, bool aPub, const std::string &aName, CModule *aModule)
+    : CType(aLoc, aPub, aName, aModule) {}
   virtual CTypeKind kind() { return CTypeKind::resultType; }
   virtual bool isPointer() { return false; }
   virtual CParamKind paramKind() { return CParamKind::zeroOrOne; }
@@ -310,9 +312,9 @@ public:
 class CStructType: public CType {
 public:
 
-  CStructType(Location aLoc, const std::string &aName, CModule *aModule,
+  CStructType(Location aLoc, bool aPub, const std::string &aName, CModule *aModule,
 	      std::unordered_map<std::string, std::unique_ptr<CField>> aFields)
-    : CType(aLoc, aName, aModule)
+    : CType(aLoc, aPub, aName, aModule)
     , fields(std::move(aFields)) {}
   virtual CTypeKind kind() { return CTypeKind::structType; }
   virtual bool isPointer() { return true; }
@@ -326,9 +328,9 @@ public:
 class CVarStructType: public CType {
 public:
 
-  CVarStructType(Location aLoc, const std::string &aName, CModule *aModule,
+  CVarStructType(Location aLoc, bool aPub, const std::string &aName, CModule *aModule,
 		 std::unordered_map<std::string, std::unique_ptr<CField>> aFields)
-    : CType(aLoc, aName, aModule)
+    : CType(aLoc, aPub, aName, aModule)
     , fields(std::move(aFields)) {}
   virtual CTypeKind kind() { return CTypeKind::varStructType; }
   virtual bool isPointer() { return true; }
@@ -343,10 +345,10 @@ public:
 class CSubStructType: public CType {
 public:
 
-  CSubStructType(Location aLoc, const std::string &aName, CModule *aModule,
+  CSubStructType(Location aLoc, bool aPub, const std::string &aName, CModule *aModule,
 		 CVarStructType *aParent, int aId,
 		 std::unordered_map<std::string, std::unique_ptr<CField>> aFields)
-    : CType(aLoc, aName, aModule)
+    : CType(aLoc, aPub, aName, aModule)
     , parent(aParent), fields(std::move(aFields)), id(aId) {}
   virtual CTypeKind kind() { return CTypeKind::subStructType; }
   virtual bool isPointer() { return true; }
@@ -362,9 +364,9 @@ public:
 class CEnumType: public CType {
 public:
 
-  CEnumType(Location aLoc, const std::string &aName, CModule *aModule,
+  CEnumType(Location aLoc, bool aPub, const std::string &aName, CModule *aModule,
 	    std::unordered_map<std::string, int> aMembers)
-    : CType(aLoc, aName, aModule)
+    : CType(aLoc, aPub, aName, aModule)
     , members(std::move(aMembers)) {}
   virtual CTypeKind kind() { return CTypeKind::enumType; }
   virtual bool isPointer() { return false; }
@@ -463,15 +465,17 @@ public:
 class CConst: public CSymbol {
 public:
 
-  CConst(Location aLoc, const std::string &aName, CModule *aModule,
+  CConst(Location aLoc, bool aPub, const std::string &aName, CModule *aModule,
 	 std::unique_ptr<CTypeRef> aType, std::unique_ptr<CConstValue> aValue)
     : CSymbol(aLoc, aName, std::move(aType))
     , module(aModule)
+    , pub(aPub)
     , value(std::move(aValue)) {}
   virtual CSymbolKind kind() { return CSymbolKind::constant; }
   virtual bool isWritable() { return false; }
 
   CModule *module;
+  bool pub;
   std::unique_ptr<CConstValue> value;
 };
 
@@ -512,15 +516,16 @@ public:
 class CFuncDecl {
 public:
 
-  CFuncDecl(Location aLoc, bool aNative, bool aBuiltinContainerType,
+  CFuncDecl(Location aLoc, bool aPub, bool aNative, bool aBuiltinContainerType,
 	    const std::string &aName, CModule *aModule,
 	    std::vector<std::unique_ptr<CArg>> aArgs, std::unique_ptr<CTypeRef> aReturnType)
-    : loc(aLoc), native(aNative)
+    : loc(aLoc), native(aNative), pub(aPub)
     , builtinContainerType(aBuiltinContainerType)
     , name(aName), module(aModule)
     , args(std::move(aArgs)), returnType(std::move(aReturnType)) {}
 
   Location loc;
+  bool pub;
   bool native;
   bool builtinContainerType;
   std::string name;

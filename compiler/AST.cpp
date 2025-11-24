@@ -49,14 +49,12 @@ std::string Import::toString(int indent) {
 
 //------------------------------------------------------------------------
 
-std::string ConstDefn::toString(int indent) {
-  return space(indent) + "const " + name + " = " + val->toString() + ";\n";
-}
-
-//------------------------------------------------------------------------
-
 std::string StructDefn::toString(int indent) {
-  std::string s = space(indent) + "struct " + name + " is\n";
+  std::string s = space(indent);
+  if (pub) {
+    s += "public ";
+  }
+  s += "struct " + name + " is\n";
   for (size_t i = 0; i < fields.size(); ++i) {
     s += fields[i]->toString(indent + 1);
   }
@@ -67,7 +65,11 @@ std::string StructDefn::toString(int indent) {
 //------------------------------------------------------------------------
 
 std::string VarStructDefn::toString(int indent) {
-  std::string s = space(indent) + "varstruct " + name + " is\n";
+  std::string s = space(indent);
+  if (pub) {
+    s += "public ";
+  }
+  s += "varstruct " + name + " is\n";
   for (size_t i = 0; i < fields.size(); ++i) {
     s += fields[i]->toString(indent + 1);
   }
@@ -98,7 +100,11 @@ std::string Field::toString(int indent) {
 //------------------------------------------------------------------------
 
 std::string EnumDefn::toString(int indent) {
-  std::string s = space(indent) + "enum " + name + " is\n";
+  std::string s = space(indent);
+  if (pub) {
+    s += "public ";
+  }
+  s += "enum " + name + " is\n";
   for (const std::string &member : members) {
     s += space(indent + 1) + member + ";\n";
   }
@@ -109,7 +115,11 @@ std::string EnumDefn::toString(int indent) {
 //------------------------------------------------------------------------
 
 std::string NativeTypeDefn::toString(int indent) {
-  std::string s = space(indent) + "nativetype ";
+  std::string s = space(indent);
+  if (pub) {
+    s += "public ";
+  }
+  s += "nativetype ";
   for (size_t i = 0; i < attrs.size(); ++i) {
     if (i > 0) {
       s += ", ";
@@ -122,8 +132,22 @@ std::string NativeTypeDefn::toString(int indent) {
 
 //------------------------------------------------------------------------
 
+std::string ConstDefn::toString(int indent) {
+  std::string s = space(indent);
+  if (pub) {
+    s += "public ";
+  }
+  s += "const " + name + " = " + val->toString() + ";\n";
+  return s;
+}
+
+//------------------------------------------------------------------------
+
 std::string FuncDefn::toString(int indent) {
   std::string s = space(indent);
+  if (pub) {
+    s += "public ";
+  }
   if (native) {
     s += "nativefunc ";
   } else {
