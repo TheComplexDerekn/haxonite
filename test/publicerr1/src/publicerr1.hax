@@ -1,0 +1,18 @@
+// Errors when trying to reference private symbols.
+
+module publicerr1 is
+
+  import other;
+
+  // S1, k1, f1 are public
+  // S2, k2, f2 are private and should generate errors
+  public func main() is
+    var obj1 = make S1(x:123);
+    var obj2 = make S2(x:123);
+    var x1 = k1;
+    var x2 = k2;
+    var y1 = f1(10);
+    var y2 = f2(10);
+  end
+
+end

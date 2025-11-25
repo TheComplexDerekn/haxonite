@@ -1,0 +1,23 @@
+module other is
+
+  public struct S1 is
+    x: Int;
+  end
+
+  struct S2 is
+    x: Int;
+  end
+
+  public const k1 = 123;
+
+  const k2 = 123;
+
+  public func f1(x: Int) -> Int is
+    return x + 1;
+  end
+
+  func f2(x: Int) -> Int is
+    return x + 1;
+  end
+
+end

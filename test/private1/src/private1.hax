@@ -1,0 +1,13 @@
+// Two modules with identically named private symbols.
+
+module private1 is
+
+  import other1;
+  import other2;
+
+  public func main() is
+    f1();
+    f2();
+  end
+
+end

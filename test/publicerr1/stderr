@@ -1,0 +1,4 @@
+Error [publicerr1/src/publicerr1.hax:11]: Undefined type 'S2'
+Error [publicerr1/src/publicerr1.hax:13]: Undefined symbol 'k2'
+Error [publicerr1/src/publicerr1.hax:15]: Function f2(Int) not found
+ERROR: compilation failed

@@ -1,0 +1,2 @@
+Error [private1/src/other2.hax:3]: Constant 'k' duplicates an existing name
+ERROR: compilation failed

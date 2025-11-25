@@ -1,0 +1,9 @@
+module other1 is
+
+  const k = 111;
+
+  public func f1() is
+    write($"f1: k={k}\n");
+  end
+
+end
