@@ -1,6 +1,6 @@
 module unary1 is
 
-  func main() is
+  public func main() is
     var x = 0x2a;
     var notX = !x;
     write($"!{x:.4x} = {notX:x}\n");

@@ -11,7 +11,7 @@ module string5 is
     write("\n");
   end
 
-  func main() is
+  public func main() is
     runSplit("XYZ", "abcXYZdefXYZXYZghiXYZ");
     runSplit("XXX", "abcXYZdefXYZXYZghiXYZ");
     runSplit("*", "*abc*def**ghi*");

@@ -23,7 +23,7 @@ module struct2 is
     print(list.next);
   end
 
-  func main() is
+  public func main() is
     var list = empty();
     list = cons(5, list);
     list = cons(4, list);

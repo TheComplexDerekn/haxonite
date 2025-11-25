@@ -9,7 +9,7 @@ module interp2 is
     s: String;
   end
 
-  func main() is
+  public func main() is
     var obj = make Foo(x: 123, y: 3.456, s: "hello");
     var v = [0, 1, 2, 3, 4];
     var i = 2;

@@ -32,7 +32,7 @@ module serdes3 is
   const shapeTagTriangle = 2;
   const shapeTagRectangle = 3;
 
-  func main() is
+  public func main() is
     var v1 = [varstruct make Circle(id:1, cx:10.0, cy:10.0, r:40.0),
               varstruct make Triangle(id:2, x0:1.1, y0:2.2, x1:3.3, y1:4.4, x2:5.5, y2:5.5),
               varstruct make Rectangle(id:3, x:100.0, y:200.0, w:500.0, h:15.0)];

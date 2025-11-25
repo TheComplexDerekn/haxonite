@@ -1,6 +1,6 @@
 module map3 is
 
-  func main() is
+  public func main() is
     var m = new Map[String,Int];
     m["abc"] = 10;
     m["def"] = 20;

@@ -1,5 +1,5 @@
 module error1 is
-  func main() is
+  public func main() is
     foo(); // undefined
   end
 end

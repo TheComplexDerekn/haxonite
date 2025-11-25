@@ -3,7 +3,7 @@
 
 module result4 is
 
-  func main() is
+  public func main() is
     run(2, 10);
     run(1, 10);
     run(2, 9);

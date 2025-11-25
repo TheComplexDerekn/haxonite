@@ -10,98 +10,98 @@
 header gfx is
 
   // for the family arg to genericFont()
-  enum GenericFontFamily is
+  public enum GenericFontFamily is
     serif;
     sansSerif;
     mono;
   end
 
   // for setFillRule()
-  enum FillRule is
+  public enum FillRule is
     nzwn;
     evenOdd;
   end
 
   // for ***Event.modifiers
-  const modShift = 0x01;
-  const modCtrl  = 0x02;
-  const modAlt   = 0x04;
-  const modSuper = 0x08;
+  public const modShift = 0x01;
+  public const modCtrl  = 0x02;
+  public const modAlt   = 0x04;
+  public const modSuper = 0x08;
 
   // for KeyPress/ReleaseEvent.key
-  const keyNone               = 0x0000;
-  const keyRegularMin         = 0x0020;
-  const keyRegularMax         = 0x00ff;
-  const keyReturn             = 0x8001;
-  const keyLeft               = 0x8002;
-  const keyUp                 = 0x8003;
-  const keyRight              = 0x8004;
-  const keyDown               = 0x8005;
-  const keyPgUp               = 0x8006;
-  const keyPgDn               = 0x8007;
-  const keyHome               = 0x8008;
-  const keyEnd                = 0x8009;
-  const keyInsert             = 0x800a;
-  const keyDelete             = 0x800b;
-  const keyBackspace          = 0x800c;
-  const keyTab                = 0x800d;
-  const keyEsc                = 0x800e;
-  const keyF1                 = 0x800f;
-  const keyF2                 = 0x8010;
-  const keyF3                 = 0x8011;
-  const keyF4                 = 0x8012;
-  const keyF5                 = 0x8013;
-  const keyF6                 = 0x8014;
-  const keyF7                 = 0x8015;
-  const keyF8                 = 0x8016;
-  const keyF9                 = 0x8017;
-  const keyF10                = 0x8018;
-  const keyF11                = 0x8019;
-  const keyF12                = 0x801a;
-  const keyF13                = 0x801b;
-  const keyF14                = 0x801c;
-  const keyF15                = 0x801d;
-  const keyF16                = 0x801e;
-  const keyF17                = 0x801f;
-  const keyF18                = 0x8020;
-  const keyF19                = 0x8021;
-  const keyF20                = 0x8022;
-  const keyF21                = 0x8023;
-  const keyF22                = 0x8024;
-  const keyF23                = 0x8025;
-  const keyF24                = 0x8026;
-  const keyF25                = 0x8027;
-  const keyF26                = 0x8028;
-  const keyF27                = 0x8029;
-  const keyF28                = 0x802a;
-  const keyF29                = 0x802b;
-  const keyF30                = 0x802c;
-  const keyF31                = 0x802d;
-  const keyF32                = 0x802e;
-  const keyF33                = 0x802f;
-  const keyF34                = 0x8030;
-  const keyF35                = 0x8031;
-  const keyShift              = 0x8032;
-  const keyControl            = 0x8033;
-  const keyAlt                = 0x8034;
-  const keySuper              = 0x8035;
-  const keyCapsLock           = 0x8036;
+  public const keyNone               = 0x0000;
+  public const keyRegularMin         = 0x0020;
+  public const keyRegularMax         = 0x00ff;
+  public const keyReturn             = 0x8001;
+  public const keyLeft               = 0x8002;
+  public const keyUp                 = 0x8003;
+  public const keyRight              = 0x8004;
+  public const keyDown               = 0x8005;
+  public const keyPgUp               = 0x8006;
+  public const keyPgDn               = 0x8007;
+  public const keyHome               = 0x8008;
+  public const keyEnd                = 0x8009;
+  public const keyInsert             = 0x800a;
+  public const keyDelete             = 0x800b;
+  public const keyBackspace          = 0x800c;
+  public const keyTab                = 0x800d;
+  public const keyEsc                = 0x800e;
+  public const keyF1                 = 0x800f;
+  public const keyF2                 = 0x8010;
+  public const keyF3                 = 0x8011;
+  public const keyF4                 = 0x8012;
+  public const keyF5                 = 0x8013;
+  public const keyF6                 = 0x8014;
+  public const keyF7                 = 0x8015;
+  public const keyF8                 = 0x8016;
+  public const keyF9                 = 0x8017;
+  public const keyF10                = 0x8018;
+  public const keyF11                = 0x8019;
+  public const keyF12                = 0x801a;
+  public const keyF13                = 0x801b;
+  public const keyF14                = 0x801c;
+  public const keyF15                = 0x801d;
+  public const keyF16                = 0x801e;
+  public const keyF17                = 0x801f;
+  public const keyF18                = 0x8020;
+  public const keyF19                = 0x8021;
+  public const keyF20                = 0x8022;
+  public const keyF21                = 0x8023;
+  public const keyF22                = 0x8024;
+  public const keyF23                = 0x8025;
+  public const keyF24                = 0x8026;
+  public const keyF25                = 0x8027;
+  public const keyF26                = 0x8028;
+  public const keyF27                = 0x8029;
+  public const keyF28                = 0x802a;
+  public const keyF29                = 0x802b;
+  public const keyF30                = 0x802c;
+  public const keyF31                = 0x802d;
+  public const keyF32                = 0x802e;
+  public const keyF33                = 0x802f;
+  public const keyF34                = 0x8030;
+  public const keyF35                = 0x8031;
+  public const keyShift              = 0x8032;
+  public const keyControl            = 0x8033;
+  public const keyAlt                = 0x8034;
+  public const keySuper              = 0x8035;
+  public const keyCapsLock           = 0x8036;
 
-  nativetype "atomic" ARGB;
+  public nativetype "atomic" ARGB;
 
-  struct Point is
+  public struct Point is
     x: Float;
     y: Float;
   end
 
-  struct Rect is
+  public struct Rect is
     x: Float;
     y: Float;
     w: Float;
     h: Float;
   end
 
-  struct Matrix is
+  public struct Matrix is
     a: Float;
     b: Float;
     c: Float;
@@ -110,15 +110,15 @@ header gfx is
     ty: Float;
   end
 
-  nativetype "pointer" Path;
+  public nativetype "pointer" Path;
 
-  enum PathElemKind is
+  public enum PathElemKind is
     move;
     line;
     curve;
   end
 
-  struct PathElem is
+  public struct PathElem is
     kind: PathElemKind;
     closed: Bool;
     x: Float;
@@ -129,19 +129,19 @@ header gfx is
     cy2: Float;
   end
 
-  nativetype "pointer" Font;
+  public nativetype "pointer" Font;
 
-  struct FontMetrics is
+  public struct FontMetrics is
     ascent: Float;
     descent: Float;
     lineSpacing: Float;
   end
 
-  nativetype "pointer" Image;
+  public nativetype "pointer" Image;
 
-  nativetype "pointer" Window;
+  public nativetype "pointer" Window;
 
-  varstruct Event is
+  public varstruct Event is
     win: Window;
 
     substruct ResizeEvent is
@@ -195,112 +195,112 @@ header gfx is
   end
 
   //--- color
-  nativefunc argb(a: Int, r: Int, g: Int, b: Int) -> ARGB;
-  nativefunc rgb(r: Int, g: Int, b: Int) -> ARGB;
-  nativefunc a(argb: ARGB) -> Int;
-  nativefunc r(argb: ARGB) -> Int;
-  nativefunc g(argb: ARGB) -> Int;
-  nativefunc b(argb: ARGB) -> Int;
+  public nativefunc argb(a: Int, r: Int, g: Int, b: Int) -> ARGB;
+  public nativefunc rgb(r: Int, g: Int, b: Int) -> ARGB;
+  public nativefunc a(argb: ARGB) -> Int;
+  public nativefunc r(argb: ARGB) -> Int;
+  public nativefunc g(argb: ARGB) -> Int;
+  public nativefunc b(argb: ARGB) -> Int;
 
   //--- matrix / point
-  nativefunc multiply(mat1: Matrix, mat2: Matrix) -> Matrix;
-  nativefunc transform(pt: Point, mat: Matrix) -> Point;
-  nativefunc invert(mat: Matrix) -> Matrix;
+  public nativefunc multiply(mat1: Matrix, mat2: Matrix) -> Matrix;
+  public nativefunc transform(pt: Point, mat: Matrix) -> Point;
+  public nativefunc invert(mat: Matrix) -> Matrix;
 
   //--- state save/restore
-  nativefunc pushState(dest: Image);
-  nativefunc popState(dest: Image);
+  public nativefunc pushState(dest: Image);
+  public nativefunc popState(dest: Image);
 
   //--- state modification
-  nativefunc setMatrix(dest: Image, matrix: Matrix);
-  nativefunc concatMatrix(dest: Image, matrix: Matrix);
-  nativefunc setClipRect(dest: Image, x: Float, y: Float, w: Float, h: Float);
-  nativefunc intersectClipRect(dest: Image, x: Float, y: Float, w: Float, h: Float);
-  nativefunc setColor(dest: Image, color: ARGB);
-  nativefunc setFillRule(dest: Image, rule: FillRule);
-  nativefunc setStrokeWidth(dest: Image, width: Float);
-  nativefunc setFont(dest: Image, font: Font);
-  nativefunc setFontSize(dest: Image, fontSize: Float);
+  public nativefunc setMatrix(dest: Image, matrix: Matrix);
+  public nativefunc concatMatrix(dest: Image, matrix: Matrix);
+  public nativefunc setClipRect(dest: Image, x: Float, y: Float, w: Float, h: Float);
+  public nativefunc intersectClipRect(dest: Image, x: Float, y: Float, w: Float, h: Float);
+  public nativefunc setColor(dest: Image, color: ARGB);
+  public nativefunc setFillRule(dest: Image, rule: FillRule);
+  public nativefunc setStrokeWidth(dest: Image, width: Float);
+  public nativefunc setFont(dest: Image, font: Font);
+  public nativefunc setFontSize(dest: Image, fontSize: Float);
 
   //--- state accesors
-  nativefunc matrix(dest: Image) -> Matrix;
-  nativefunc clipRect(dest: Image) -> Rect;
-  nativefunc color(dest: Image) -> ARGB;
-  nativefunc fillRule(dest: Image) -> FillRule;
-  nativefunc strokeWidth(dest: Image) -> Float;
-  nativefunc font(dest: Image) -> Font;
-  nativefunc fontSize(dest: Image) -> Float;
+  public nativefunc matrix(dest: Image) -> Matrix;
+  public nativefunc clipRect(dest: Image) -> Rect;
+  public nativefunc color(dest: Image) -> ARGB;
+  public nativefunc fillRule(dest: Image) -> FillRule;
+  public nativefunc strokeWidth(dest: Image) -> Float;
+  public nativefunc font(dest: Image) -> Font;
+  public nativefunc fontSize(dest: Image) -> Float;
 
   //--- path
-  nativefunc makePath() -> Path;
-  nativefunc moveTo(path: Path, x: Float, y: Float);
-  nativefunc lineTo(path: Path, x: Float, y: Float);
-  nativefunc curveTo(path: Path, cx1: Float, cy1: Float,
-                     cx2: Float, cy2: Float, x: Float, y: Float);
-  nativefunc closePath(path: Path);
+  public nativefunc makePath() -> Path;
+  public nativefunc moveTo(path: Path, x: Float, y: Float);
+  public nativefunc lineTo(path: Path, x: Float, y: Float);
+  public nativefunc curveTo(path: Path, cx1: Float, cy1: Float,
+                            cx2: Float, cy2: Float, x: Float, y: Float);
+  public nativefunc closePath(path: Path);
 
   //--- path accessors
-  nativefunc ifirst(path: Path) -> Int;
-  nativefunc imore(path: Path, iter: Int) -> Bool;
-  nativefunc inext(path: Path, iter: Int) -> Int;
-  nativefunc iget(path: Path, iter: Int) -> PathElem;
+  public nativefunc ifirst(path: Path) -> Int;
+  public nativefunc imore(path: Path, iter: Int) -> Bool;
+  public nativefunc inext(path: Path, iter: Int) -> Int;
+  public nativefunc iget(path: Path, iter: Int) -> PathElem;
 
   //--- path drawing
-  nativefunc stroke(dest: Image, path: Path);
-  nativefunc fill(dest: Image, path: Path);
-  nativefunc strokeLine(dest: Image, x0: Float, y0: Float, x1: Float, y1: Float);
-  nativefunc strokeRect(dest: Image, x: Float, y: Float, w: Float, h: Float);
-  nativefunc fillRect(dest: Image, x: Float, y: Float, w: Float, h: Float);
+  public nativefunc stroke(dest: Image, path: Path);
+  public nativefunc fill(dest: Image, path: Path);
+  public nativefunc strokeLine(dest: Image, x0: Float, y0: Float, x1: Float, y1: Float);
+  public nativefunc strokeRect(dest: Image, x: Float, y: Float, w: Float, h: Float);
+  public nativefunc fillRect(dest: Image, x: Float, y: Float, w: Float, h: Float);
 
   //--- misc drawing
-  nativefunc clear(dest: Image);
+  public nativefunc clear(dest: Image);
 
   //--- fonts
-  nativefunc fontList() -> Vector[String];
-  nativefunc loadFont(name: String) -> Result[Font];
-  nativefunc genericFont(family: GenericFontFamily, bold: Bool, italic: Bool) -> Font;
-  nativefunc close(font: Font);
+  public nativefunc fontList() -> Vector[String];
+  public nativefunc loadFont(name: String) -> Result[Font];
+  public nativefunc genericFont(family: GenericFontFamily, bold: Bool, italic: Bool) -> Font;
+  public nativefunc close(font: Font);
 
   //--- text drawing
-  nativefunc drawText(dest: Image, s: String, x: Float, y: Float);
+  public nativefunc drawText(dest: Image, s: String, x: Float, y: Float);
 
   //--- font/text information
-  nativefunc fontMetrics(dest: Image) -> FontMetrics;
-  nativefunc textBox(dest: Image, s: String) -> Rect;
+  public nativefunc fontMetrics(dest: Image) -> FontMetrics;
+  public nativefunc textBox(dest: Image, s: String) -> Rect;
 
   //--- images
-  nativefunc makeImage(w: Int, h: Int, color: ARGB) -> Image;
-  nativefunc close(img: Image);
-  nativefunc width(img: Image) -> Int;
-  nativefunc height(img: Image) -> Int;
-  nativefunc readImage(fileName: String) -> Result[Image];
-  nativefunc writePNG(img: Image, withAlpha: Bool, fileName: String) -> Result[];
-  nativefunc writeJPEG(img: Image, quality: Int, fileName: String) -> Result[];
+  public nativefunc makeImage(w: Int, h: Int, color: ARGB) -> Image;
+  public nativefunc close(img: Image);
+  public nativefunc width(img: Image) -> Int;
+  public nativefunc height(img: Image) -> Int;
+  public nativefunc readImage(fileName: String) -> Result[Image];
+  public nativefunc writePNG(img: Image, withAlpha: Bool, fileName: String) -> Result[];
+  public nativefunc writeJPEG(img: Image, quality: Int, fileName: String) -> Result[];
 
   //--- image drawing
-  nativefunc drawImage(dest: Image, src: Image);
-  nativefunc blitImage(dest: Image, xDest: Int, yDest: Int,
-                       src: Image, xSrc: Int, ySrc: Int, w: Int, h: Int);
+  public nativefunc drawImage(dest: Image, src: Image);
+  public nativefunc blitImage(dest: Image, xDest: Int, yDest: Int,
+                              src: Image, xSrc: Int, ySrc: Int, w: Int, h: Int);
 
   //--- windows
-  nativefunc openWindow(title: String, w: Int, h: Int) -> Result[Window];
-  nativefunc setBackgroundColor(win: Window, color: ARGB);
-  nativefunc backBuffer(win: Window) -> Image;
-  nativefunc swapBuffers(win: Window);
-  nativefunc close(win: Window);
+  public nativefunc openWindow(title: String, w: Int, h: Int) -> Result[Window];
+  public nativefunc setBackgroundColor(win: Window, color: ARGB);
+  public nativefunc backBuffer(win: Window) -> Image;
+  public nativefunc swapBuffers(win: Window);
+  public nativefunc close(win: Window);
 
   //--- events
-  nativefunc monoclock() -> Int;
-  nativefunc waitEvent() -> Event;
-  nativefunc waitEvent(timeLimit: Int) -> Result[Event];
-  nativefunc pollEvent() -> Result[Event];
+  public nativefunc monoclock() -> Int;
+  public nativefunc waitEvent() -> Event;
+  public nativefunc waitEvent(timeLimit: Int) -> Result[Event];
+  public nativefunc pollEvent() -> Result[Event];
 
   //--- clipboard
-  nativefunc copyToClipboard(win: Window, s: String);
-  nativefunc pasteFromClipboard(win: Window) -> Result[String];
+  public nativefunc copyToClipboard(win: Window, s: String);
+  public nativefunc pasteFromClipboard(win: Window) -> Result[String];
 
   //--- screen info
-  nativefunc screenDPI() -> Int;
-  nativefunc defaultFontSize() -> Float;
+  public nativefunc screenDPI() -> Int;
+  public nativefunc defaultFontSize() -> Float;
 
 end

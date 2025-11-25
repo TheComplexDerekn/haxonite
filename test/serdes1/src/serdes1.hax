@@ -2,7 +2,7 @@
 
 module serdes1 is
 
-  func main() is
+  public func main() is
     var sb = new StringBuf;
     ser(123, sb);
     ser(4.56, sb);

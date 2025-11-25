@@ -2,7 +2,7 @@
 
 module map6 is
 
-  func main() is
+  public func main() is
     var m1 = {"abc":1, "def":2, "ghi":3};
     write("m1:");
     var i = ifirst(m1);

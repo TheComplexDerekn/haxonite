@@ -51,6 +51,10 @@ bool checkFunctions(Context &ctx) {
     error(mainFunc->loc, "main() function is not defined in the top module");
     ok = false;
   }
+  if (!mainFunc->pub) {
+    error(mainFunc->loc, "main() function is not public");
+    ok = false;
+  }
 
   return ok;
 }

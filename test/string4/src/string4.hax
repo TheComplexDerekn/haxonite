@@ -8,7 +8,7 @@ module string4 is
     write($"'{s}' '{prefixSuffix}' -> starts={starts} ends={ends}\n");
   end
 
-  func main() is
+  public func main() is
     run("*abc", "*");
     run("abc*", "*");
     run("*abc*", "*");

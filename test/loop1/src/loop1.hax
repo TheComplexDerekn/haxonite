@@ -1,6 +1,6 @@
 module loop1 is
 
-  func main() is
+  public func main() is
     var i = 10;
     while i <= 20 do
       write($"{i}\n");

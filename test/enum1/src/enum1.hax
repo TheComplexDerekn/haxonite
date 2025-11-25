@@ -11,7 +11,7 @@ module enum1 is
     violet;
   end
 
-  func main() is
+  public func main() is
     run(Color.red, Color.green);
     run(Color.blue, Color.blue);
     run(Color.violet, Color.red);

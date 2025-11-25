@@ -38,7 +38,7 @@ module string8 is
     end
   end
 
-  func main() is
+  public func main() is
     runSplitFirst("/", "abc/def/ghi/jkl");
     runSplitLast("/", "abc/def/ghi/jkl");
     runSplitFirst("XYZ", "XYZabcXYZdefXYZXYZghiXYZ");

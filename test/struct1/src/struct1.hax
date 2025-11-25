@@ -8,7 +8,7 @@ module struct1 is
     return make Foo(x: x, y: 10 * x);
   end
 
-  func main() is
+  public func main() is
     var obj = makeFoo(10);
     var x = obj.x;
     var y = obj.y;

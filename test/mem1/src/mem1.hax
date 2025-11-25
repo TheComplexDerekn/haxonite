@@ -7,7 +7,7 @@ module mem1 is
     next: Node;
   end
 
-  func main() is
+  public func main() is
     var list = nil[Node];
     for i : 0 .. 999 do
       list = makeList(500, i*10);

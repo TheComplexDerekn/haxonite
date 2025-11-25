@@ -2,7 +2,7 @@
 
 module datetime1 is
 
-  func main() is
+  public func main() is
     var dt1 = make DateTime(year:2025, month:4, day:25,
                             hour:20, minute:33, second:44, nanosecond:9999, tz:tzUTC);
     print(dt1);

@@ -24,7 +24,7 @@ module bubble is
   // minimum frame time, in microseconds
   const minFrameTime = 20000;
 
-  func main() is
+  public func main() is
 
     var w = 1000;
     var h = 1000;

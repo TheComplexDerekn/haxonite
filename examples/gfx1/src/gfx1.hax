@@ -8,7 +8,7 @@ module gfx1 is
 
   import SimpleGfx;
 
-  func main() is
+  public func main() is
     runSimpleGfx("gfx1", 800, 500, &draw(Image));
   end
 

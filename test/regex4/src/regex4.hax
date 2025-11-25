@@ -2,7 +2,7 @@
 
 module regex4 is
 
-  func main() is
+  public func main() is
     doReplace("\\*", "abc***def*ghi*", ".");
     doReplace("-+", "abc--def----ghi-jkl", "*");
     // invalid regex

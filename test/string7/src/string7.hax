@@ -2,7 +2,7 @@
 
 module string7 is
 
-  func main() is
+  public func main() is
     runToInt("123");
     runToInt("-123");
     runToInt(" 123");

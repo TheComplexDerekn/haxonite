@@ -2,7 +2,7 @@
 
 module vector7 is
 
-  func main() is
+  public func main() is
     var v = [1, 2, 3];
     print(v);
     insert(v, 0, 101);

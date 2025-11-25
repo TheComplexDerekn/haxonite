@@ -1,6 +1,6 @@
 module int1 is
 
-  func main() is
+  public func main() is
     var x = 0;
     write($"{x} = 0b{x:b} = 0o{x:o} = 0x{x:x}\n");
 

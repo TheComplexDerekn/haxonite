@@ -2,7 +2,7 @@
 
 module cond1 is
 
-  func main() is
+  public func main() is
     write("-- false || false --\n");
     if (left(false) || right(false)) then
       write("true\n");

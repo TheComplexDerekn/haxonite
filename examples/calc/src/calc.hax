@@ -36,7 +36,7 @@ module calc is
   const widthMul = 20.0;
   const heightMul = 25.0;
 
-  func main() is
+  public func main() is
     var initialWidth = ceili(widthMul * 1.2 * defaultFontSize());
     var initialHeight = ceili(heightMul * 1.2 * defaultFontSize());
     var state = makeState(initialWidth, initialHeight);

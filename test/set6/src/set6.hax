@@ -2,7 +2,7 @@
 
 module set6 is
 
-  func main() is
+  public func main() is
     var s1 = {1, 2, 3};
     write("s1:");
     var i = ifirst(s1);

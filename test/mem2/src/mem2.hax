@@ -7,7 +7,7 @@ module mem2 is
     next: Node;
   end
 
-  func main() is
+  public func main() is
     var v = new Vector[Node];
     for i : 0 .. 99 do
       append(v, makeList(27, i));

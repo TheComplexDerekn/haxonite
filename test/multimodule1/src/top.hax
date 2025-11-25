@@ -2,7 +2,7 @@ module top is
 
   import other;
 
-  func main() is
+  public func main() is
     f();
   end
 

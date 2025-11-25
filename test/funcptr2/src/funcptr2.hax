@@ -2,7 +2,7 @@
 
 module funcptr2 is
 
-  func main() is
+  public func main() is
     var fp1 = &f1(Int, Int);
     var fp2 = &f2(Int);
     run1(fp1, 1, 2);

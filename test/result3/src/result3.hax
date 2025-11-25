@@ -10,7 +10,7 @@ module result3 is
     end
   end
 
-  func main() is
+  public func main() is
     var s1 = f(12)!;
     write($"{s1}\n");
     var s2 = f(10)!;

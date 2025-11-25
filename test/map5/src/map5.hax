@@ -2,7 +2,7 @@
 
 module map5 is
 
-  func main() is
+  public func main() is
     var m1 = new Map[String,Int];
     m1["abc"] = 10;
     m1["def"] = 20;

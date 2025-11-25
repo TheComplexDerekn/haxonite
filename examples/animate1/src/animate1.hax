@@ -3,7 +3,7 @@
 
 module animate1 is
 
-  func main() is
+  public func main() is
     var w = 800;
     var h = 600;
     var win = openWindow("animate1", w, h)!;

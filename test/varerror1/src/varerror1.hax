@@ -12,7 +12,7 @@ module varerror1 is
     end
   end
 
-  func main() is
+  public func main() is
   end
 
 end

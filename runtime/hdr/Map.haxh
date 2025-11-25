@@ -9,15 +9,15 @@
 
 header Map[$K,$T] is
 
-  nativefunc length(m: Map[$K,$T]) -> Int;
-  nativefunc contains(m: Map[$K,$T], key: $K) -> Bool;
-  nativefunc get(m: Map[$K,$T], key: $K) -> $T;
-  nativefunc set(m: Map[$K,$T], key: $K, value: $T);
-  nativefunc delete(m: Map[$K,$T], key: $K);
-  nativefunc clear(m: Map[$K,$T]);
-  nativefunc ifirst(m: Map[$K,$T]) -> Int;
-  nativefunc imore(m: Map[$K,$T], iter: Int) -> Bool;
-  nativefunc inext(m: Map[$K,$T], iter: Int) -> Int;
-  nativefunc iget(m: Map[$K,$T], iter: Int) -> $K;
+  public nativefunc length(m: Map[$K,$T]) -> Int;
+  public nativefunc contains(m: Map[$K,$T], key: $K) -> Bool;
+  public nativefunc get(m: Map[$K,$T], key: $K) -> $T;
+  public nativefunc set(m: Map[$K,$T], key: $K, value: $T);
+  public nativefunc delete(m: Map[$K,$T], key: $K);
+  public nativefunc clear(m: Map[$K,$T]);
+  public nativefunc ifirst(m: Map[$K,$T]) -> Int;
+  public nativefunc imore(m: Map[$K,$T], iter: Int) -> Bool;
+  public nativefunc inext(m: Map[$K,$T], iter: Int) -> Int;
+  public nativefunc iget(m: Map[$K,$T], iter: Int) -> $K;
 
 end

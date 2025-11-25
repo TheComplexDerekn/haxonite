@@ -2,7 +2,7 @@
 
 module funcerror1 is
 
-  func main() is
+  public func main() is
     f(1, 2);
   end
 

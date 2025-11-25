@@ -10,7 +10,7 @@ module result1 is
     end
   end
 
-  func main() is
+  public func main() is
     var r1 = f(12);
     if ok(r1) then
       var y1 = r1!;

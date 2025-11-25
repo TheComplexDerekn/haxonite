@@ -10,7 +10,7 @@ module serdes2 is
     v: Vector[Int];
   end
 
-  func main() is
+  public func main() is
     var obj1 = make Foo(x:10, y:7.89, b:false, s:"whatever", v:[10,20,30,40]);
     write(obj1);
 

@@ -27,7 +27,7 @@ module varstruct3 is
     end
   end
 
-  func main() is
+  public func main() is
     var obj1 = varstruct make Foo1(x:1, y:2);
     print(obj1);
     var obj2 = nil[Foo2];

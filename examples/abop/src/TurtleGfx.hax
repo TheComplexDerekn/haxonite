@@ -3,7 +3,7 @@
 
 module TurtleGfx is
 
-  struct TurtleGfx is
+  public struct TurtleGfx is
     pngFileName: String;
     img: Image;
     angleDivs: Int;
@@ -13,39 +13,39 @@ module TurtleGfx is
     pen: Bool;
   end
 
-  func openTurtleGfx(pngFileName: String, w: Int, h: Int, angleDivs: Int) -> TurtleGfx is
+  public func openTurtleGfx(pngFileName: String, w: Int, h: Int, angleDivs: Int) -> TurtleGfx is
     var img = makeImage(w, h, rgb(0, 0, 0));
     setStrokeWidth(img, 1.0);
     return make TurtleGfx(pngFileName:pngFileName, img:img, angleDivs: angleDivs,
                           x:0.0, y:0.0, angle:0, pen:true);
   end
 
-  func close(gfx: TurtleGfx) is
+  public func close(gfx: TurtleGfx) is
     writePNG(gfx.img, false, gfx.pngFileName);
   end
 
-  func moveTo(gfx: TurtleGfx, x: Float, y: Float) is
+  public func moveTo(gfx: TurtleGfx, x: Float, y: Float) is
     gfx.x = x;
     gfx.y = y;
   end
 
-  func turnTo(gfx: TurtleGfx, angle: Int) is
+  public func turnTo(gfx: TurtleGfx, angle: Int) is
     gfx.angle = angle;
   end
 
-  func setColor(gfx: TurtleGfx, color: ARGB) is
+  public func setColor(gfx: TurtleGfx, color: ARGB) is
     setColor(gfx.img, color);
   end
 
-  func penUp(gfx: TurtleGfx) is
+  public func penUp(gfx: TurtleGfx) is
     gfx.pen = false;
   end
 
-  func penDown(gfx: TurtleGfx) is
+  public func penDown(gfx: TurtleGfx) is
     gfx.pen = true;
   end
 
-  func forward(gfx: TurtleGfx, distance: Float) is
+  public func forward(gfx: TurtleGfx, distance: Float) is
     var angle = (toFloat(gfx.angle) / toFloat(gfx.angleDivs)) * 2.0 * pi;
     var x1 = gfx.x + distance * cos(angle);
     var y1 = gfx.y - distance * sin(angle);
@@ -56,7 +56,7 @@ module TurtleGfx is
     gfx.y = y1;
   end
 
-  func turn(gfx: TurtleGfx, delta: Int) is
+  public func turn(gfx: TurtleGfx, delta: Int) is
     gfx.angle = (gfx.angle + delta + gfx.angleDivs) % gfx.angleDivs;
   end
 

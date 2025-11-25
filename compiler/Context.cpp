@@ -61,7 +61,7 @@ CType *Context::findType(const std::string &name) {
     return nullptr;
   }
   CType *type = iter->second.get();
-  if (!moduleIsVisible(type->module)) {
+  if (!typeIsVisible(type)) {
     return nullptr;
   }
   return type;
@@ -72,34 +72,13 @@ CFuncDecl *Context::findFunction(const std::string &name, std::vector<ExprResult
   for (auto iter = range.first; iter != range.second; ++iter) {
     CFuncDecl *funcDecl = iter->second.get();
     if (functionMatch(argResults, funcDecl)) {
-      if (!moduleIsVisible(funcDecl->module)) {
-	return nullptr;
-      }
-      for (std::unique_ptr<CArg> &arg : funcDecl->args) {
-	if (!moduleIsVisible(arg->type->type->module)) {
-	  return nullptr;
-	}
-      }
-      if (funcDecl->returnType &&
-	  !moduleIsVisible(funcDecl->returnType->type->module)) {
+      if (!functionIsVisible(funcDecl)) {
 	return nullptr;
       }
       return funcDecl;
     }
   }
   return nullptr;
-}
-
-bool Context::moduleIsVisible(CModule *mod) {
-  if (mod->builtin || mod == moduleBeingCompiled) {
-    return true;
-  }
-  for (CModule *import : moduleBeingCompiled->imports) {
-    if (mod == import) {
-      return true;
-    }
-  }
-  return false;
 }
 
 void Context::pushFrame() {
@@ -134,7 +113,7 @@ CSymbol *Context::findSymbol(const std::string &name) {
   auto iter = constants.find(name);
   if (iter != constants.end()) {
     CConst *con = iter->second.get();
-    if (!moduleIsVisible(con->module)) {
+    if (!constantIsVisible(con)) {
       return nullptr;
     }
     return con;
@@ -158,6 +137,44 @@ Frame *Context::findLoop() {
     }
   }
   return nullptr;
+}
+
+bool Context::moduleIsVisible(CModule *mod) {
+  if (mod->builtin || mod == moduleBeingCompiled) {
+    return true;
+  }
+  for (CModule *import : moduleBeingCompiled->imports) {
+    if (mod == import) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool Context::typeIsVisible(CType *type) {
+  return type->module == moduleBeingCompiled ||
+         (moduleIsVisible(type->module) && type->pub);
+}
+
+bool Context::functionIsVisible(CFuncDecl *func) {
+  if (!(func->module == moduleBeingCompiled ||
+	moduleIsVisible(func->module) && func->pub)) {
+    return false;
+  }
+  for (std::unique_ptr<CArg> &arg : func->args) {
+    if (!typeIsVisible(arg->type->type)) {
+      return false;
+    }
+  }
+  if (func->returnType && !typeIsVisible(func->returnType->type)) {
+    return false;
+  }
+  return true;
+}
+
+bool Context::constantIsVisible(CConst *con) {
+  return con->module == moduleBeingCompiled ||
+         (moduleIsVisible(con->module) && con->pub);
 }
 
 bool Context::nameExists(const std::string &name) {

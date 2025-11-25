@@ -2,7 +2,7 @@
 
 module funcptr1 is
 
-  func main() is
+  public func main() is
     var f = &hello();
     (f)();
   end

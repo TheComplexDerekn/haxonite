@@ -2,7 +2,7 @@
 
 module string9 is
 
-  func main() is
+  public func main() is
     runPrefix("abc.defghi", "abc.");
     runPrefix("abc.defghi", "a");
     runPrefix("abc.defghi", "abd.");

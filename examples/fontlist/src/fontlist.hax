@@ -5,7 +5,7 @@
 
 module fontlist is
 
-  func main() is
+  public func main() is
     var fonts = fontList();
     for font : fonts do
       write(font + "\n");

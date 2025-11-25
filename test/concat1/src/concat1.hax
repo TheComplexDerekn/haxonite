@@ -1,6 +1,6 @@
 module concat1 is
 
-  func main() is
+  public func main() is
     var s1 = "Hello";
     var s2 = " ";
     var s3 = "world";

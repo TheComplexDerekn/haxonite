@@ -1,6 +1,6 @@
 module float2 is
 
-  func main() is
+  public func main() is
     var x = 1.23e10;
     write($"{x} -> f: {x:f} | .4f: {x:.4f}\n");
     write($"{x} -> F: {x:F} | .4F: {x:.4F}\n");

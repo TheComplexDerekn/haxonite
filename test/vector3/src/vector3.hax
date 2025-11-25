@@ -2,7 +2,7 @@
 
 module vector3 is
 
-  func main() is
+  public func main() is
     var v = new Vector[String];
     append(v, "abc");
     append(v, "def");

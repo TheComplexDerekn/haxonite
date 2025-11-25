@@ -10,7 +10,7 @@ module SimpleGfx is
     draw: Func[Image];
   end
 
-  func runSimpleGfx(title: String, w: Int, h: Int, draw: Func[Image]) is
+  public func runSimpleGfx(title: String, w: Int, h: Int, draw: Func[Image]) is
     var win = openWindow(title, w, h)!;
     var gfx = make SimpleGfx(win:win, draw:draw);
     redraw(gfx);

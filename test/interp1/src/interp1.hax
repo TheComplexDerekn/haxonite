@@ -1,6 +1,6 @@
 module interp1 is
 
-  func main() is
+  public func main() is
     var i = 42;
     var b = true;
     var s = "abc";

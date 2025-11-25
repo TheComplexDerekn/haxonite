@@ -2,7 +2,7 @@
 
 module for1 is
 
-  func main() is
+  public func main() is
     var v = ["abc", "def", "ghi", "jkl", "mno", "pqr"];
     for s : v do
       write($"{s} ");

@@ -7,7 +7,7 @@ module edge2 is
 
   import TurtleGfx;
 
-  func main() is
+  public func main() is
     var args = commandLineArgs();
     if #args != 1 then
       ewrite("Usage: edge2 <png-file>\n");

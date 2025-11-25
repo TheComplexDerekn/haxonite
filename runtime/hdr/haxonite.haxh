@@ -10,118 +10,118 @@
 header haxonite is
 
   //--- String
-  nativefunc compare(s1: String, s2: String) -> Int;
-  nativefunc concat(s1: String, s2: String) -> String;
-  nativefunc startsWith(s: String, prefix: String) -> Bool;
-  nativefunc endsWith(s: String, suffix: String) -> Bool;
-  nativefunc split(term: String, s: String) -> Vector[String];
-  nativefunc splitFirst(term: String, s: String) -> Vector[String];
-  nativefunc splitLast(term: String, s: String) -> Vector[String];
-  nativefunc removePrefix(s: String, prefix: String) -> String;
-  nativefunc removeSuffix(s: String, suffix: String) -> String;
-  nativefunc toInt(s: String) -> Result[Int];
-  nativefunc toInt(s: String, base: Int) -> Result[Int];
-  nativefunc toFloat(s: String) -> Result[Float];
-  nativefunc byteLength(s: String) -> Int;
-  nativefunc byte(s: String, idx: Int) -> Int;
-  nativefunc codepoint(s: String, idx: Int) -> Int;
-  nativefunc nextCodepoint(s: String, idx: Int) -> Int;
-  nativefunc prevCodepoint(s: String, idx: Int) -> Int;
-  nativefunc substr(s: String, first: Int, last: Int) -> String;
-  nativefunc codepointToString(c: Int) -> String;
-  nativefunc codepointToLower(c: Int) -> Int;
-  nativefunc codepointToUpper(c: Int) -> Int;
-  nativefunc codepointIsAlpha(c: Int) -> Bool;
-  nativefunc codepointIsDigit(c: Int) -> Bool;
-  nativefunc codepointIsSpace(c: Int) -> Bool;
+  public nativefunc compare(s1: String, s2: String) -> Int;
+  public nativefunc concat(s1: String, s2: String) -> String;
+  public nativefunc startsWith(s: String, prefix: String) -> Bool;
+  public nativefunc endsWith(s: String, suffix: String) -> Bool;
+  public nativefunc split(term: String, s: String) -> Vector[String];
+  public nativefunc splitFirst(term: String, s: String) -> Vector[String];
+  public nativefunc splitLast(term: String, s: String) -> Vector[String];
+  public nativefunc removePrefix(s: String, prefix: String) -> String;
+  public nativefunc removeSuffix(s: String, suffix: String) -> String;
+  public nativefunc toInt(s: String) -> Result[Int];
+  public nativefunc toInt(s: String, base: Int) -> Result[Int];
+  public nativefunc toFloat(s: String) -> Result[Float];
+  public nativefunc byteLength(s: String) -> Int;
+  public nativefunc byte(s: String, idx: Int) -> Int;
+  public nativefunc codepoint(s: String, idx: Int) -> Int;
+  public nativefunc nextCodepoint(s: String, idx: Int) -> Int;
+  public nativefunc prevCodepoint(s: String, idx: Int) -> Int;
+  public nativefunc substr(s: String, first: Int, last: Int) -> String;
+  public nativefunc codepointToString(c: Int) -> String;
+  public nativefunc codepointToLower(c: Int) -> Int;
+  public nativefunc codepointToUpper(c: Int) -> Int;
+  public nativefunc codepointIsAlpha(c: Int) -> Bool;
+  public nativefunc codepointIsDigit(c: Int) -> Bool;
+  public nativefunc codepointIsSpace(c: Int) -> Bool;
 
   //--- regular expression
-  nativefunc reTest(re: String, s: String) -> Result[Bool];
-  nativefunc reMatch(re: String, s: String) -> Result[Vector[String]];
-  nativefunc reSplit(re: String, s: String) -> Result[Vector[String]];
-  nativefunc reReplace(re: String, s: String, sub: String) -> Result[String];
+  public nativefunc reTest(re: String, s: String) -> Result[Bool];
+  public nativefunc reMatch(re: String, s: String) -> Result[Vector[String]];
+  public nativefunc reSplit(re: String, s: String) -> Result[Vector[String]];
+  public nativefunc reReplace(re: String, s: String, sub: String) -> Result[String];
 
   //--- StringBuf
-  nativefunc appendCodepoint(sb: StringBuf, codepoint: Int);
-  nativefunc append(sb: StringBuf, s: String);
-  nativefunc append(sb: StringBuf, other: StringBuf);
-  nativefunc appendByte(sb: StringBuf, b: Int);
-  nativefunc clear(sb: StringBuf);
-  nativefunc toString(sb: StringBuf) -> String;
-  nativefunc byteLength(sb: StringBuf) -> Int;
-  nativefunc byte(sb: StringBuf, idx: Int) -> Int;
+  public nativefunc appendCodepoint(sb: StringBuf, codepoint: Int);
+  public nativefunc append(sb: StringBuf, s: String);
+  public nativefunc append(sb: StringBuf, other: StringBuf);
+  public nativefunc appendByte(sb: StringBuf, b: Int);
+  public nativefunc clear(sb: StringBuf);
+  public nativefunc toString(sb: StringBuf) -> String;
+  public nativefunc byteLength(sb: StringBuf) -> Int;
+  public nativefunc byte(sb: StringBuf, idx: Int) -> Int;
 
   //--- formatting
-  nativefunc format(x: Int, width: Int, precision: Int, format: Int) -> String;
-  nativefunc format(x: Float, width: Int, precision: Int, format: Int) -> String;
-  nativefunc format(x: Bool, width: Int, precision: Int, format: Int) -> String;
-  nativefunc format(x: String, width: Int, precision: Int, format: Int) -> String;
+  public nativefunc format(x: Int, width: Int, precision: Int, format: Int) -> String;
+  public nativefunc format(x: Float, width: Int, precision: Int, format: Int) -> String;
+  public nativefunc format(x: Bool, width: Int, precision: Int, format: Int) -> String;
+  public nativefunc format(x: String, width: Int, precision: Int, format: Int) -> String;
 
   //--- math
-  const pi = 3.14159265358979323846;
-  const minInt = 0x80000000000000;
-  const maxInt = 0x7fffffffffffff;
-  nativefunc toFloat(x: Int) -> Float;
-  nativefunc ceil(x: Float) -> Float;
-  nativefunc floor(x: Float) -> Float;
-  nativefunc round(x: Float) -> Float;
-  nativefunc ceili(x: Float) -> Int;
-  nativefunc floori(x: Float) -> Int;
-  nativefunc roundi(x: Float) -> Int;
-  nativefunc min(x: Int, y: Int) -> Int;
-  nativefunc min(x: Float, y: Float) -> Float;
-  nativefunc max(x: Int, y: Int) -> Int;
-  nativefunc max(x: Float, y: Float) -> Float;
-  nativefunc abs(x: Int) -> Int;
-  nativefunc abs(x: Float) -> Float;
-  nativefunc sqrt(x: Float) -> Float;
-  nativefunc pow(x: Float, y: Float) -> Float;
-  nativefunc exp(x: Float) -> Float;
-  nativefunc log(x: Float) -> Float;
-  nativefunc log10(x: Float) -> Float;
-  nativefunc sin(x: Float) -> Float;
-  nativefunc cos(x: Float) -> Float;
-  nativefunc tan(x: Float) -> Float;
-  nativefunc asin(x: Float) -> Float;
-  nativefunc acos(x: Float) -> Float;
-  nativefunc atan2(y:Float, x: Float) -> Float;
+  public const pi = 3.14159265358979323846;
+  public const minInt = 0x80000000000000;
+  public const maxInt = 0x7fffffffffffff;
+  public nativefunc toFloat(x: Int) -> Float;
+  public nativefunc ceil(x: Float) -> Float;
+  public nativefunc floor(x: Float) -> Float;
+  public nativefunc round(x: Float) -> Float;
+  public nativefunc ceili(x: Float) -> Int;
+  public nativefunc floori(x: Float) -> Int;
+  public nativefunc roundi(x: Float) -> Int;
+  public nativefunc min(x: Int, y: Int) -> Int;
+  public nativefunc min(x: Float, y: Float) -> Float;
+  public nativefunc max(x: Int, y: Int) -> Int;
+  public nativefunc max(x: Float, y: Float) -> Float;
+  public nativefunc abs(x: Int) -> Int;
+  public nativefunc abs(x: Float) -> Float;
+  public nativefunc sqrt(x: Float) -> Float;
+  public nativefunc pow(x: Float, y: Float) -> Float;
+  public nativefunc exp(x: Float) -> Float;
+  public nativefunc log(x: Float) -> Float;
+  public nativefunc log10(x: Float) -> Float;
+  public nativefunc sin(x: Float) -> Float;
+  public nativefunc cos(x: Float) -> Float;
+  public nativefunc tan(x: Float) -> Float;
+  public nativefunc asin(x: Float) -> Float;
+  public nativefunc acos(x: Float) -> Float;
+  public nativefunc atan2(y:Float, x: Float) -> Float;
 
   //--- random numbers
-  nativefunc seedrand(seed: Int);
-  nativefunc rand() -> Float;
-  nativefunc randi(min: Int, max: Int) -> Int;
+  public nativefunc seedrand(seed: Int);
+  public nativefunc rand() -> Float;
+  public nativefunc randi(min: Int, max: Int) -> Int;
 
   //--- system
-  nativefunc commandLineArgs() -> Vector[String];
-  nativefunc exit(exitCode: Int);
-  nativefunc pathExists(path: String) -> Bool;
-  nativefunc pathIsDir(path: String) -> Bool;
-  nativefunc pathIsFile(path: String) -> Bool;
-  nativefunc normalizePath(path: String, resolveSymLinks: Bool) -> String;
-  nativefunc modTime(path: String) -> Result[Timestamp];
-  nativefunc currentDir() -> String;
-  nativefunc homeDir() -> String;
-  nativefunc createDir(path: String) -> Result[];
-  nativefunc delete(path: String) -> Result[];
-  nativefunc deleteDir(path: String) -> Result[];
-  nativefunc rename(oldPath: String, newPath: String) -> Result[];
-  nativefunc readFile(path: String) -> Result[String];
-  nativefunc readFile(path: String, sb: StringBuf) -> Result[StringBuf];
-  nativefunc writeFile(path: String, s: String) -> Result[];
-  nativefunc writeFile(path: String, sb: StringBuf) -> Result[];
-  nativefunc readDir(path: String) -> Result[Vector[String]];
-  nativefunc copyFile(src: String, dest: String) -> Result[];
-  nativefunc run(command: Vector[String]) -> Result[Int];
-  nativefunc sleep(useconds: Int);
-  nativefunc heapSize() -> Int;
+  public nativefunc commandLineArgs() -> Vector[String];
+  public nativefunc exit(exitCode: Int);
+  public nativefunc pathExists(path: String) -> Bool;
+  public nativefunc pathIsDir(path: String) -> Bool;
+  public nativefunc pathIsFile(path: String) -> Bool;
+  public nativefunc normalizePath(path: String, resolveSymLinks: Bool) -> String;
+  public nativefunc modTime(path: String) -> Result[Timestamp];
+  public nativefunc currentDir() -> String;
+  public nativefunc homeDir() -> String;
+  public nativefunc createDir(path: String) -> Result[];
+  public nativefunc delete(path: String) -> Result[];
+  public nativefunc deleteDir(path: String) -> Result[];
+  public nativefunc rename(oldPath: String, newPath: String) -> Result[];
+  public nativefunc readFile(path: String) -> Result[String];
+  public nativefunc readFile(path: String, sb: StringBuf) -> Result[StringBuf];
+  public nativefunc writeFile(path: String, s: String) -> Result[];
+  public nativefunc writeFile(path: String, sb: StringBuf) -> Result[];
+  public nativefunc readDir(path: String) -> Result[Vector[String]];
+  public nativefunc copyFile(src: String, dest: String) -> Result[];
+  public nativefunc run(command: Vector[String]) -> Result[Int];
+  public nativefunc sleep(useconds: Int);
+  public nativefunc heapSize() -> Int;
 
   //--- date/time
-  struct Date is
+  public struct Date is
     year: Int;
     month: Int;         // 1 .. 12
     day: Int;           // 1 .. 31
   end
-  struct DateTime is
+  public struct DateTime is
     year: Int;
     month: Int;         // 1 .. 12
     day: Int;           // 1 .. 31
@@ -131,64 +131,64 @@ header haxonite is
     nanosecond: Int;    // 0 .. 999,999,999
     tz: Int;            // minutes relative to UTC: -12*60 .. 12*60
   end
-  struct Timestamp is
+  public struct Timestamp is
     seconds: Int;       // seconds since Unix epoch (1970-01-01 00:00:00 +0000)
     nanoseconds: Int;   // 0 .. 999,999,999
   end
-  const tzUTC = 0;
-  const tzLocal = 2000;
-  nativefunc toDateTime(ts: Timestamp, tz: Int) -> DateTime;
-  nativefunc toTimestamp(dt: DateTime) -> Timestamp;
-  nativefunc now() -> Timestamp;
-  nativefunc dayOfWeek(d: Date) -> Int;
-  nativefunc dayOfWeek(dt: DateTime) -> Int;
-  nativefunc compare(d1: Date, d2: Date) -> Int;
-  nativefunc compare(dt1: DateTime, dt2: DateTime) -> Int;
-  nativefunc compare(ts1: Timestamp, ts2: Timestamp) -> Int;
-  nativefunc diff(d1: Date, d2: Date) -> Int;
-  nativefunc diff(ts1: Timestamp, ts2: Timestamp) -> Int;
-  nativefunc diffNS(ts1: Timestamp, ts2: Timestamp) -> Int;
-  nativefunc add(d: Date, days: Int) -> Date;
-  nativefunc add(ts: Timestamp, seconds: Int, nanoseconds: Int) -> Timestamp;
+  public const tzUTC = 0;
+  public const tzLocal = 2000;
+  public nativefunc toDateTime(ts: Timestamp, tz: Int) -> DateTime;
+  public nativefunc toTimestamp(dt: DateTime) -> Timestamp;
+  public nativefunc now() -> Timestamp;
+  public nativefunc dayOfWeek(d: Date) -> Int;
+  public nativefunc dayOfWeek(dt: DateTime) -> Int;
+  public nativefunc compare(d1: Date, d2: Date) -> Int;
+  public nativefunc compare(dt1: DateTime, dt2: DateTime) -> Int;
+  public nativefunc compare(ts1: Timestamp, ts2: Timestamp) -> Int;
+  public nativefunc diff(d1: Date, d2: Date) -> Int;
+  public nativefunc diff(ts1: Timestamp, ts2: Timestamp) -> Int;
+  public nativefunc diffNS(ts1: Timestamp, ts2: Timestamp) -> Int;
+  public nativefunc add(d: Date, days: Int) -> Date;
+  public nativefunc add(ts: Timestamp, seconds: Int, nanoseconds: Int) -> Timestamp;
 
   //--- File
-  nativetype "pointer" File;
-  enum FileMode is
+  public nativetype "pointer" File;
+  public enum FileMode is
     read;
     write;
     append;
   end
-  struct TempFile is
+  public struct TempFile is
     path: String;
     file: File;
   end
-  nativefunc openFile(path: String, mode: FileMode) -> Result[File];
-  nativefunc openTempFile(prefix: String) -> Result[TempFile];
-  nativefunc close(f: File);
-  nativefunc read(f: File, sb: StringBuf, n: Int) -> Result[Int];
-  nativefunc readLine(f: File) -> Result[String];
-  nativefunc write(f: File, s: String) -> Result[Int];
-  nativefunc write(f: File, sb: StringBuf) -> Result[Int];
-  nativefunc read(sb: StringBuf, n: Int) -> Result[Int];
-  nativefunc readLine() -> Result[String];
-  nativefunc write(s: String) -> Result[Int];
-  nativefunc ewrite(s: String) -> Result[Int];
+  public nativefunc openFile(path: String, mode: FileMode) -> Result[File];
+  public nativefunc openTempFile(prefix: String) -> Result[TempFile];
+  public nativefunc close(f: File);
+  public nativefunc read(f: File, sb: StringBuf, n: Int) -> Result[Int];
+  public nativefunc readLine(f: File) -> Result[String];
+  public nativefunc write(f: File, s: String) -> Result[Int];
+  public nativefunc write(f: File, sb: StringBuf) -> Result[Int];
+  public nativefunc read(sb: StringBuf, n: Int) -> Result[Int];
+  public nativefunc readLine() -> Result[String];
+  public nativefunc write(s: String) -> Result[Int];
+  public nativefunc ewrite(s: String) -> Result[Int];
 
   //--- serialization / deserialization
-  struct DeserBuf is
+  public struct DeserBuf is
     data: StringBuf;
     pos: Int;
   end
-  nativefunc ser(val: Int, out: StringBuf);
-  nativefunc ser(val: Float, out: StringBuf);
-  nativefunc ser(val: Bool, out: StringBuf);
-  nativefunc ser(val: String, out: StringBuf);
-  nativefunc serHeader(hdr: String, out: StringBuf);
-  nativefunc deserInt(in: DeserBuf) -> Result[Int];
-  nativefunc deserFloat(in: DeserBuf) -> Result[Float];
-  nativefunc deserBool(in: DeserBuf) -> Result[Bool];
-  nativefunc deserString(in: DeserBuf) -> Result[String];
-  nativefunc deserHeader(hdr: String, in: DeserBuf) -> Result[];
-  nativefunc deserEnd(in: DeserBuf) -> Result[];
+  public nativefunc ser(val: Int, out: StringBuf);
+  public nativefunc ser(val: Float, out: StringBuf);
+  public nativefunc ser(val: Bool, out: StringBuf);
+  public nativefunc ser(val: String, out: StringBuf);
+  public nativefunc serHeader(hdr: String, out: StringBuf);
+  public nativefunc deserInt(in: DeserBuf) -> Result[Int];
+  public nativefunc deserFloat(in: DeserBuf) -> Result[Float];
+  public nativefunc deserBool(in: DeserBuf) -> Result[Bool];
+  public nativefunc deserString(in: DeserBuf) -> Result[String];
+  public nativefunc deserHeader(hdr: String, in: DeserBuf) -> Result[];
+  public nativefunc deserEnd(in: DeserBuf) -> Result[];
 
 end

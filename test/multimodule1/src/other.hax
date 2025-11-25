@@ -1,6 +1,6 @@
 module other is
 
-  func f() is
+  public func f() is
     write("Hello world\n");
   end
 

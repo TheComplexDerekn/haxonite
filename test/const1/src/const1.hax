@@ -6,7 +6,7 @@ module const1 is
   const k4 = "hello";
   const k5 = k1 + 1;
 
-  func main() is
+  public func main() is
     write($"{k1} {k2} {k3} {k4} {k5}\n");
   end
 

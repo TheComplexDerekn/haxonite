@@ -9,18 +9,18 @@
 
 header Vector[$T] is
 
-  nativefunc length(v: Vector[$T]) -> Int;
-  nativefunc get(v: Vector[$T], idx: Int) -> $T;
-  nativefunc set(v: Vector[$T], idx: Int, value: $T);
-  nativefunc append(v: Vector[$T], value: $T);
-  nativefunc insert(v: Vector[$T], idx: Int, value: $T);
-  nativefunc delete(v: Vector[$T], idx: Int);
-  nativefunc delete(v: Vector[$T], idx: Int, n: Int);
-  nativefunc clear(v: Vector[$T]);
-  nativefunc sort(v: Vector[$T], cmp: Func[$T,$T->Bool]);
-  nativefunc ifirst(v: Vector[$T]) -> Int;
-  nativefunc imore(v: Vector[$T], iter: Int) -> Bool;
-  nativefunc inext(v: Vector[$T], iter: Int) -> Int;
-  nativefunc iget(v: Vector[$T], iter: Int) -> $T;
+  public nativefunc length(v: Vector[$T]) -> Int;
+  public nativefunc get(v: Vector[$T], idx: Int) -> $T;
+  public nativefunc set(v: Vector[$T], idx: Int, value: $T);
+  public nativefunc append(v: Vector[$T], value: $T);
+  public nativefunc insert(v: Vector[$T], idx: Int, value: $T);
+  public nativefunc delete(v: Vector[$T], idx: Int);
+  public nativefunc delete(v: Vector[$T], idx: Int, n: Int);
+  public nativefunc clear(v: Vector[$T]);
+  public nativefunc sort(v: Vector[$T], cmp: Func[$T,$T->Bool]);
+  public nativefunc ifirst(v: Vector[$T]) -> Int;
+  public nativefunc imore(v: Vector[$T], iter: Int) -> Bool;
+  public nativefunc inext(v: Vector[$T], iter: Int) -> Int;
+  public nativefunc iget(v: Vector[$T], iter: Int) -> $T;
 
 end

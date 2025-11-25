@@ -9,14 +9,14 @@
 
 header Set[$K] is
 
-  nativefunc length(s: Set[$K]) -> Int;
-  nativefunc contains(s: Set[$K], elem: $K) -> Bool;
-  nativefunc insert(s: Set[$K], elem: $K);
-  nativefunc delete(s: Set[$K], elem: $K);
-  nativefunc clear(s: Set[$K]);
-  nativefunc ifirst(s: Set[$K]) -> Int;
-  nativefunc imore(s: Set[$K], iter: Int) -> Bool;
-  nativefunc inext(s: Set[$K], iter: Int) -> Int;
-  nativefunc iget(s: Set[$K], iter: Int) -> $K;
+  public nativefunc length(s: Set[$K]) -> Int;
+  public nativefunc contains(s: Set[$K], elem: $K) -> Bool;
+  public nativefunc insert(s: Set[$K], elem: $K);
+  public nativefunc delete(s: Set[$K], elem: $K);
+  public nativefunc clear(s: Set[$K]);
+  public nativefunc ifirst(s: Set[$K]) -> Int;
+  public nativefunc imore(s: Set[$K], iter: Int) -> Bool;
+  public nativefunc inext(s: Set[$K], iter: Int) -> Int;
+  public nativefunc iget(s: Set[$K], iter: Int) -> $K;
 
 end

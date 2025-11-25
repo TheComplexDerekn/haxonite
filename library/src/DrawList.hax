@@ -7,12 +7,12 @@ module DrawList is
 
   import DataFile;
 
-  struct DrawList is
+  public struct DrawList is
     resources: Vector[DrawListResource];
     ops: Vector[DrawListOp];
   end
 
-  varstruct DrawListResource is
+  public varstruct DrawListResource is
 
     tag: String;
 
@@ -28,7 +28,7 @@ module DrawList is
 
   end
 
-  varstruct DrawListOp is
+  public varstruct DrawListOp is
 
     substruct DrawListPush is
     end
@@ -110,7 +110,7 @@ module DrawList is
 
   // Draw [list] to [dest]. Returns an error if the DrawList contains
   // a syntax error.
-  func drawDrawList(dest: Image, list: DrawList) -> Result[] is
+  public func drawDrawList(dest: Image, list: DrawList) -> Result[] is
     var fonts = new Map[String,Font];
     for resource : list.resources do
       typematch resource is
@@ -174,7 +174,7 @@ module DrawList is
   end
 
   // Serialize [list] to [out].
-  func ser(list: DrawList, out: StringBuf) is
+  public func ser(list: DrawList, out: StringBuf) is
     append(out, "@drawlist-1\n");
     append(out, "-resources\n");
     for resource : list.resources do
@@ -320,7 +320,7 @@ module DrawList is
 
   // Deserialize a DrawList from [in]. On syntax error: calls [err]
   // and returns an error.
-  func deserDrawList(in: StringBuf, err: Func[Int,String]) -> Result[DrawList] is
+  public func deserDrawList(in: StringBuf, err: Func[Int,String]) -> Result[DrawList] is
     var dataFile = parseDataFile(in, err)?;
 
     if dataFile.tag != "drawlist-1" then

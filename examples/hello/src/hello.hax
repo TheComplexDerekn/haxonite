@@ -2,7 +2,7 @@
 // Copyright 2025 Derek Noonburg
 
 module hello is
-  func main() is
+  public func main() is
     write("Hello world!\n");
   end
 end

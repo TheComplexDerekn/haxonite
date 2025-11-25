@@ -1,6 +1,6 @@
 module stringbuf1 is
 
-  func main() is
+  public func main() is
     var sb1 = new StringBuf;
     append(sb1, "Hello");
     appendCodepoint(sb1, ' ');

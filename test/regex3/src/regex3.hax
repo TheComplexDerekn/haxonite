@@ -2,7 +2,7 @@
 
 module regex3 is
 
-  func main() is
+  public func main() is
     doSplit(",", "abc,def,,g,");
     doSplit("-+", "abc--def----ghi-jkl");
     // invalid regex

@@ -2,7 +2,7 @@
 
 module gfx7 is
 
-  func main() is
+  public func main() is
     var args = commandLineArgs();
     if #args != 2 then
       ewrite("Usage: gfx7 <input.png> <output.png>\n");

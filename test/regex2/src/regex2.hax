@@ -2,7 +2,7 @@
 
 module regex2 is
 
-  func main() is
+  public func main() is
     doMatch("a+", "xxaaayy");
     doMatch("a(\\d+)z", "**a1234z**");
     doMatch("(\\[[a-z]+\\])+", "xxx[abc][def][helloworld]yyy");

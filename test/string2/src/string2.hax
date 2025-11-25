@@ -2,7 +2,7 @@
 
 module string2 is
 
-  func main() is
+  public func main() is
     run("Hello world");
     run("");
     run("Àñé");

@@ -2,7 +2,7 @@
 
 module regex1 is
 
-  func main() is
+  public func main() is
     doTest("a+b+", "xxaabyy");
     doTest("a+b+", "xxxaaybbz");
     doTest("(a+b+", "xxxaaybbz");

@@ -8,7 +8,7 @@ module return1 is
     end
   end
 
-  func main() is
+  public func main() is
     var a = f(11, 10);
     var b = f(8, 9);
     write($"{a} {b}\n");

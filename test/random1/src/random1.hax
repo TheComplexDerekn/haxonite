@@ -1,6 +1,6 @@
 module random1 is
 
-  func main() is
+  public func main() is
     seedrand(123456);
     var f1 = rand();
     var f2 = rand();

@@ -2,7 +2,7 @@
 
 module result5 is
 
-  func main() is
+  public func main() is
     var res1 = f(1);
     if ok(res1) then
       write("f(1) -> ok\n");

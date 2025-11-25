@@ -2,7 +2,7 @@
 
 module args1 is
 
-  func main() is
+  public func main() is
     var args = commandLineArgs();
     for arg : args do
       write($"'{arg}'\n");

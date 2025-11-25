@@ -2,7 +2,7 @@
 
 module gfx5 is
 
-  func main() is
+  public func main() is
     var c1 = rgb(0x22, 0x33, 0x44);
     var a1 = a(c1);
     var r1 = r(c1);

@@ -5,18 +5,18 @@
 
 module DataFile is
 
-  struct DataFile is
+  public struct DataFile is
     tag: String;
     sections: Vector[DataSection];
   end
 
-  struct DataSection is
+  public struct DataSection is
     tag: String; 
     items: Vector[DataItem];
     lineNum: Int;
   end
 
-  struct DataItem is
+  public struct DataItem is
     cmd: String;
     args: Vector[String];
     lineNum: Int;
@@ -28,7 +28,7 @@ module DataFile is
     lineNum: Int;      // [pos] points to the start of line [lineNum]
   end
 
-  enum DataArgType is
+  public enum DataArgType is
     string;
     int;
     float;
@@ -36,7 +36,7 @@ module DataFile is
 
   // Parses [in] and returns a DataFile. On syntax error: calls [err]
   // and returns an error.
-  func parseDataFile(in: StringBuf, err: Func[Int,String]) -> Result[DataFile] is
+  public func parseDataFile(in: StringBuf, err: Func[Int,String]) -> Result[DataFile] is
     var parser = make DataParser(buf: in, pos: 0, lineNum: 1);
 
     //--- file header
@@ -218,7 +218,8 @@ module DataFile is
 
   // Checks that the arguments in [item] match [argTypes]. If not:
   // calls [err] and returns an error.
-  func check(item: DataItem, argTypes: Vector[DataArgType], err: Func[Int,String]) -> Result[] is
+  public func check(item: DataItem, argTypes: Vector[DataArgType],
+                    err: Func[Int,String]) -> Result[] is
     if #item.args != #argTypes then
       (err)(item.lineNum, "Wrong number of arguments");
       return error[];

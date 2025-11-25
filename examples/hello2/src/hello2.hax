@@ -11,7 +11,7 @@ module hello2 is
   const initialWidth = 800;
   const initialHeight = 500;
 
-  func main() is
+  public func main() is
     runSimpleGfx("hello2", initialWidth, initialHeight, &draw(Image));
   end
 

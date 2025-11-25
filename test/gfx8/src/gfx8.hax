@@ -2,7 +2,7 @@
 
 module gfx8 is
 
-  func main() is
+  public func main() is
     var args = commandLineArgs();
     if #args != 1 then
       ewrite("Usage: gfx8 <output.jpeg>\n");

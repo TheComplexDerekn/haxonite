@@ -3,7 +3,7 @@ module top is
   import mod1;
   import mod2;
 
-  func main() is
+  public func main() is
     f1a();
     f2a();
   end

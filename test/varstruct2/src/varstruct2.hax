@@ -28,7 +28,7 @@ module varstruct2 is
     write($"Foo2({x}, {y}, {z})\n");
   end
 
-  func main() is
+  public func main() is
     var obj1 = varstruct make Foo1(x:1, y:2);
     print(obj1);
     var obj2 = make Foo2(x:3, y:"hello", z:1.234);

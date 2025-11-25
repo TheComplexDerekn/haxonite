@@ -2,7 +2,7 @@
 
 module vector6 is
 
-  func main() is
+  public func main() is
     var v1 = new Vector[Vector[Int]];
     append(v1, [1, 2, 3]);
     append(v1, [5]);

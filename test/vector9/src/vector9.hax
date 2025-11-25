@@ -2,7 +2,7 @@
 
 module vector9 is
 
-  func main() is
+  public func main() is
     var v = new Vector[Int];
     for i : 0 .. 20 do
       append(v, i);

@@ -2,7 +2,7 @@
 
 module set4 is
 
-  func main() is
+  public func main() is
     var s = new Set[Int];
     insert(s, 10);
     insert(s, 20);

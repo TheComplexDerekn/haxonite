@@ -67,7 +67,6 @@ public:
   CModule *findModule(const std::string &name);
   CType *findType(const std::string &name);
   CFuncDecl *findFunction(const std::string &name, std::vector<ExprResult> &argResults);
-  bool moduleIsVisible(CModule *mod);
 
   void pushFrame();
   void popFrame();
@@ -78,6 +77,11 @@ public:
   void enterLoop(uint32_t continueLabel, uint32_t breakLabel);
   void exitLoop();
   Frame *findLoop();
+
+  bool moduleIsVisible(CModule *mod);
+  bool typeIsVisible(CType *type);
+  bool functionIsVisible(CFuncDecl *func);
+  bool constantIsVisible(CConst *con);
 
   // Returns true if [name] exists as a type or symbol (constant, arg,
   // or var).

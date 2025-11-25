@@ -1,11 +1,11 @@
 module mod1 is
 
-  func f1a() is
+  public func f1a() is
     write("f1a\n");
     f2b();
   end
 
-  func f1b() is
+  public func f1b() is
     write("f1b\n");
   end
 
