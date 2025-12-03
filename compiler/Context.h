@@ -12,6 +12,7 @@
 #ifndef Context_h
 #define Context_h
 
+#include <stdint.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
