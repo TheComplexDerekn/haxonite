@@ -288,6 +288,7 @@ header gfx is
   public nativefunc backBuffer(win: Window) -> Image;
   public nativefunc swapBuffers(win: Window);
   public nativefunc close(win: Window);
+  public nativefunc setTitle(win: Window, title: String);
 
   //--- events
   public nativefunc monoclock() -> Int;

@@ -1417,6 +1417,25 @@ static NativeFuncDefn(runtime_close_6Window) {
   engine.push(cellMakeInt(0));
 }
 
+// setTitle(win: Window, title: String)
+static NativeFuncDefn(runtime_setTitle_6WindowS) {
+#if CHECK_RUNTIME_FUNC_ARGS
+  if (engine.nArgs() != 2 ||
+      !cellIsHeapPtr(engine.arg(0)) ||
+      !cellIsPtr(engine.arg(1))) {
+    BytecodeEngine::fatalError("Invalid argument");
+  }
+#endif
+  Cell &windowCell = engine.arg(0);
+  Cell &titleCell = engine.arg(1);
+
+  std::string title = stringToStdString(titleCell);
+
+  gfxSetWindowTitle(windowCell, title, engine);
+
+  engine.push(cellMakeInt(0));
+}
+
 //------------------------------------------------------------------------
 // events
 //------------------------------------------------------------------------
@@ -1628,6 +1647,7 @@ void runtime_gfx_init(BytecodeEngine &engine) {
   engine.addNativeFunction("backBuffer_6Window", &runtime_backBuffer_6Window);
   engine.addNativeFunction("swapBuffers_6Window", &runtime_swapBuffers_6Window);
   engine.addNativeFunction("close_6Window", &runtime_close_6Window);
+  engine.addNativeFunction("setTitle_6WindowS", &runtime_setTitle_6WindowS);
   //--- events
   engine.addNativeFunction("monoclock", &runtime_monoclock);
   engine.addNativeFunction("waitEvent", &runtime_waitEvent);

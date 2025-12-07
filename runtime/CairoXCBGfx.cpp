@@ -1704,6 +1704,20 @@ void gfxCloseWindow(Cell &windowCell, BytecodeEngine &engine) {
   closeWindow(gfxWin);
 }
 
+void gfxSetWindowTitle(Cell &windowCell, const std::string &title, BytecodeEngine &engine) {
+  Window *win = (Window *)cellHeapPtr(windowCell);
+  BytecodeEngine::failOnNilPtr(win);
+  GfxWindow *gfxWin = (GfxWindow *)cellResourcePtr(win->gfxWin);
+  Application *app = (Application *)cellHeapPtr(appCell);
+  GfxApplication *gfxApp = (GfxApplication *)cellResourcePtr(app->gfxApp);
+
+  xcb_change_property(gfxApp->connection, XCB_PROP_MODE_REPLACE,
+                      gfxWin->window,
+                      XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8,
+                      (uint32_t)std::min(title.size(), (size_t)UINT32_MAX), title.c_str());
+  xcb_flush(gfxApp->connection);
+}
+
 static void finalizeWindow(ResourceObject *resObj) {
   GfxWindow *gfxWin = (GfxWindow *)resObj;
   closeWindow(gfxWin);

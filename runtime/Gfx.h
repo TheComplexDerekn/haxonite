@@ -359,6 +359,7 @@ extern void gfxSetBackgroundColor(Cell &windowCell, int64_t color);
 extern Cell gfxBackBuffer(Cell &windowCell);
 extern void gfxSwapBuffers(Cell &windowCell);
 extern void gfxCloseWindow(Cell &windowCell, BytecodeEngine &engine);
+extern void gfxSetWindowTitle(Cell &windowCell, const std::string &title, BytecodeEngine &engine);
 
 //--- events
 extern int64_t gfxMonoclock();
