@@ -51,7 +51,7 @@ bool BytecodeFile::readBytecodeSection(FILE *in) {
     return false;
   }
   bytecodeSection.resize(length);
-  if (!readBytes(&bytecodeSection[0], length, in)) {
+  if (length && !readBytes(&bytecodeSection[0], length, in)) {
     return false;
   }
   return true;
@@ -63,7 +63,7 @@ bool BytecodeFile::readDataSection(FILE *in) {
     return false;
   }
   dataSection.resize(length);
-  if (!readBytes(&dataSection[0], length, in)) {
+  if (length && !readBytes(&dataSection[0], length, in)) {
     return false;
   }
   return true;
@@ -237,13 +237,17 @@ void BytecodeFile::writeHeader(FILE *out) {
 void BytecodeFile::writeBytecodeSection(FILE *out) {
   uint32_t length = (uint32_t)bytecodeSection.size();
   fwrite((char *)&length, 1, 4, out);
-  fwrite((char *)&bytecodeSection[0], 1, length, out);
+  if (!bytecodeSection.empty()) {
+    fwrite((char *)&bytecodeSection[0], 1, length, out);
+  }
 }
 
 void BytecodeFile::writeDataSection(FILE *out) {
   uint32_t length = (uint32_t)dataSection.size();
   fwrite((char *)&length, 1, 4, out);
-  fwrite((char *)&dataSection[0], 1, length, out);
+  if (!dataSection.empty()) {
+    fwrite((char *)&dataSection[0], 1, length, out);
+  }
 }
 
 void BytecodeFile::writeFuncDefns(FILE *out) {
